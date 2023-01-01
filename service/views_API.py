@@ -1,4 +1,5 @@
-from rest_framework import status
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import status, filters
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
@@ -9,6 +10,13 @@ from service.serializers import PhotoItemSerializer
 class PhotoItemViewSet(ModelViewSet):
     http_method_names = ('get', 'post', 'put', 'patch', 'head', 'delete')  # option
     # pk_url_kwarg = 'id'
+
+    # in url http://127.0.0.1:8000/photos/?search=exa
+    # filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['author', 'description']
+
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['author', 'description']
 
     # permission_classes = (IsOwnerOrReadOnly, permissions.IsAuthenticatedOrReadOnly)  # (permissions.AllowAny,)
     # throttle_classes = [UserRateThrottle]
