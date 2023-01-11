@@ -1,0 +1,18 @@
+SELECT * FROM service_photoitem WHERE '%a%' LIKE ANY(service_photoitem.names) ;
+-- SELECT * FROM service_photoitem WHERE ANY(service_photoitem.names) LIKE '%a%'; --NOT W
+-- SELECT UNNEST(names) FROM service_photoitem where UNNEST(names) like 'a%'; -- not w
+
+
+SELECT * FROM service_photoitem, UNNEST(names) as name WHERE name LIKE '%a%';
+SELECT *, name FROM service_photoitem, UNNEST(names) as name WHERE name LIKE '%b%';
+
+
+SELECT UNNEST(names) FROM service_photoitem;
+SELECT UNNEST(names) FROM service_photoitem WHERE names::text LIKE 'a%'; -- WHERE NAMES - WRONG
+
+
+--w
+SELECT array_agg(x) from service_photoitem, UNNEST(names) x where x like 'a%';
+SELECT id, x from service_photoitem, UNNEST(names) x where x like 'a%';
+
+----------
