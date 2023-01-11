@@ -24,3 +24,13 @@ class PhotoItemSerializer(serializers.ModelSerializer):
         if value == 'not valid':
             raise serializers.ValidationError('Проверьте text (validate_text validator)')
         return value
+
+
+class QueryCustomSerializer(serializers.Serializer):
+    name_list = serializers.ListField(child=serializers.CharField(), max_length=150)
+
+
+class QueryCustomSerializerRAWQ(serializers.Serializer):
+    id = serializers.IntegerField()
+    # name_list = serializers.ListField(child=serializers.CharField(), max_length=150)
+    x = serializers.CharField()
