@@ -19,11 +19,12 @@ class PhotoItemViewSet(ModelViewSet):
     # pk_url_kwarg = 'id'
 
     # in url http://127.0.0.1:8000/photos/?search=exa
-    # filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['author', 'description']
+    # http://127.0.0.1:8000/photos/?lat=12.23000&long=12.12000000&author=3
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['author', 'description', 'lat', 'long', 'created_date']  # 'names' - err
 
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['author', 'description']
+    # filter_backends = [filters.SearchFilter]
+    # search_fields = ['author', 'description', '=names']
 
     # permission_classes = (IsOwnerOrReadOnly, permissions.IsAuthenticatedOrReadOnly)  # (permissions.AllowAny,)
     # throttle_classes = [UserRateThrottle]
