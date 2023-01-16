@@ -3,6 +3,7 @@ Django==4.1.4
 djangorestframework==3.14.0
 django-filter
 psycopg2
+Pillow
 
 django-debug-toolbar
 

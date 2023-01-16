@@ -17,13 +17,14 @@ class PhotoItem(models.Model):
                              auto_created=True)
     author = models.CharField(null=False, max_length=150)  # o2m
     description = models.CharField(null=True, max_length=150)
-    # image = models.ImageField(upload_to='images/')
+    image = models.ImageField(upload_to='images/', null=True)
 
     # names = models.CharField(null=True, max_length=150)  # list in pgsql
     # https://docs.djangoproject.com/en/4.1/ref/contrib/postgres/fields/#django.contrib.postgres.fields.ArrayField
 
     names = ArrayField(models.CharField(max_length=150, blank=True),
-                       size=8, )
+                       # size=8,
+                       )
     # names = models.JSONField(null=True, max_length=150, default=dict)
     created_date = models.DateTimeField(null=False, auto_now_add=True)
 

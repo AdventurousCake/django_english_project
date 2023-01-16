@@ -14,7 +14,7 @@ class PhotoItemSerializer(serializers.ModelSerializer):
     # or save in perform create
 
     class Meta:
-        fields = ('id', 'author', 'description', 'names', 'created_date', 'lat', 'long')
+        fields = ('id', 'author', 'description', 'names', 'created_date', 'lat', 'long', 'image')
 
         # сериализатор не ждёт в теле POST-запроса поле owner (а если оно придёт, то будет проигнорировано).
         read_only_fields = ('author',)  # ('post', 'created', 'OWNER')
@@ -25,6 +25,11 @@ class PhotoItemSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Проверьте text (validate_text validator)')
         return value
 
+
+class QueryCustomSerializerFORSEARCH(serializers.Serializer):
+    id = serializers.IntegerField()
+    author = serializers.CharField()
+    name_list = serializers.ListField(child=serializers.CharField(), max_length=150)
 
 class QueryCustomSerializer(serializers.Serializer):
     name_list = serializers.ListField(child=serializers.CharField(), max_length=150)

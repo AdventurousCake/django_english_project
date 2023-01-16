@@ -1,6 +1,8 @@
+from django.conf.urls.static import static
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
+from django_test1 import settings
 from service.views_API import PhotoItemViewSet
 
 app_name = 'service'
@@ -13,6 +15,10 @@ urlpatterns = [
     path('', include(router.urls), name='photos'),
 
     path('create_menu/', views.CreateMenu.as_view(), name='create'),
-    # path('names', views_API.GetNames.as_view(), name='names'),
-    path('names/<str:query>', views_API.GetNames.as_view(), name='names'),
+    # path('names', views_API.GetOnlyNames.as_view(), name='names'),
+    path('names/<str:query>', views_API.GetOnlyNames.as_view(), name='names'),
+    path('search_by_names/<str:query>', views_API.GetFilteredByName.as_view(), name='search_by_names'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
