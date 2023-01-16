@@ -1,6 +1,6 @@
 import json
 
-from django.http import JsonResponse
+from django.db.models import Q, F
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, filters
 from rest_framework.generics import RetrieveAPIView
@@ -102,31 +102,45 @@ class GetOnlyNames(APIView):
 
 
 class GetFilteredByName(APIView):
-    # lookup_field = 'query'
     def get(self, request, **kwargs):
         q = self.kwargs.get('query')
 
-
         if q:
+            q_raw = q
             q = q + '%'  # process like
             result_dict_list = []
 
-            data = PhotoItem.objects.raw(
-                "SELECT id,author,names FROM service_photoitem, UNNEST(names) as name WHERE name LIKE %s;",
-                # "SELECT id,author,description,names,created_date,lat,long,image FROM service_photoitem, UNNEST(names) as name WHERE name LIKE %s;",
-                params=(q,))
+            # id,author,names
+            data = PhotoItem.objects.raw("SELECT * FROM service_photoitem, UNNEST(names) as name WHERE name LIKE %s;",
+                                         # "SELECT id,author,description,names,created_date,lat,long,image FROM service_photoitem, UNNEST(names) as name WHERE name LIKE %s;",
+                                         params=(q,))
 
-            for item in data:
-                print(item)
-                result_dict_list.append({'id': item.id, "author": item.author, "name_list": item.names})
+            # data = PhotoItem.objects.filter(names__contains=q_raw).values('names') # DW
 
-            res = QueryCustomSerializerFORSEARCH(data=result_dict_list, many=True)
-            is_v = res.is_valid()
-            if not is_v:
-                print(res.errors)
-            return JsonResponse(data=res.validated_data, safe=False)
+            # 1
+            # for item in data:
+            #     print(item)
+            #     result_dict_list.append({'id': item.id, "author": item.author, "names": item.names})
+            #
+            # res = QueryCustomSerializerFORSEARCH(data=result_dict_list, many=True)
+            # is_v = res.is_valid()
+            # if not is_v:
+            #     print(res.errors)
+            # return Response(data=res.validated_data)
 
-            # return Response(list(data))
+            # 2
+            # res = QueryCustomSerializerFORSEARCH(data=data, many=True)
+            # is_v = res.is_valid()
+            # if not is_v:
+            #     print(res.errors)
+            # # just data
+            # return Response(res.data)
+
+            # 3
+            res = QueryCustomSerializerFORSEARCH(data=data, many=True)
+            res.is_valid()
+            return Response(res.data)
+
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 

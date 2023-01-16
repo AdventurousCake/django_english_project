@@ -29,10 +29,10 @@ class PhotoItemSerializer(serializers.ModelSerializer):
 class QueryCustomSerializerFORSEARCH(serializers.Serializer):
     id = serializers.IntegerField()
     author = serializers.CharField()
-    name_list = serializers.ListField(child=serializers.CharField(), max_length=150)
+    names = serializers.ListField(child=serializers.CharField(), max_length=150)
 
 class QueryCustomSerializer(serializers.Serializer):
-    name_list = serializers.ListField(child=serializers.CharField(), max_length=150)
+    names = serializers.ListField(child=serializers.CharField(), max_length=150)
 
 
 class QueryCustomSerializerRAWQ(serializers.Serializer):
