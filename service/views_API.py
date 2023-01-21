@@ -68,16 +68,13 @@ class GetOnlyNames(APIView):
             # serialize to list
             result = []
             result_dict_list = []
-            for item in query:
-                result.append(item.x)
 
-                # result_dict_list.append(item.__dict__)
-                result_dict_list.append({'id': item.id, "x": item.x})
-
-                print(item.id, item.x)
-
-                # print(item.__dict__)
-                # print(model_to_dict(item))
+            result_dict_list = [{'id': item.id, "x": item.x} for item in query]
+            # for item in query:
+            #     result.append(item.x)
+            #     # result_dict_list.append(item.__dict__)
+            #     result_dict_list.append({'id': item.id, "x": item.x})
+            #     print(item.id, item.x)
 
             # data = serializers.serialize('json', query, safe=False)
             # return JsonResponse(data=query, safe=False)
@@ -90,7 +87,7 @@ class GetOnlyNames(APIView):
             is_v = res.is_valid()
             if not is_v:
                 print(res.errors)
-            return Response(data=res)
+            return Response(data=res.validated_data)
 
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -136,7 +133,9 @@ class GetFilteredByName(APIView):
 
             # 3
             res = QueryCustomSerializerFORSEARCH(data=data, many=True)
-            res.is_valid()
+            is_v = res.is_valid()
+            if not is_v:
+                print(res.errors)
             return Response(res.data)
 
         else:
