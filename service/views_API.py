@@ -1,6 +1,6 @@
 import json
 
-from django.db.models import Q, F
+from django.db.models import Q, F, Func
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, filters
 from rest_framework.generics import RetrieveAPIView
@@ -35,11 +35,6 @@ class PhotoItemViewSet(ModelViewSet):
 
     # permission_classes = (IsOwnerOrReadOnly, permissions.IsAuthenticatedOrReadOnly)  # (permissions.AllowAny,)
 
-    # queryset = Message.objects.all() # not optimal for author field
-    # queryset = Message.objects.all().select_related("author").prefetch_related("groups", "user_permissions") # invalid parameters in prefetch
-    # queryset = Message.objects.all().select_related("author").prefetch_related("author.groups", "author.user_permissions") # invalid parameters in prefetch
-
-    # queryset = Message.objects.all().select_related("author")  # not optimal for author fields fk
     queryset = PhotoItem.objects.all()
 
     # FOR ALL USER DATA; UNDERSCORE in fields
@@ -115,7 +110,10 @@ class GetFilteredByName(APIView):
                                          # "SELECT id,author,description,names,created_date,lat,long,image FROM service_photoitem, UNNEST(names) as name WHERE name LIKE %s;",
                                          params=(q,))
 
-            # data = PhotoItem.objects.filter(names__contains=q_raw).values('names') # DW
+            # data = PhotoItem.objects.filter(names__contains=[q_raw]) # ALT
+            # data = PhotoItem.objects.filter(names__contains=[q_raw]).values('names') # ALT 2
+            # data = PhotoItem.objects.filter(names__contains=q_raw).values('names')# dw
+            # data = PhotoItem.objects.annotate(arr_els=Func(F('names'), function='unnest')).values_list('arr_els', flat=True)
 
             # 1
             # for item in data:

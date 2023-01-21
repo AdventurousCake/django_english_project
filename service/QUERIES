@@ -5,6 +5,13 @@ SELECT * FROM service_photoitem WHERE '%a%' LIKE ANY(service_photoitem.names) ;
 
 SELECT * FROM service_photoitem, UNNEST(names) as name WHERE name LIKE '%a%';
 SELECT *, name FROM service_photoitem, UNNEST(names) as name WHERE name LIKE '%b%';
+SELECT id,author,description,names,created_date,lat,long,image FROM service_photoitem, UNNEST(names) as name WHERE name LIKE '%a%';
+
+SELECT *
+  FROM "service_photoitem"
+ WHERE "service_photoitem"."names" @> (ARRAY['a'])::varchar(150)[];
+
+SELECT DISTINCT unnest("service_photoitem"."names") AS "arr_els" FROM "service_photoitem";
 
 
 SELECT UNNEST(names) FROM service_photoitem;
