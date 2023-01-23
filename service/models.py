@@ -18,6 +18,7 @@ class PhotoItem(models.Model):
     author = models.CharField(null=False, max_length=150)  # o2m
     description = models.CharField(null=True, max_length=150)
     image = models.ImageField(upload_to='images/', null=True)
+    is_public = models.BooleanField(null=False, default=True)
 
     # names = models.CharField(null=True, max_length=150)  # list in pgsql
     # https://docs.djangoproject.com/en/4.1/ref/contrib/postgres/fields/#django.contrib.postgres.fields.ArrayField

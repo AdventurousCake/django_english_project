@@ -27,7 +27,7 @@ class PhotoItemViewSet(ModelViewSet):
     # http://127.0.0.1:8000/photos/?lat=12.23000&long=12.12000000&author=3
 
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['author', 'description', 'lat', 'long', 'created_date']  # 'names' - err
+    filterset_fields = ['author', 'description', 'lat', 'long', 'created_date', 'is_public']  # 'names' - err
 
     # filter_backends = [filters.SearchFilter] # DW bc nested items
     # search_fields = ['=names']

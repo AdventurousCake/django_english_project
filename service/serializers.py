@@ -14,7 +14,7 @@ class PhotoItemSerializer(serializers.ModelSerializer):
     # or save in perform create
 
     class Meta:
-        fields = ('id', 'author', 'description', 'names', 'created_date', 'lat', 'long', 'image')
+        fields = ('id', 'author', 'description', 'names', 'created_date', 'lat', 'long', 'image', 'is_public')
 
         # сериализатор не ждёт в теле POST-запроса поле owner (а если оно придёт, то будет проигнорировано).
         read_only_fields = ('author',)  # ('post', 'created', 'OWNER')
