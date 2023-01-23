@@ -33,12 +33,7 @@ class PhotoItemViewSet(ModelViewSet):
     # search_fields = ['=names']
     # # search_fields = ['author', 'description', '=names']
 
-    # permission_classes = (IsOwnerOrReadOnly, permissions.IsAuthenticatedOrReadOnly)  # (permissions.AllowAny,)
-
     queryset = PhotoItem.objects.all()
-
-    # FOR ALL USER DATA; UNDERSCORE in fields
-    # queryset = Message.objects.all().select_related("author").prefetch_related("author__groups", "author__user_permissions")
 
     serializer_class = PhotoItemSerializer
 
@@ -66,20 +61,7 @@ class GetOnlyNames(APIView):
             print(query.query)
 
             # serialize to list
-            result = []
-            result_dict_list = []
-
             result_dict_list = [{'id': item.id, "x": item.x} for item in query]
-            # for item in query:
-            #     result.append(item.x)
-            #     # result_dict_list.append(item.__dict__)
-            #     result_dict_list.append({'id': item.id, "x": item.x})
-            #     print(item.id, item.x)
-
-            # data = serializers.serialize('json', query, safe=False)
-            # return JsonResponse(data=query, safe=False)
-
-            # return Response(data={'data': result})
             print(result_dict_list)
 
             data_to_serializer = result_dict_list
