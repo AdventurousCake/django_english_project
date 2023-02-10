@@ -20,7 +20,9 @@ import service
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('service.urls'), name='service')
+    path('', include('service.urls'), name='service'),
+
+    path('stripe_service/', include('stripe_service.urls'), name='stripe_service'),
 ]
 
 

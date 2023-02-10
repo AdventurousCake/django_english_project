@@ -24,7 +24,7 @@ class PhotoItemViewSet(ModelViewSet):
     # pk_url_kwarg = 'id'
 
     # in url http://127.0.0.1:8000/photos/?search=exa
-    # http://127.0.0.1:8000/photos/?lat=12.23000&long=12.12000000&author=3
+    # http://127.0.0.1:8000/photos/?lat=12.23000&long=12.12000000&author=3&is_public=1
 
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['author', 'description', 'lat', 'long', 'created_date', 'is_public']  # 'names' - err
@@ -85,12 +85,14 @@ class GetFilteredByName(APIView):
             result_dict_list = []
 
             # id,author,names
-            data = PhotoItem.objects.raw("SELECT * FROM service_photoitem, UNNEST(names) as name WHERE name LIKE %s;",
-                                         # "SELECT id,author,description,names,created_date,lat,long,image FROM service_photoitem, UNNEST(names) as name WHERE name LIKE %s;",
-                                         params=(q,))
+            # data = PhotoItem.objects.raw("SELECT * FROM service_photoitem, UNNEST(names) as name WHERE name LIKE %s;",
+            #                              # "SELECT id,author,description,names,created_date,lat,long,image FROM service_photoitem, UNNEST(names) as name WHERE name LIKE %s;",
+            #                              params=(q,))
 
-            # data = PhotoItem.objects.filter(names__contains=[q_raw]) # ALT
-            # data = PhotoItem.objects.filter(names__contains=[q_raw]).values('names') # ALT 2
+            # data = PhotoItem.objects.filter(names__contains=[q_raw])  # ALT (!!! [])
+            data = PhotoItem.objects.filter(names__icontains=q_raw)  # ALT
+
+            # data = PhotoItem.objects.filter(names__contains=[q_raw]).values('names')  # ALT 2
             # data = PhotoItem.objects.filter(names__contains=q_raw).values('names')# dw
             # data = PhotoItem.objects.annotate(arr_els=Func(F('names'), function='unnest')).values_list('arr_els', flat=True)
 

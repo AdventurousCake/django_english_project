@@ -1,0 +1,38 @@
+SELECT * FROM service_photoitem WHERE '%a%' LIKE ANY(service_photoitem.names) ; -- empty because %%
+SELECT * FROM service_photoitem WHERE "service_photoitem"."names" LIKE '%a%'; -- err because ARRAY[] like str
+SELECT * FROM service_photoitem WHERE "service_photoitem"."names" LIKE '%a%'; -- err because ARRAY[] like str
+
+-- SELECT * FROM service_photoitem WHERE ANY(service_photoitem.names) LIKE '%a%'; --NOT W
+-- SELECT UNNEST(names) FROM service_photoitem where UNNEST(names) like 'a%'; -- not w
+
+
+SELECT * FROM service_photoitem, UNNEST(names) as name WHERE name LIKE '%a%';
+SELECT *, name FROM service_photoitem, UNNEST(names) as name WHERE name LIKE '%b%';
+SELECT id,author,description,names,created_date,lat,long,image FROM service_photoitem, UNNEST(names) as name WHERE name LIKE '%a%';
+
+SELECT *
+  FROM "service_photoitem"
+      WHERE service_photoitem."names"::varchar[] @> ARRAY['a']::varchar(150)[];
+
+SELECT *
+  FROM "service_photoitem"
+ WHERE UPPER("service_photoitem"."names"::text)::varchar[] @> (UPPER(ARRAY['a']::text))::varchar(150)[];
+
+-- ILIKE (doesnt use GIN index, less optimized)
+SELECT * FROM "service_photoitem" WHERE 'A'::text ILIKE ANY ("service_photoitem"."names");
+SELECT UPPER("names"::text) FROM "service_photoitem" WHERE UPPER("names"::text) ILIKE UPPER('%a%');
+
+
+SELECT DISTINCT unnest("service_photoitem"."names") AS "arr_els" FROM "service_photoitem"; -- all in column
+
+
+SELECT UNNEST(names) FROM service_photoitem;
+SELECT UNNEST(names) FROM service_photoitem WHERE names::text LIKE 'a%'; -- WHERE NAMES - WRONG
+
+
+--w
+SELECT array_agg(x) from service_photoitem, UNNEST(names) x where x like 'a%';
+SELECT id, x from service_photoitem, UNNEST(names) x where x like 'a%';
+SELECT * from service_photoitem, UNNEST(names) x where x like 'a%';
+
+----------
