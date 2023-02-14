@@ -1,3 +1,4 @@
+from django.db.models import Prefetch
 from django.shortcuts import render
 
 from django.views.generic import TemplateView
@@ -21,13 +22,17 @@ class ProductLandingPageView(TemplateView):
     template_name = "stripe_page/index.html"
 
     def get_context_data(self, pk, **kwargs):
+        # fixme
+        # product = Item.objects.prefetch_related(Prefetch('order_set')).get(id=pk)
         product = Item.objects.get(id=pk)
         print(product)
 
         context = super(ProductLandingPageView, self).get_context_data(**kwargs)
         context.update({
             # "STRIPE_PUBLISHABLE_KEY": settings.STRIPE_PUBLISHABLE_KEY,
-            "product": product
+            "product": product,
+            "order_total": product.order_set.first().get_discount_total_cost()
+            # "order_total": product.order_set.first().get_discount_total_cost()
         })
         return context
 

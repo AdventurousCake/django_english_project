@@ -30,6 +30,9 @@ class Item(models.Model):
 class Order(models.Model):
     id = models.BigAutoField(primary_key=True, auto_created=True, null=False)
     items = models.ManyToManyField(to=Item)  # symmetrical?
+    
+    def set_discount(self):
+        pass
 
     def get_total_cost(self):
         return self.items.aggregate(Sum('price')).get('price__sum')
