@@ -6,7 +6,7 @@ from rest_framework.generics import CreateAPIView, get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from stripe_service.models import Item
+from stripe_service.models import Item, Order
 from stripe_service.services.stripe import create_stripe_session
 
 
@@ -16,6 +16,21 @@ class SuccessesView(TemplateView):
 
 class CancelView(TemplateView):
     template_name = "stripe_page/cancel.html"
+
+
+class OrderPageView(TemplateView):
+    template_name = "stripe_page/order.html"
+
+    def get_context_data(self, pk, **kwargs):
+        order = Order.objects.select_related('item').get(id=pk)
+
+        context = super(OrderPageView, self).get_context_data(**kwargs)
+        context.update({
+            "order": order,
+            "products": order.items,
+            "order_total": order.get_discount_total_cost()
+        })
+        return context
 
 
 class ProductLandingPageView(TemplateView):
@@ -48,7 +63,8 @@ class CreateCheckoutSessionAPIView(APIView):
         # product = Item.objects.get(id=pk)  # id=self.kwargs.get('pk')
         product = get_object_or_404(Item, id=pk)  # drf.get_obj
         print(product)
-        # stripe logic
-        create_stripe_session()
+
+        # todo stripe logic
+        create_stripe_session(product_name=product.id, currency=product.currency, quantity=1)
 
         return Response({})
