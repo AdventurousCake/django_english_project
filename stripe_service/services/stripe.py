@@ -1,5 +1,4 @@
 import stripe
-from django.urls import reverse
 
 stripe.api_key = 'sk_test_4eC39HqLyjWDarjtT1zdp7dc'
 
@@ -8,8 +7,8 @@ stripe.api_key = 'sk_test_4eC39HqLyjWDarjtT1zdp7dc'
 def create_stripe_session(product_name: str,
                           price: int,
                           secret_key: str | None,
-                          redirect_url: str = reverse("stripe_service:success"),
-                          cancel_url: str = reverse("stripe_service:cancel"),
+                          redirect_url: str,
+                          cancel_url: str,
 
                           quantity: int = 1,
                           currency: str = "usd",
