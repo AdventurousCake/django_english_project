@@ -27,7 +27,7 @@ class OrderPageView(TemplateView):
         context = super(OrderPageView, self).get_context_data(**kwargs)
         context.update({
             "order": order,
-            "products": order.items,
+            "products": order.items.all(),
             "order_total": order.get_discount_total_cost()
         })
         return context
@@ -58,6 +58,7 @@ class CreateCheckoutSessionAPIView(CreateAPIView):
         pass
 
 
+# one product
 class CreateCheckoutSessionAPIView(APIView):
     def get(self, request, pk):
         # product = Item.objects.get(id=pk)  # id=self.kwargs.get('pk')
@@ -65,6 +66,22 @@ class CreateCheckoutSessionAPIView(APIView):
         print(product)
 
         # todo stripe logic
-        create_stripe_session(product_name=product.id, currency=product.currency, quantity=1)
+        create_stripe_session(product_name=product.id, price=product.price, currency=product.currency, quantity=1)
+
+        return Response({})
+
+
+# many
+class CreateOrderCheckoutSessionAPIView(APIView):
+    def get(self, request, pk):
+        # product = Item.objects.get(id=pk)  # id=self.kwargs.get('pk')
+        order = get_object_or_404(Order, id=pk)  # drf.get_obj
+        print(order)
+
+        curr = order.items.first().currency
+        price = order.get_total_cost()
+
+        # todo stripe logic
+        create_stripe_session(product_name=order.id, price=price, currency=curr, quantity=1)
 
         return Response({})
