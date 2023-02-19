@@ -6,7 +6,7 @@ from rest_framework.generics import CreateAPIView, get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from stripe_service.models import Item, Order
+from stripe_service.models import Item, Order, Discount
 from stripe_service.services.stripe import create_stripe_session
 
 
@@ -22,7 +22,8 @@ class OrderPageView(TemplateView):
     template_name = "stripe_page/order.html"
 
     def get_context_data(self, pk, **kwargs):
-        order = Order.objects.select_related('item').get(id=pk)
+        order = Order.objects.get(id=pk)
+        # order = Order.objects.select_related('items').get(id=pk)
 
         context = super(OrderPageView, self).get_context_data(**kwargs)
         context.update({
@@ -40,6 +41,20 @@ class ProductLandingPageView(TemplateView):
         # fixme
         # product = Item.objects.prefetch_related(Prefetch('order_set')).get(id=pk)
         product = Item.objects.get(id=pk)
+
+        # еще больше запросов
+        # product = Item.objects.prefetch_related(
+        #     Prefetch(
+        #         'order_set',
+        #         queryset=Order.objects.prefetch_related(
+        #             Prefetch(
+        #                 'discount_set',
+        #                 queryset=Discount.objects.only('value', 'valid_until_date')
+        #             )
+        #         )
+        #     )
+        # ).get(id=pk)
+
         print(product)
 
         context = super(ProductLandingPageView, self).get_context_data(**kwargs)
