@@ -1,5 +1,6 @@
 from django.db.models import Prefetch
 from django.shortcuts import render
+from django.urls import reverse
 
 from django.views.generic import TemplateView
 from rest_framework.generics import CreateAPIView, get_object_or_404
@@ -81,7 +82,10 @@ class CreateCheckoutSessionAPIView(APIView):
         print(product)
 
         # todo stripe logic
-        create_stripe_session(product_name=product.id, price=product.price, currency=product.currency, quantity=1)
+        #         create_stripe_session(product_name=product.id, currency=product.currency, quantity=1, redirect_url=reverse("stripe_service:success"), cancel_url=reverse("stripe_service:cancel"))
+        create_stripe_session(product_name=product.id, price=product.price, currency=product.currency, quantity=1,
+                              redirect_url=reverse("stripe_service:success"),
+                              cancel_url=reverse("stripe_service:cancel"))
 
         return Response({})
 
@@ -97,6 +101,8 @@ class CreateOrderCheckoutSessionAPIView(APIView):
         price = order.get_total_cost()
 
         # todo stripe logic
-        create_stripe_session(product_name=order.id, price=price, currency=curr, quantity=1)
+        create_stripe_session(product_name=order.id, price=price, currency=curr, quantity=1,
+                              redirect_url=reverse("stripe_service:success"),
+                              cancel_url=reverse("stripe_service:cancel"))
 
         return Response({})
