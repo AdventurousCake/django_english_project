@@ -82,7 +82,8 @@ class CreateCheckoutSessionAPIView(APIView):
         print(product)
 
         # todo stripe logic
-        #         create_stripe_session(product_name=product.id, currency=product.currency, quantity=1, redirect_url=reverse("stripe_service:success"), cancel_url=reverse("stripe_service:cancel"))
+        # create_stripe_session(product_name=product.id, currency=product.currency, quantity=1,
+        # redirect_url=reverse("stripe_service:success"), cancel_url=reverse("stripe_service:cancel"))
         create_stripe_session(product_name=product.id, price=product.price, currency=product.currency, quantity=1,
                               redirect_url=reverse("stripe_service:success"),
                               cancel_url=reverse("stripe_service:cancel"))

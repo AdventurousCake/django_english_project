@@ -3,11 +3,11 @@ from django.db.models import Sum
 from django.utils.text import gettext_lazy as _
 
 
-class Curr(models.TextChoices):
-    EUR = 'EUR', _('Euro')
-    GBP = 'GBP', _('British Pound')
-    USD = 'USD', _('US Dollar')
-    RUB = 'RUB', _('Russian Ruble')
+# class Curr(models.TextChoices):
+#     EUR = 'EUR', _('Euro')
+#     GBP = 'GBP', _('British Pound')
+#     USD = 'USD', _('US Dollar')
+#     RUB = 'RUB', _('Russian Ruble')
 
 
 class Item(models.Model):
@@ -31,7 +31,7 @@ class Order(models.Model):
     id = models.BigAutoField(primary_key=True, auto_created=True, null=False)
     items = models.ManyToManyField(to=Item)  # symmetrical?
     
-    def set_discount(self):
+    def set_discount(self):  # naming?
         pass
 
     def get_total_cost(self):
