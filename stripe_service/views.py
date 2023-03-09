@@ -22,6 +22,8 @@ class CancelView(TemplateView):
 class OrderPageView(TemplateView):
     template_name = "stripe_page/order.html"
 
+    # todo broken get_total_cost
+
     def get_context_data(self, pk, **kwargs):
         order = Order.objects.prefetch_related('items', 'discounts').get(id=pk)
         # order = Order.objects.get(id=pk)
@@ -32,7 +34,7 @@ class OrderPageView(TemplateView):
             "order": order,
             "order_id": order.id,
             "products": order.get_items(),
-            "order_total": order.get_discount_total_cost()
+            "order_total": order.get_discount_total_cost()  # TODO
         })
         return context
 
@@ -41,12 +43,11 @@ class ProductLandingPageView(TemplateView):
     template_name = "stripe_page/index.html"
 
     def get_context_data(self, pk, **kwargs):
-        # fixme # todo !!!
         # product = Item.objects.prefetch_related(Prefetch('order_set')).get(id=pk)
         product = Item.objects.get(id=pk)
-        # product = Item.objects.prefetch_related('order_set', 'orders__discount_set').all()
+        # product = Item.objects.prefetch_related('order_set', 'order_set__discounts').get(id=pk) # todo broken get_total_cost
 
-        # еще больше запросов
+        # еще больше запросов; better above
         # product = Item.objects.prefetch_related(
         #     Prefetch(
         #         'order_set',
@@ -72,7 +73,7 @@ class ProductLandingPageView(TemplateView):
             "product": product,
 
             # todo!!!
-            # "order_total": product.first().get_discount_total_cost()
+            "order_total": product.price
             # "order_total": product.order_set.first().get_discount_total_cost()
 
             # "order_total": product.order_set.first().get_discount_total_cost()
@@ -85,6 +86,8 @@ class ProductLandingPageView(TemplateView):
 #     def post(self, request, *args, **kwargs):
 #         pass
 
+class CreateOrderCheckoutSessionAPIView:
+    pass
 
 # one product
 class CreateCheckoutSessionAPIView(APIView):
@@ -95,9 +98,11 @@ class CreateCheckoutSessionAPIView(APIView):
 
         # should be int
         # price = product.price
-        price = 99999
 
-        # todo stripe logic
+        # CENTS, tmp big price
+        price = 99999
+        # price = int(product.price * 100)
+
         session = create_stripe_session(product_name=product.id, currency=product.currency, quantity=1, price=price,
                                         redirect_url="http://127.0.0.1/stripe_service/success/",
                                         cancel_url="http://127.0.0.1/stripe_service/cancel/")
