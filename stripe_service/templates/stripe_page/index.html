@@ -5,6 +5,8 @@
   </head>
   <body>
     <h1>{{product}} N# {{product.id}}</h1>
+
+    descr
     <p>{{product.description}}</p>
 
     order total:
@@ -23,6 +25,8 @@
         fetch('/stripe_service/item/{{product.id}}/buy/', {method: 'GET'})
         {#fetch('/buy/{{product.id}}', {method: 'GET'})#}
         .then(response =>  response.json())
+
+        {#.then(session => stripe.redirectToCheckout({ id: session.id }))#}
         .then(session => stripe.redirectToCheckout({ sessionId: session.id }))
       });
     </script>

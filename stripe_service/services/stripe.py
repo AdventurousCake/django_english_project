@@ -1,14 +1,16 @@
+from decimal import Decimal
+
 import stripe
 
-stripe.api_key = 'sk_test_4eC39HqLyjWDarjtT1zdp7dc'
+stripe.api_key = 'sk_test_51MiibLILrXouSZMzvvUe0GbeId5AIqgdjH9UGneTdmRhZ6D5boizxwtheC28CjjJNMZSZtSFTTftPRpIa6ILuoj700F0aCVPT8'
 
 
 # stripe.Card
 def create_stripe_session(product_name: str,
-                          price: int,
-                          secret_key: str | None,
+                          price: int | Decimal,
                           redirect_url: str,
                           cancel_url: str,
+                          secret_key: str | None = None,
 
                           quantity: int = 1,
                           currency: str = "usd",

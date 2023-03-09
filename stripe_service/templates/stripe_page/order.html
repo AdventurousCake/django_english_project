@@ -5,14 +5,16 @@
 </head>
 
 <body>
+{#<h1>{{ order }} N# {{ order_id }}</h1>#}
 <h1>{{ order }} N# {{ order.id }}</h1>
 {#<p>{{ product.description }}</p>#}
 
+<p>Items:</p>
 {% for item in products %}
     <ul>Item: {{ item }}</ul>
 {% endfor %}
 
-order total:
+<p>Order total:</p>
 <p>{{ order_total }}</p>
 
 </body>
