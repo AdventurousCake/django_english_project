@@ -86,6 +86,7 @@ class ProductLandingPageView(TemplateView):
 #         pass
 
 
+# one product
 class CreateCheckoutSessionAPIView(APIView):
     def get(self, request, pk):
         # product = Item.objects.get(id=pk)  # id=self.kwargs.get('pk')

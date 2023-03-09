@@ -34,7 +34,7 @@ class Order(models.Model):
 
     def get_items(self):
         return self.items.all()
-    
+
     def _set_discount(self):
         pass
 
@@ -68,7 +68,7 @@ class Order(models.Model):
 #  Order2.objects.get(pk=1).discount2_set.first().value
 # todo https://metanit.com/python/django/5.7.php
 
-#множество заказов и множество скидок
+# множество заказов и множество скидок
 class Discount(models.Model):
     id = models.BigAutoField(primary_key=True, auto_created=True, null=False)
     # orders = models.ManyToManyField(to=Order, related_name='discount_set')  # related_name='discount')  # symmetrical?
