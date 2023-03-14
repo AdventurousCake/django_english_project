@@ -38,11 +38,14 @@ class Order(models.Model):
     def _set_discount(self):
         pass
 
+    def get_curr(self):
+        return 'USD'  # Todo
+
     def get_total_cost(self):
         # todo 3 ДУБЛЯ
         # return 99
 
-        return self.items.aggregate(Sum('price')).get('price__sum')
+        return self.items.aggregate(Sum('price')).get('price__sum')  # broken to many req
         # return sum(item.price for item in self.get_items())  # +w
 
     def get_discount_total_cost(self):
@@ -80,7 +83,12 @@ class Discount(models.Model):
         # unique?
 
 
-#
+# in m2m rel models; delete by remove() or clear, not db logic
+class OrderDiscountTest(models.Model):
+    id = models.BigAutoField(primary_key=True, auto_created=True, null=False)
+    order_id = models.ForeignKey(to=Order, on_delete=models.CASCADE)
+    discount_id = models.ForeignKey(to=Discount, on_delete=models.CASCADE)
+
 # # TEST
 # class Order2(models.Model):
 #     items = models.ManyToManyField(Item)

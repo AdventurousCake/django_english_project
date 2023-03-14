@@ -17,7 +17,7 @@ urlpatterns = [
     path('item/<int:pk>/', ProductLandingPageView.as_view(), name='index'),
     path('item/<int:pk>/buy/', CreateCheckoutSessionAPIView.as_view(), name='buy'),
 
-    # path('order/<int:pk>/buy/', CreateOrderCheckoutSessionAPIView.as_view(), name='order_buy'),
+    path('order/<int:pk>/buy/', CreateOrderCheckoutSessionAPIView.as_view(), name='order_buy'),
     path('order/<int:pk>/', OrderPageView.as_view(), name='order'),
 
     path('success/', SuccessesView.as_view(), name='success'),
