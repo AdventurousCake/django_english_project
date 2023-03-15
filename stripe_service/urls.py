@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 
 from django_test1 import settings
 from stripe_service.views import CreateCheckoutSessionAPIView, ProductLandingPageView, OrderPageView, SuccessesView, \
-    CancelView, CreateOrderCheckoutSessionAPIView
+    CancelView, CreateOrderCheckoutSessionAPIView, Form1View
 
 app_name = 'stripe_service'
 from service import views, views_API
@@ -22,4 +22,7 @@ urlpatterns = [
 
     path('success/', SuccessesView.as_view(), name='success'),
     path('cancel/', CancelView.as_view(), name='cancel'),
+
+    # test
+    path('form1/', Form1View.as_view(), name='form_test1'),
 ]

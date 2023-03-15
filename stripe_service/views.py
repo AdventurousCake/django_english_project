@@ -2,13 +2,27 @@ from django.db.models import Prefetch
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, FormView
 from rest_framework.generics import CreateAPIView, get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from stripe_service.FORMS_TEST import TestForm1
 from stripe_service.models import Item, Order, Discount
 from stripe_service.services.stripe import create_stripe_session
+
+
+# test form
+class Form1View(FormView):
+    template_name = 'form_test1.html'
+    form_class = TestForm1
+    success_url = '/'
+
+    def form_valid(self, form):
+        # This method is called when valid form data has been POSTed.
+        # It should return an HttpResponse.
+        # form.send_email()
+        return super().form_valid(form)
 
 
 class SuccessesView(TemplateView):

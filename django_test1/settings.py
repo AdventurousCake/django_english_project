@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'debug_toolbar',
+    'bootstrap5',
 
     'service',
     'stripe_service',
