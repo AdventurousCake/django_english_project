@@ -24,7 +24,10 @@ SECRET_KEY = 'django-insecure-rh#^1f*3i1h7p+640-n!!4l0m*ivthh+2yxkcr0%i#=ehh1!p2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+ENV_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS")
 ALLOWED_HOSTS = []
+if ENV_HOSTS:
+    ALLOWED_HOSTS.append(ENV_HOSTS.split(" "))
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
