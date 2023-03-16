@@ -5,6 +5,7 @@ django-filter
 psycopg2-binary
 # psycopg2
 Pillow
+gunicorn
 
 stripe
 django-bootstrap-v5

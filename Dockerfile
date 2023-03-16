@@ -2,7 +2,8 @@
 FROM python:3.11-alpine
 
 # set work directory
-WORKDIR /usr/src/app
+ENV APP_HOME=/usr/src/app
+WORKDIR $APP_HOME
 
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -18,9 +19,10 @@ RUN pip install -r requirements.txt
 
 # copy project
 COPY . .
+RUN mkdir $APP_HOME/staticfiles
 
 RUN adduser -D app_user
 USER app_user
 
 # run entrypoint.sh
-ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
+ENTRYPOINT ["$APP_HOME/entrypoint.sh"]
