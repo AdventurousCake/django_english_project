@@ -27,7 +27,7 @@ DEBUG = True
 ENV_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS")
 ALLOWED_HOSTS = []
 if ENV_HOSTS:
-    ALLOWED_HOSTS.append(ENV_HOSTS.split(" "))
+    ALLOWED_HOSTS.extend(ENV_HOSTS.split(" "))
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [

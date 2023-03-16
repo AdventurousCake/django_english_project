@@ -10,3 +10,24 @@ services:
       - 8080:8000
     env_file:
       - ./.env.dev
+    # breaks conn to other containers
+#    network_mode: "host"
+    depends_on:
+      - db2
+  db2:
+    image: postgres:15.2-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres_TEST1
+    ports:
+      - 54321:5432
+# CUSTOM PORT
+#      - POSTGRES_USER=hello_django
+#      - POSTGRES_PASSWORD=hello_django
+#      - POSTGRES_DB=hello_django_dev
+
+volumes:
+  postgres_data:
