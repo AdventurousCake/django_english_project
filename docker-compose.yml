@@ -10,8 +10,6 @@ services:
       - 8080:8000
     env_file:
       - ./.env.dev
-    # breaks conn to other containers
-#    network_mode: "host"
     depends_on:
       - db
   db:
@@ -24,10 +22,15 @@ services:
       - POSTGRES_DB=postgres_TEST1
     ports:
       - 54321:5432
-# CUSTOM PORT
-#      - POSTGRES_USER=hello_django
-#      - POSTGRES_PASSWORD=hello_django
-#      - POSTGRES_DB=hello_django_dev
+  nginx:
+    build: ./nginx
+    volumes:
+      - static_volume:/usr/src/app/staticfiles
+    ports:
+      - 1337:80
+    depends_on:
+      - web
 
 volumes:
   postgres_data:
+  static_volume:

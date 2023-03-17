@@ -41,7 +41,10 @@ class OrderPageView(TemplateView):
     # Order.objects.get(id=pk).items.clear() #  clear all from the relationship; remove(item) - one
 
     def get_context_data(self, pk, **kwargs):
-        order = Order.objects.prefetch_related('items', 'discounts').get(id=pk)
+        order = get_object_or_404(Order.objects.prefetch_related('items', 'discounts'), id=pk)
+
+        # order = Order.objects.prefetch_related('items', 'discounts').get(id=pk)
+
         # order = Order.objects.get(id=pk)
         # order = Order.objects.select_related('items', 'discounts').get(id=pk)
 
@@ -60,7 +63,8 @@ class ProductLandingPageView(TemplateView):
 
     def get_context_data(self, pk, **kwargs):
         # product = Item.objects.prefetch_related(Prefetch('order_set')).get(id=pk)
-        product = Item.objects.get(id=pk)
+        product = get_object_or_404(Item, id=pk)
+        # product = Item.objects.get(id=pk)
         # product = Item.objects.prefetch_related('order_set', 'order_set__discounts').get(id=pk) #  broken get_total_cost
 
         # еще больше запросов; better above
