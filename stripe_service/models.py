@@ -1,7 +1,17 @@
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.db.models import Sum
 from django.utils.text import gettext_lazy as _
 
+#TODO
+class EngFixer(models.Model):
+    id = models.BigAutoField(primary_key=True, auto_created=True, null=False)
+    input_sentence = models.CharField()
+    translatedRU = models.CharField()
+    correct = models.CharField()
+    rephrases = ArrayField(models.CharField(max_length=150, blank=True))
+                       # size=8,)
+    mistakes = models.CharField()
 
 class Curr(models.TextChoices):
     EUR = 'EUR', _('Euro')

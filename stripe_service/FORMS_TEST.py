@@ -1,5 +1,13 @@
 from django import forms
 
+from stripe_service.models import EngFixer
+
+
+class EngFixerModel(forms.ModelForm):
+    class Meta:
+        model = EngFixer
+        exclude = ('id',)
+
 
 class TestForm1(forms.Form):
     your_name = forms.CharField(label='Your name', max_length=100)
