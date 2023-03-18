@@ -1,15 +1,39 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Prefetch
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from django.views.generic import TemplateView, FormView
+from django.views.generic import TemplateView, FormView, CreateView
 from rest_framework.generics import CreateAPIView, get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from stripe_service.FORMS_TEST import TestForm1
-from stripe_service.models import Item, Order, Discount
+from stripe_service.models import Item, Order, Discount, EngFixer
 from stripe_service.services.stripe import create_stripe_session
+
+
+class CheckENG(LoginRequiredMixin, CreateView):
+    model = EngFixer
+
+    # form_class = MsgForm
+    # template_name = "form_msg/msg_send.html"
+    # initial = {'text': 'example'}
+    # success_url = reverse_lazy('form_msg:send_msg')
+    #
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context['title'] = "📨 Send message form"
+    #     context['btn_caption'] = "Send"
+    #     context['table_data'] = Message.objects.select_related().order_by('-created_date')[:5]
+    #
+    #     return context
+    #
+    # def form_valid(self, form):
+    #     obj = form.save(commit=False)
+    #     obj.author = self.request.user
+    #
+    #     return super(MsgFormCreateView, self).form_valid(form)
 
 
 # test form
@@ -112,7 +136,6 @@ class CreateOrderCheckoutSessionAPIView(APIView):
     def get(self, request, pk):
         order = get_object_or_404(Order, id=pk)  # drf.get_obj
         print(order)
-
 
         # CENTS, tmp big price
         price = int(order.get_discount_total_cost() * 100)
