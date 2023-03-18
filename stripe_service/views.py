@@ -62,6 +62,7 @@ class ProductLandingPageView(TemplateView):
     template_name = "stripe_page/index.html"
 
     def get_context_data(self, pk, **kwargs):
+        # fixme
         # product = Item.objects.prefetch_related(Prefetch('order_set')).get(id=pk)
         product = get_object_or_404(Item, id=pk)
         # product = Item.objects.get(id=pk)
@@ -116,6 +117,7 @@ class CreateOrderCheckoutSessionAPIView(APIView):
         # CENTS, tmp big price
         price = int(order.get_discount_total_cost() * 100)
         curr = 'RUB'
+        # curr = order.items.first().currency
 
         session = create_stripe_session(product_name=order.id, currency=curr, quantity=1, price=price,
                                         redirect_url="http://127.0.0.1/stripe_service/success/",
