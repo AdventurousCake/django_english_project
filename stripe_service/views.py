@@ -50,7 +50,6 @@ class CheckENGViewUpdate(LoginRequiredMixin, UpdateView):
 
     model = EngFixer
     form_class = EngFixerForm
-
     template_name = "form_ENG.html"
 
     # success_url = reverse_lazy('form_msg:send_msg')
@@ -71,7 +70,7 @@ class CheckENGViewUpdate(LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         obj = form.save(commit=False)
-        obj.author = self.request.user
+        # obj.author = self.request.user
 
         return super(CheckENGViewUpdate, self).form_valid(form)
 
