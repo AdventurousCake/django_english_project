@@ -1,23 +1,22 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.db.models import Prefetch
 from django.shortcuts import render, redirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 
-from django.views.generic import TemplateView, FormView, CreateView
+from django.views.generic import TemplateView, FormView, CreateView, UpdateView
 from rest_framework.generics import CreateAPIView, get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from stripe_service.FORMS_TEST import TestForm1
+from stripe_service.FORMS_TEST import TestForm1, EngFixerForm
 from stripe_service.models import Item, Order, Discount, EngFixer
 from stripe_service.services.stripe import create_stripe_session
 
 
-class CheckENG(LoginRequiredMixin, CreateView):
-    model = EngFixer
-
-    # form_class = MsgForm
-    # template_name = "form_msg/msg_send.html"
+class CheckENGView(LoginRequiredMixin, CreateView):
+    form_class = EngFixerForm
+    template_name = "form_ENG.html"
     # initial = {'text': 'example'}
     # success_url = reverse_lazy('form_msg:send_msg')
     #
@@ -29,12 +28,45 @@ class CheckENG(LoginRequiredMixin, CreateView):
     #
     #     return context
     #
-    # def form_valid(self, form):
-    #     obj = form.save(commit=False)
-    #     obj.author = self.request.user
-    #
-    #     return super(MsgFormCreateView, self).form_valid(form)
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        # obj.author = self.request.user
 
+        # todo FIXER logic
+
+        return super(CheckENGView, self).form_valid(form)
+
+
+class CheckENGViewUpdate(LoginRequiredMixin, UpdateView):
+    model = EngFixer
+    form_class = EngFixerForm
+
+    template_name = "form_ENG.html"
+
+    # success_url = reverse_lazy('form_msg:send_msg')
+
+    def get_object(self, *args, **kwargs):
+        obj = super(CheckENGViewUpdate, self).get_object(*args, **kwargs)
+        if obj.author != self.request.user:
+            raise PermissionDenied()  # or Http404
+        return obj
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context['title'] = "📨 Send message form"
+    #     context['btn_caption'] = "Send"
+    #     context['table_data'] = Message.objects.select_related().order_by('-created_date')[:5]
+    #
+    #     return context
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.author = self.request.user
+
+        return super(CheckENGViewUpdate, self).form_valid(form)
+
+# for mix detail
+# https://stackoverflow.com/questions/45659986/django-implementing-a-form-within-a-generic-detailview
 
 # test form
 class Form1View(FormView):

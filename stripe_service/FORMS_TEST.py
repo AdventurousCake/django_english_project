@@ -3,7 +3,7 @@ from django import forms
 from stripe_service.models import EngFixer
 
 
-class EngFixerModel(forms.ModelForm):
+class EngFixerForm(forms.ModelForm):
     class Meta:
         model = EngFixer
         exclude = ('id',)
