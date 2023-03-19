@@ -26,6 +26,6 @@ urlpatterns = [
     # test
     path('form1/', Form1View.as_view(), name='form_test1'),
 
-    path('eng/', CheckENGView.as_view(), name='eng1'),
-    path('eng_get/<int:pk>/', CheckENGViewUpdate.as_view(), name='eng1_get'),
+    path('eng/', CheckENGView.as_view(), name='eng'),
+    path('eng_get/<int:pk>/', CheckENGViewUpdate.as_view(), name='eng_get'),
 ]

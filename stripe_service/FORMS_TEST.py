@@ -6,7 +6,8 @@ from stripe_service.models import EngFixer
 class EngFixerForm(forms.ModelForm):
     class Meta:
         model = EngFixer
-        exclude = ('id',)
+        fields = ('input_sentence', 'fixed_result')
+        # exclude = ('id',)
 
 
 class TestForm1(forms.Form):

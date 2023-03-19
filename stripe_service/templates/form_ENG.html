@@ -9,8 +9,9 @@
 
 <div class="container md-5">
     <p>English Fixer</p>
-    <form action="/">
-        {{ csrf_token }}
+    <form method="post" class="form" enctype="multipart/form-data">
+        {% csrf_token %}
+
         {% bootstrap_form form %}
         {% buttons %}
             <button type="submit" class="btn btn-primary">
@@ -19,7 +20,19 @@
 
         {% endbuttons %}
     </form>
-    {#    {{ form.as_p }}#}
+
+
+    {#    <form method="post" enctype="multipart/form-data">#}
+    {#        {% csrf_token %}#}
+    {#        {{ form.as_p }}#}
+    {##}
+    {#        <div class="row justify-content-center">#}
+    {#            <button type="submit" class="btn btn-primary">#}
+    {#                FIX#}
+    {#            </button>#}
+    {#        </div>#}
+    {#    </form>#}
+
 </div>
 </body>
 </html>

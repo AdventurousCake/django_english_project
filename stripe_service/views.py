@@ -15,14 +15,14 @@ from stripe_service.models import Item, Order, Discount, EngFixer
 from stripe_service.services.stripe import create_stripe_session
 
 
-class CheckENGView(LoginRequiredMixin, CreateView):
+class CheckENGView(CreateView): #LoginRequiredMixin
     form_class = EngFixerForm
     template_name = "form_ENG.html"
 
     # success_url = reverse_lazy('stripe_service:eng1_get', kwargs={'pk': self.object.pk})
 
     def get_success_url(self):
-        return reverse('stripe_service:eng1_get', args=(self.object.id,))  # lazy?
+        return reverse('stripe_service:eng_get', args=(self.object.id,))  # lazy?
 
     # initial = {'text': 'example'}
     # success_url = reverse_lazy('form_msg:send_msg')
@@ -41,11 +41,12 @@ class CheckENGView(LoginRequiredMixin, CreateView):
 
         # todo FIXER logic
         obj.fixed_result = fixer(obj.input_sentence)
+        print(obj.fixed_result)
 
         return super(CheckENGView, self).form_valid(form)
 
 
-class CheckENGViewUpdate(LoginRequiredMixin, UpdateView):
+class CheckENGViewUpdate(UpdateView): # LoginRequiredMixin
     """display data by get pk"""
 
     model = EngFixer
