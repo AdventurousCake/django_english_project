@@ -19,6 +19,8 @@ class CheckENGView(LoginRequiredMixin, CreateView):
     form_class = EngFixerForm
     template_name = "form_ENG.html"
 
+    # success_url = reverse_lazy('stripe_service:eng1_get', kwargs={'pk': self.object.pk})
+
     def get_success_url(self):
         return reverse('stripe_service:eng1_get', args=(self.object.id,))  # lazy?
 
