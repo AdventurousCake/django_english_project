@@ -38,6 +38,8 @@ class CheckENGView(LoginRequiredMixin, CreateView):
 
 
 class CheckENGViewUpdate(LoginRequiredMixin, UpdateView):
+    """display data by get pk"""
+
     model = EngFixer
     form_class = EngFixerForm
 
@@ -47,8 +49,8 @@ class CheckENGViewUpdate(LoginRequiredMixin, UpdateView):
 
     def get_object(self, *args, **kwargs):
         obj = super(CheckENGViewUpdate, self).get_object(*args, **kwargs)
-        if obj.author != self.request.user:
-            raise PermissionDenied()  # or Http404
+        # if obj.author != self.request.user:
+        #     raise PermissionDenied()  # or Http404
         return obj
 
     # def get_context_data(self, **kwargs):
