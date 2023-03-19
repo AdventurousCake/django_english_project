@@ -40,7 +40,7 @@ class CheckENGView(LoginRequiredMixin, CreateView):
         # obj.author = self.request.user
 
         # todo FIXER logic
-        fixed = fixer(obj.input_sentence)
+        obj.fixed_result = fixer(obj.input_sentence)
 
         return super(CheckENGView, self).form_valid(form)
 

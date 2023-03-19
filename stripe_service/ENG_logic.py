@@ -96,6 +96,8 @@ def fixer(input_str=None):
     print()
     pprint.pp(v2)
 
+    return result
+
 
 if __name__ == '__main__':
     fixer(input_str="Today i learn more about django. Im feel good")

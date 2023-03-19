@@ -7,11 +7,11 @@ from django.utils.text import gettext_lazy as _
 class EngFixer(models.Model):
     id = models.BigAutoField(primary_key=True, auto_created=True, null=False)
     input_sentence = models.CharField()
-    translatedRU = models.CharField()
-    correct = models.CharField()
-    rephrases = ArrayField(models.CharField(max_length=150, blank=True))
+    translatedRU = models.CharField(null=True)
+    fixed_result = models.CharField()
+    rephrases = ArrayField(models.CharField(max_length=150, blank=True), null=True)
                        # size=8,)
-    mistakes = models.CharField()
+    mistakes = models.CharField(null=True)
 
 class Curr(models.TextChoices):
     EUR = 'EUR', _('Euro')
