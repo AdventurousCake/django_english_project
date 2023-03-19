@@ -9,6 +9,7 @@ from rest_framework.generics import CreateAPIView, get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from stripe_service.ENG_logic import fixer
 from stripe_service.FORMS_TEST import TestForm1, EngFixerForm
 from stripe_service.models import Item, Order, Discount, EngFixer
 from stripe_service.services.stripe import create_stripe_session
@@ -17,6 +18,10 @@ from stripe_service.services.stripe import create_stripe_session
 class CheckENGView(LoginRequiredMixin, CreateView):
     form_class = EngFixerForm
     template_name = "form_ENG.html"
+
+    def get_success_url(self):
+        return reverse('stripe_service:eng1_get', args=(self.object.id,))  # lazy?
+
     # initial = {'text': 'example'}
     # success_url = reverse_lazy('form_msg:send_msg')
     #
@@ -33,6 +38,7 @@ class CheckENGView(LoginRequiredMixin, CreateView):
         # obj.author = self.request.user
 
         # todo FIXER logic
+        fixed = fixer(obj.input_sentence)
 
         return super(CheckENGView, self).form_valid(form)
 

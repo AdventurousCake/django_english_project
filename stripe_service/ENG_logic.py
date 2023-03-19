@@ -43,7 +43,7 @@ def get_data():
     return response.json()
 
 
-def fixer():
+def fixer(data=None):
     pass
 
 
