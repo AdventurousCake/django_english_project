@@ -3,6 +3,7 @@ FROM python:3.11-alpine
 
 # create the app user
 RUN addgroup -S app_user && adduser -S app_user -G app_user
+#RUN adduser -D app_user
 
 # set work directory
 ENV APP_HOME=/usr/src/app
@@ -29,8 +30,6 @@ COPY . .
 
 RUN sed -i 's/\r$//g'  $APP_HOME/entrypoint.sh
 RUN chmod +x  $APP_HOME/entrypoint.sh
-
-#RUN adduser -D app_user
 
 # chown all the files to the app user
 RUN chown -R app_user:app_user $APP_HOME

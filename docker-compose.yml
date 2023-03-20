@@ -3,7 +3,8 @@ version: '3.8'
 services:
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: gunicorn django_test1.wsgi:application --bind 0.0.0.0:8000
+#    command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./:/usr/src/app/
     ports:
@@ -28,7 +29,7 @@ services:
       - static_volume:/usr/src/app/staticfiles
       - media_volume:/usr/src/app/mediafiles
     ports:
-      - 1337:80
+      - 9000:80
     depends_on:
       - web
 

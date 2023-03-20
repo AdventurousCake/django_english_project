@@ -15,7 +15,7 @@ from stripe_service.models import Item, Order, Discount, EngFixer
 from stripe_service.services.stripe import create_stripe_session
 
 
-class CheckENGView(CreateView): #LoginRequiredMixin
+class CheckENGView(CreateView):  # LoginRequiredMixin
     form_class = EngFixerForm
     template_name = "form_ENG.html"
 
