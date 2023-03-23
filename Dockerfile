@@ -8,8 +8,8 @@ RUN addgroup -S app_user && adduser -S app_user -G app_user
 # set work directory
 ENV APP_HOME=/usr/src/app
 RUN mkdir $APP_HOME
-RUN mkdir $APP_HOME/staticfiles
-RUN mkdir $APP_HOME/mediafiles
+RUN mkdir $APP_HOME/static
+RUN mkdir $APP_HOME/media
 
 WORKDIR $APP_HOME
 
@@ -36,4 +36,4 @@ RUN chown -R app_user:app_user $APP_HOME
 USER app_user
 
 # run entrypoint.sh
-ENTRYPOINT ["$APP_HOME/entrypoint.sh"]
+ENTRYPOINT ["./entrypoint.sh"]
