@@ -1,0 +1,118 @@
+{
+  'id': '0165a947-5a02-4f32-8abb-4e24148d5999',
+  'language': 'eng',
+  'text': "Today I learn more about django. I feel good. Today's good weather",
+  'engine': 'Ginger',
+  'truncated': False,
+  "timeTaken": 212,
+  'corrections': [
+    {
+      'group': 'AutoCorrected',
+      'type': 'Spelling',
+      'shortDescription': 'Spelling Mistake',
+      'longDescription': 'A word was not spelled correctly',
+      'startIndex': 6,
+      'endIndex': 6,
+      'mistakeText': 'i',
+      'correctionText': 'I',
+      'correctionDefinition': 'refers to the speaker or writer',
+      'suggestions': [
+        {
+          'text': 'I',
+          'definition': 'refers to the speaker or '
+          'writer',
+          'category': 'Spelling'
+        }
+      ]
+    },
+    {
+      'group': 'Mistake',
+      'type': 'Spelling',
+      'shortDescription': 'Possible Spelling Mistake',
+      'longDescription': 'A word was not spelled correctly',
+      'startIndex': 25,
+      'endIndex': 30,
+      'mistakeText': 'django',
+      'suggestions': [
+        {
+          'text': 'change',
+          'definition': 'an event that occurs when '
+          'something passes from one '
+          'state or phase to another',
+          'category': 'Spelling'
+        }
+      ]
+    },
+    {
+      "group": 'AutoCorrected',
+      'type': 'Grammar',
+      'shortDescription': 'Grammar Mistake',
+      'longDescription': 'Wrong verb tense or form',
+      'startIndex': 33,
+      'endIndex': 39,
+      'mistakeText': 'Im feel',
+      'correctionText': 'I feel',
+      'suggestions': [
+        {
+          'text': 'I feel',
+          'category': 'Verb'
+        },
+        {
+          'text': "I'm feel",
+          'category': 'Spelling'
+        },
+        {
+          'text': "I'm feeling",
+          'category': 'Verb'
+        },
+        {
+          'text': 'I felt',
+          'category': 'Verb'
+        }
+      ]
+    },
+    {
+      'group': 'AutoCorrected',
+      'type': 'Grammar',
+      'shortDescription': 'Grammar Mistake',
+      'longDescription': 'Wrong usage of two or more nouns in a '
+      'row, either in possessive form or as '
+      'modifiers of each other',
+      'startIndex': 47,
+      'endIndex': 51,
+      'mistakeText': 'Today',
+      'correctionText': "Today's",
+      'suggestions': [
+        {
+          'text': "Today's",
+          'category': 'Noun'
+        }
+      ]
+    }
+  ],
+  'sentences': [
+    {
+      'startIndex': 0,
+      'endIndex': 31,
+      'status': 'Corrected'
+    },
+    {
+      'startIndex': 33,
+      'endIndex': 45,
+      'status': 'Corrected'
+    },
+    {
+      'startIndex': 47,
+      'endIndex': 64,
+      'status': 'Corrected'
+    }
+  ],
+  'autoReplacements': [],
+  'stats': {
+    'textLength': 65,
+    'wordCount': 12,
+    'sentenceCount': 3,
+    'longestSentence': 32
+  }
+}
+

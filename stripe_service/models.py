@@ -8,7 +8,9 @@ class EngFixer(models.Model):
     id = models.BigAutoField(primary_key=True, auto_created=True, null=False)
     input_sentence = models.CharField(null=False, max_length=256)
     translatedRU = models.CharField(null=True, max_length=256)
-    fixed_result = models.CharField(null=False, max_length=256)
+
+    CORRECT_RESPONSE = models.JSONField(null=True)
+    fixed_result = models.CharField(null=False, blank=True, max_length=256)
     rephrases = ArrayField(models.CharField(max_length=150, blank=True), null=True)
                        # size=8,)
     mistakes = models.CharField(null=True, max_length=256)

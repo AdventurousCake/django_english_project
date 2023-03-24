@@ -10,6 +10,16 @@
 <div class="container md-5">
     <p>English Fixer</p>
 
+{#    {% if form.errors %}#}
+{#        <div class="alert alert-danger" role="alert">#}
+{#            <span style="display: flex">#}
+{#                ❗ {{ form.errors }}#}
+{#            </span>#}
+{#        </div>#}
+{#    {% endif %}#}
+
+    {% bootstrap_form_errors form layout='inline' %}
+
     <form method="post" class="form" enctype="multipart/form-data">
         {% csrf_token %}
 
@@ -18,10 +28,15 @@
             <button type="submit" class="btn btn-primary">
                 Fix
             </button>
-
         {% endbuttons %}
+
+{#        {% bootstrap_button button_type="submit" content="OK" %}#}
     </form>
 
+    {% if description %}
+        <p>Description</p>
+        {{ description|safe }}
+    {% endif %}
 
     {#    <form method="post" enctype="multipart/form-data">#}
     {#        {% csrf_token %}#}

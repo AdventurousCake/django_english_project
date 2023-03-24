@@ -1,3 +1,5 @@
+import pprint
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.db.models import Prefetch
@@ -34,16 +36,24 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
     #     context['table_data'] = Message.objects.select_related().order_by('-created_date')[:5]
     #
     #     return context
-    #
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context['description'] = pprint.pformat(self.object.CORRECT_RESPONSE)
+    #     return context
+
     def form_valid(self, form):
         obj = form.save(commit=False)
         # obj.author = self.request.user
 
         # todo FIXER logic
-        obj.fixed_result = fixer(obj.input_sentence)
+        fix = fixer(obj.input_sentence)
+        obj.fixed_result = fix.get('text')
+        obj.CORRECT_RESPONSE = fix.get('corrections')
         print(obj.fixed_result)
 
         return super(CheckENGView, self).form_valid(form)
+
 
 
 class CheckENGViewUpdate(UpdateView): # LoginRequiredMixin
@@ -60,6 +70,11 @@ class CheckENGViewUpdate(UpdateView): # LoginRequiredMixin
         # if obj.author != self.request.user:
         #     raise PermissionDenied()  # or Http404
         return obj
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['description'] = pprint.pformat(self.object.CORRECT_RESPONSE, indent=4).replace('\n', '<br>')
+        return context
 
     # def get_context_data(self, **kwargs):
     #     context = super().get_context_data(**kwargs)
