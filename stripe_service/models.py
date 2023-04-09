@@ -3,7 +3,8 @@ from django.db import models
 from django.db.models import Sum
 from django.utils.text import gettext_lazy as _
 
-#TODO
+
+# TODO
 class EngFixer(models.Model):
     id = models.BigAutoField(primary_key=True, auto_created=True, null=False)
     input_sentence = models.CharField(null=False, max_length=256)
@@ -12,8 +13,9 @@ class EngFixer(models.Model):
     CORRECT_RESPONSE = models.JSONField(null=True)
     fixed_result = models.CharField(null=False, blank=True, max_length=256)
     rephrases = ArrayField(models.CharField(max_length=150, blank=True), null=True)
-                       # size=8,)
+    # size=8,)
     mistakes = models.CharField(null=True, max_length=256)
+
 
 class Curr(models.TextChoices):
     EUR = 'EUR', _('Euro')
@@ -67,13 +69,14 @@ class Order(models.Model):
     def get_disc(self):
         # return self.discount_set.all()
         if self.discounts.exists():  # self.discount_set
-        # if self.discounts.first().exists():
+            # if self.discounts.first().exists():
             return self.discounts.first().value
         else:
             return 0
 
     def __str__(self):
         return f"total {self.get_total_cost()}; total-disc: {self.get_discount_total_cost()} ; disc: {self.get_disc()}"
+
 
 # todo
 # - dicount - orders table

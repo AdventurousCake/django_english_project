@@ -11,7 +11,7 @@ from rest_framework.generics import CreateAPIView, get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from stripe_service.ENG_logic import fixer
+from stripe_service.ENG_FIX_logic import fixer
 from stripe_service.FORMS_TEST import TestForm1, EngFixerForm
 from stripe_service.models import Item, Order, Discount, EngFixer
 from stripe_service.services.stripe import create_stripe_session
