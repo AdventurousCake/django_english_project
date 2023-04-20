@@ -46,7 +46,7 @@ if __name__ == "__main__":
 
     """Ниже вставляем свое письмо. Советую сделать его максимально обобщенным. Больше об этом в мое треде https://twitter.com/ns0000000001/status/1612456900993650688?s=52&t=X3kUKCZQjFDJbTbg9aQWbw """
 
-    # TODO LETTER
+    # TODO LETTER; upd from keep
     letter = """Здравствуйте, меня заинтересовала вакансия Python разработчика в вашу компанию.
 Благодаря своему опыту в python бэкэнд разработке и знанию Python я смогу внести ценный вклад в вашу команду.
 Как Python разработчик я отвечал за код, API, интеграцией сервисов, проектированием и работой с БД. 
@@ -54,6 +54,7 @@ if __name__ == "__main__":
 
 Также я быстро обучаюсь, хорошо мотивирован и постоянно слежу за трендами IT, онлайн конференциями, чтобы улучшать свои навыки. 
 Давайте сотрудничать. 
+tg: https://t.me/igor_py9
 """
 
     if letter == "Вставь сюда свое письмо":
@@ -63,10 +64,9 @@ if __name__ == "__main__":
 
     # todo LINK
     # https://surgut.hh.ru/search/vacancy?text=Data+scientist
-    # py
-    py_dev = """https://hh.ru/search/vacancy?excluded_text=fullstack%2C+data%2C+ml%2C+senior%2C+%D0%BD%D0%B0%D1%81%D1%82%D0%B0%D0%B2%D0%BD%D0%B8%D0%BA%2C+%D0%BA%D1%83%D1%80%D1%81%D1%8B%2C+%D1%80%D1%83%D0%BA%D0%BE%D0%B2%D0%BE%D0%B4%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%2C+%D0%90%D0%B2%D1%82%D0%BE%D1%80+%D1%80%D0%B0%D0%B1%D0%BE%D1%82%2C+devops&professional_role=96&schedule=remote&search_field=name&search_field=company_name&search_field=description&enable_snippets=false&text=python&from=suggest_post"""
+    py_dev = """https://hh.ru/search/vacancy?excluded_text=fullstack%2C+data%2C+ml%2C+senior%2C+%D0%BD%D0%B0%D1%81%D1%82%D0%B0%D0%B2%D0%BD%D0%B8%D0%BA%2C+%D0%BA%D1%83%D1%80%D1%81%D1%8B%2C+%D1%80%D1%83%D0%BA%D0%BE%D0%B2%D0%BE%D0%B4%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%2C+%D0%90%D0%B2%D1%82%D0%BE%D1%80+%D1%80%D0%B0%D0%B1%D0%BE%D1%82%2C+devops%2C+Full-stack%2C+c%2B%2B%2C+c%23&professional_role=96&search_field=name&enable_snippets=false&text=Python+%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D1%87%D0%B8%D0%BA&from=suggest_post&ored_clusters=true"""
     dj = """https://hh.ru/search/vacancy?text=django&salary=&schedule=remote&professional_role=96&ored_clusters=true&excluded_text=fullstack%2C+data%2C+ml%2C+senior%2C+%D0%BD%D0%B0%D1%81%D1%82%D0%B0%D0%B2%D0%BD%D0%B8%D0%BA%2C+%D0%BA%D1%83%D1%80%D1%81%D1%8B%2C+%D1%80%D1%83%D0%BA%D0%BE%D0%B2%D0%BE%D0%B4%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%2C+%D0%90%D0%B2%D1%82%D0%BE%D1%80+%D1%80%D0%B0%D0%B1%D0%BE%D1%82%2C+devops"""
-    search_link = dj
+    search_link = py_dev
 
     if search_link == "Вставь сюда свой поисковый запрос":
         raise Exception("Ты забыл вставить сюда свой запрос")
