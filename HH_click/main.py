@@ -65,10 +65,13 @@ tg: https://t.me/igor_py9
     # todo LINK
     # https://surgut.hh.ru/search/vacancy?text=Data+scientist
     py_dev_and_middle = """https://hh.ru/search/vacancy?excluded_text=fullstack%2C+data%2C+ml%2C+senior%2C+%D0%BD%D0%B0%D1%81%D1%82%D0%B0%D0%B2%D0%BD%D0%B8%D0%BA%2C+%D0%BA%D1%83%D1%80%D1%81%D1%8B%2C+%D1%80%D1%83%D0%BA%D0%BE%D0%B2%D0%BE%D0%B4%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%2C+%D0%90%D0%B2%D1%82%D0%BE%D1%80+%D1%80%D0%B0%D0%B1%D0%BE%D1%82%2C+devops%2C+Full-stack%2C+c%2B%2B%2C+c%23&professional_role=96&search_field=name&enable_snippets=false&text=Python+%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D1%87%D0%B8%D0%BA&from=suggest_post&ored_clusters=true"""
+    py_middle_nouniv = """https://surgut.hh.ru/search/vacancy?excluded_text=fullstack%2C+data%2C+ml%2C+senior%2C+%D0%BD%D0%B0%D1%81%D1%82%D0%B0%D0%B2%D0%BD%D0%B8%D0%BA%2C+%D0%BA%D1%83%D1%80%D1%81%D1%8B%2C+%D1%80%D1%83%D0%BA%D0%BE%D0%B2%D0%BE%D0%B4%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%2C+%D0%90%D0%B2%D1%82%D0%BE%D1%80+%D1%80%D0%B0%D0%B1%D0%BE%D1%82%2C+devops%2C+Full-stack%2C+c%2B%2B%2C+c%23&education=not_required_or_not_specified&professional_role=96&search_field=name&enable_snippets=false&text=Python+%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D1%87%D0%B8%D0%BA&from=suggest_post&ored_clusters=true"""
+    
+    # done all
     py_dev_nomiddle_nouniv = """https://hh.ru/search/vacancy?excluded_text=middle%2Cmiddle%2B%2Cfullstack%2C+data%2C+ml%2C+senior%2C+%D0%BD%D0%B0%D1%81%D1%82%D0%B0%D0%B2%D0%BD%D0%B8%D0%BA%2C+%D0%BA%D1%83%D1%80%D1%81%D1%8B%2C+%D1%80%D1%83%D0%BA%D0%BE%D0%B2%D0%BE%D0%B4%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%2C+%D0%90%D0%B2%D1%82%D0%BE%D1%80+%D1%80%D0%B0%D0%B1%D0%BE%D1%82%2C+devops%2C+Full-stack%2C+c%2B%2B%2C+c%23&education=not_required_or_not_specified&professional_role=96&search_field=name&enable_snippets=false&text=Python+%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D1%87%D0%B8%D0%BA&from=suggest_post&ored_clusters=true"""
     dj = """https://hh.ru/search/vacancy?text=django+%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D1%87%D0%B8%D0%BA&salary=&professional_role=96&ored_clusters=true&search_field=name&excluded_text=fullstack%2C+data%2C+ml%2C+senior%2C+%D0%BD%D0%B0%D1%81%D1%82%D0%B0%D0%B2%D0%BD%D0%B8%D0%BA%2C+%D0%BA%D1%83%D1%80%D1%81%D1%8B%2C+%D1%80%D1%83%D0%BA%D0%BE%D0%B2%D0%BE%D0%B4%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%2C+%D0%90%D0%B2%D1%82%D0%BE%D1%80+%D1%80%D0%B0%D0%B1%D0%BE%D1%82%2C+devops%2C+Full-stack%2C+c%2B%2B%2C+c%23"""
 
-    search_link = py_dev_nomiddle_nouniv
+    search_link = py_middle_nouniv
 
     if search_link == "Вставь сюда свой поисковый запрос":
         raise Exception("Ты забыл вставить сюда свой запрос")
