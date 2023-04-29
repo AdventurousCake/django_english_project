@@ -54,6 +54,7 @@ INSTALLED_APPS = [
 
     'service',
     'stripe_service',
+    'BOOKS',
 ]
 
 MIDDLEWARE = [

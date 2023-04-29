@@ -23,6 +23,8 @@ urlpatterns = [
     path('', include('service.urls'), name='service'),
 
     path('stripe_service/', include('stripe_service.urls'), name='stripe_service'),
+
+    path('b/', include('BOOKS.urls'), name='books_service'),
 ]
 
 
