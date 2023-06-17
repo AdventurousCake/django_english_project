@@ -32,10 +32,10 @@ from BOOKS.serializers import BookSerializer
 
 # mix
 class CreateMix(CreateModelMixin, RetrieveModelMixin, GenericViewSet):
-    queryset = Book.objects.all()
+    queryset = Book.objects.prefetch_related('author').all()  # явный prefetch
+
     permission_classes = (permissions.AllowAny,)
     serializer_class = BookSerializer
-
 
     # REWRITE
     # PUT, PATCH; createmix - post

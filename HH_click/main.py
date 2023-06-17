@@ -74,6 +74,7 @@ tg: https://t.me/igor_py9
 
     search_link = py_dev_and_middle
     # search_link = py_dev_nomiddle_nouniv
+    # search_link = dj
 
     if search_link == "Вставь сюда свой поисковый запрос":
         raise Exception("Ты забыл вставить сюда свой запрос")
