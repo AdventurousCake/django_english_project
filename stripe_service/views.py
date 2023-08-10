@@ -17,12 +17,22 @@ from stripe_service.models import Item, Order, Discount, EngFixer
 from stripe_service.services.stripe import create_stripe_session
 
 
+class EngMainView(TemplateView):
+    template_name = "EngMain.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['data_list'] = EngFixer.objects.all()
+        return context
+
+
 class CheckENGView(CreateView):  # LoginRequiredMixin
     form_class = EngFixerForm
     template_name = "form_ENG.html"
 
     # success_url = reverse_lazy('stripe_service:eng1_get', kwargs={'pk': self.object.pk})
 
+    # after fixer
     def get_success_url(self):
         return reverse('stripe_service:eng_get', args=(self.object.id,))  # lazy?
 
@@ -55,8 +65,7 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         return super(CheckENGView, self).form_valid(form)
 
 
-
-class CheckENGViewUpdate(UpdateView): # LoginRequiredMixin
+class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
     """display data by get pk"""
 
     model = EngFixer
@@ -90,9 +99,13 @@ class CheckENGViewUpdate(UpdateView): # LoginRequiredMixin
 
         return super(CheckENGViewUpdate, self).form_valid(form)
 
+
+####################################################################################################################
+
 # for mix detail
 # https://stackoverflow.com/questions/45659986/django-implementing-a-form-within-a-generic-detailview
 
+# STRIPE
 # test form
 class Form1View(FormView):
     template_name = 'form_test1.html'

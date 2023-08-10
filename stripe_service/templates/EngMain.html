@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>English Fixer</title>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+</head>
+<body>
+<div class="container md-5">
+    <p>English Fixer</p>
+
+
+{#    {% for item in data_list %}#}
+{#        {{ item }}#}
+{#    {% endfor %}#}
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">input</th>
+            <th scope="col">output</th>
+            <th scope="col">link</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for item in data_list %}
+        <tr>
+{#            <th scope="row">1</th>#}
+            <td>{{ item.id }}</td>
+            <td>{{ item.input_sentence }}</td>
+            <td>{{ item.fixed_result }}</td>
+            <td><a href="{% url 'stripe_service:eng_get' item.id %}" class="btn btn-light">Link</a></td>
+        </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+
+</body>
+</html>

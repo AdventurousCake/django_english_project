@@ -99,7 +99,7 @@ def fixer(input_str=None):
         #                  c['suggestions']})
         mistakes.append({k: c[k] for k in ['shortDescription', 'longDescription', 'mistakeText', 'suggestions']})
 
-    x = {'id': '8710fb7c-97a8-4545-bd9d-f3b90f33a6e4', 'language': 'eng',
+    """x = {'id': '8710fb7c-97a8-4545-bd9d-f3b90f33a6e4', 'language': 'eng',
          'text': "We'vereceivedanewproposalfortheproject.Iwillkeepyouinformedabouthowthingsgo.",
          'engine': 'Ginger', 'truncated': False, 'timeTaken': 473, 'corrections': [
             {'group': 'AutoCorrected', 'type': 'Grammar', 'shortDescription': 'GrammarMistake',
@@ -108,7 +108,7 @@ def fixer(input_str=None):
              'suggestions': [{'text': "We'vereceived", 'category': 'Verb'}]}],
          'sentences': [{'startIndex': 0, 'endIndex': 44, 'status': 'Corrected'},
                        {'startIndex': 46, 'endIndex': 90, 'status': 'Corrected'}], 'autoReplacements': [],
-         'stats': {'textLength': 91, 'wordCount': 18, 'sentenceCount': 2, 'longestSentence': 45}}
+         'stats': {'textLength': 91, 'wordCount': 18, 'sentenceCount': 2, 'longestSentence': 45}}"""
 
     result = {"text": v2.get("text"), 'corrections': mistakes}
 
