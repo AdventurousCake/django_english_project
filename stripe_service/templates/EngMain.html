@@ -10,33 +10,49 @@
     <p>English Fixer</p>
 
 
-{#    {% for item in data_list %}#}
-{#        {{ item }}#}
-{#    {% endfor %}#}
+    {#    {% for item in data_list %}#}
+    {#        {{ item }}#}
+    {#    {% endfor %}#}
 
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">input</th>
-            <th scope="col">output</th>
-            <th scope="col">link</th>
-        </tr>
-        </thead>
-        <tbody>
+    {#    CARD#}
+    {% for item in data_list %}
+        <div class="card">
+            <div class="card-header">
+                <a href="{% url 'stripe_service:eng_get' item.id %}" class="btn btn-warning">Sentence #{{ item.id }}</a>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">{{ item.input_sentence }}</li>
+                <li class="list-group-item">{{ item.fixed_result }}</li>
+            </ul>
+        </div>
 
-        {% for item in data_list %}
-        <tr>
-{#            <th scope="row">1</th>#}
-            <td>{{ item.id }}</td>
-            <td>{{ item.input_sentence }}</td>
-            <td>{{ item.fixed_result }}</td>
-            <td><a href="{% url 'stripe_service:eng_get' item.id %}" class="btn btn-light">Link</a></td>
-        </tr>
-        {% endfor %}
+        <p></p>
+    {% endfor %}
 
-        </tbody>
-    </table>
+    {#    TABLE#}
+    {#    <table class="table table-striped">#}
+    {#        <thead>#}
+    {#        <tr>#}
+    {#            <th scope="col">#</th>#}
+    {#            <th scope="col">input</th>#}
+    {#            <th scope="col">output</th>#}
+    {#            <th scope="col">link</th>#}
+    {#        </tr>#}
+    {#        </thead>#}
+    {#        <tbody>#}
+    {##}
+    {#        {% for item in data_list %}#}
+    {#        <tr>#}
+    {#            <th scope="row">1</th>#}
+    {#            <td>{{ item.id }}</td>#}
+    {#            <td>{{ item.input_sentence }}</td>#}
+    {#            <td>{{ item.fixed_result }}</td>#}
+    {#            <td><a href="{% url 'stripe_service:eng_get' item.id %}" class="btn btn-light">Link</a></td>#}
+    {#        </tr>#}
+    {#        {% endfor %}#}
+    {##}
+    {#        </tbody>#}
+    {#    </table>#}
 
 
 </body>
