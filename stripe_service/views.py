@@ -12,10 +12,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from stripe_service.ENG_FIX_logic import fixer
-from stripe_service.FORMS_TEST import TestForm1, EngFixerForm
+from stripe_service.FORMS_TEST import StripeTestForm1, EngFixerForm
 from stripe_service.models import Item, Order, Discount, EngFixer
 from stripe_service.services.stripe import create_stripe_session
-
+import logging
 
 class EngMainView(TemplateView):
     template_name = "EngMain.html"
@@ -56,13 +56,27 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         obj = form.save(commit=False)
         # obj.author = self.request.user
 
-        # todo FIXER logic
+        # todo if in cache or db then redirect
+        # return redirect('stripe_service:eng_get', obj.id)
+        logger = logging.getLogger()
+        # item = EngFixer.objects.get(input_sentence=obj.input_sentence)
+
+        item = EngFixer.objects.filter(input_sentence=obj.input_sentence).first()
+        logger.warning(f'using cache: id:{item.id}')
+        if item:
+            return redirect('stripe_service:eng_get', item.id)
+
+        # todo MAIN FIXER logic
         fix = fixer(obj.input_sentence)
         obj.fixed_result = fix.get('text')
         obj.CORRECT_RESPONSE = fix.get('corrections')
         print(obj.fixed_result)
 
+        # save and redirect
         return super(CheckENGView, self).form_valid(form)
+
+    # def form_invalid(self, form):
+    #     return super(CheckENGView, self).form_invalid(form)
 
 
 class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
@@ -82,6 +96,8 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        # json to text
         context['description'] = pprint.pformat(self.object.CORRECT_RESPONSE, indent=4).replace('\n', '<br>')
         return context
 
@@ -109,7 +125,7 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
 # test form
 class Form1View(FormView):
     template_name = 'form_test1.html'
-    form_class = TestForm1
+    form_class = StripeTestForm1
     success_url = '/'
 
     def form_valid(self, form):

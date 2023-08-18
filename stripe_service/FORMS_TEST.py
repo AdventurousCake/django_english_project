@@ -33,7 +33,7 @@ class EngFixerForm(forms.ModelForm):
     #     return data
 
 
-class TestForm1(forms.Form):
+class StripeTestForm1(forms.Form):
     your_name = forms.CharField(label='Your name', max_length=100)
     your_name2 = forms.CharField(label='Your name2', max_length=100)
     password = forms.CharField(widget=forms.PasswordInput)

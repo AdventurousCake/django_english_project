@@ -78,8 +78,8 @@ def get_fixed(input_str):
     # data = "'" + x + "'"
 
     data = '{"englishDialect":"indifferent","autoReplace":true,"getCorrectionDetails":true,"interfaceLanguage":"en",' \
-           '"locale":"","language":"eng","text":"XDATA","originalText":"","spellingFeedbackOptions":{"insertFeedback":true,' \
-           '"userLoggedOn":false},"origin":"interactive","isHtml":false} '.replace('XDATA', input_str)
+           '"locale":"","language":"eng","text":"MY_INPUT","originalText":"","spellingFeedbackOptions":{"insertFeedback":true,' \
+           '"userLoggedOn":false},"origin":"interactive","isHtml":false} '.replace('MY_INPUT', input_str)
 
     response = requests.post('https://orthographe.reverso.net/api/v1/Spelling/', headers=headers, data=data)
     return response.json()
