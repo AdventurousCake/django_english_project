@@ -1,8 +1,36 @@
 import json
 
 import requests
-import pprint
+from pprint import pprint
 
+def get_rephrased(input_str=None):
+    headers = {
+        'authority': 'rephraser-api.reverso.net',
+        'accept': 'application/json',
+        'accept-language': 'ru,en-US;q=0.9,en;q=0.8',
+        'dnt': '1',
+        'origin': 'https://www.reverso.net',
+        'referer': 'https://www.reverso.net/',
+        'sec-ch-ua': '"Chromium";v="116", "Not)A;Brand";v="24", "Google Chrome";v="116"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"Windows"',
+        'sec-fetch-dest': 'empty',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-site': 'same-site',
+        'sec-gpc': '1',
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36',
+        'x-reverso-origin': 'speller.web',
+    }
+
+    params = {
+        'language': 'en',
+        'sentence': "Today's good weather.",
+        'candidates': '10',  # 6
+    }
+
+    response = requests.get('https://rephraser-api.reverso.net/v1/rephrase', params=params, headers=headers)
+    pprint(response.json())
+    return response.json()
 
 def get_mistakes_data(input_str):
     headers = {
@@ -46,10 +74,11 @@ def get_mistakes_data(input_str):
 
     response = requests.post('https://api.languagetool.org/v2/check', params=params, headers=headers, data=data)
     print(response.status_code)
+    pprint(response.json())
     return response.json()
 
 
-def get_fixed(input_str):
+def get_fixed(input_str, response_lang='ru'):
     headers = {
         'authority': 'orthographe.reverso.net',
         'accept': 'text/json',
@@ -77,9 +106,11 @@ def get_fixed(input_str):
     # x = json.dumps(data)
     # data = "'" + x + "'"
 
-    data = '{"englishDialect":"indifferent","autoReplace":true,"getCorrectionDetails":true,"interfaceLanguage":"en",' \
-           '"locale":"","language":"eng","text":"MY_INPUT","originalText":"","spellingFeedbackOptions":{"insertFeedback":true,' \
-           '"userLoggedOn":false},"origin":"interactive","isHtml":false} '.replace('MY_INPUT', input_str)
+    # "interfaceLanguage":"ru" OR en
+    data = '{"englishDialect":"indifferent","autoReplace":true,"getCorrectionDetails":true,"interfaceLanguage":"ru",' \
+           '"locale":"","language":"eng","text":"MY_INPUT","originalText":"","spellingFeedbackOptions":{' \
+           '"insertFeedback":true,"userLoggedOn":false},"origin":"interactive","isHtml":false} ' \
+        .replace('MY_INPUT', input_str)
 
     response = requests.post('https://orthographe.reverso.net/api/v1/Spelling/', headers=headers, data=data)
     return response.json()
@@ -97,18 +128,39 @@ def fixer(input_str=None):
     for c in corrs:
         # mistakes.append({c['shortDescription'], c['longDescription'], c['correctionText'], c['correctionDefinition'],
         #                  c['suggestions']})
+
+        # get by keys from response
         mistakes.append({k: c[k] for k in ['shortDescription', 'longDescription', 'mistakeText', 'suggestions']})
 
+    # corrections
+    """[ { 'longDescription': 'A word was not spelled correctly',
+        'mistakeText': 'i',
+        'shortDescription': 'Spelling Mistake',
+        'suggestions': [ { 'category': 'Spelling',
+        'definition': 'refers to the speaker or writer',
+        'text': 'I'}]},
+        
+        { 'longDescription': 'Unknown word - no suggestions available',
+        'mistakeText': 'django',
+        'shortDescription': 'Possible Spelling Mistake',
+        'suggestions': []},
+    """
+
+    # full resp
     """x = {'id': '8710fb7c-97a8-4545-bd9d-f3b90f33a6e4', 'language': 'eng',
          'text': "We'vereceivedanewproposalfortheproject.Iwillkeepyouinformedabouthowthingsgo.",
-         'engine': 'Ginger', 'truncated': False, 'timeTaken': 473, 'corrections': [
+         'engine': 'Ginger', 'truncated': False, 'timeTaken': 473, 
+         
+         'corrections': [
             {'group': 'AutoCorrected', 'type': 'Grammar', 'shortDescription': 'GrammarMistake',
              'longDescription': 'Errorinformingorapplyingthepresentperfecttense', 'startIndex': 0, 'endIndex': 12,
              'mistakeText': "We'vereceive", 'correctionText': "We'vereceived",
              'suggestions': [{'text': "We'vereceived", 'category': 'Verb'}]}],
+             
          'sentences': [{'startIndex': 0, 'endIndex': 44, 'status': 'Corrected'},
                        {'startIndex': 46, 'endIndex': 90, 'status': 'Corrected'}], 'autoReplacements': [],
          'stats': {'textLength': 91, 'wordCount': 18, 'sentenceCount': 2, 'longestSentence': 45}}"""
+
 
     result = {"text": v2.get("text"), 'corrections': mistakes}
 
@@ -116,10 +168,21 @@ def fixer(input_str=None):
     print()
     # pprint.pp(mstk)
     # print()
-    pprint.pp(v2)
+    pprint(v2)
 
     return result
 
 
 if __name__ == '__main__':
-    fixer(input_str="Today i learn more about django. Im feel good. Today good weather")
+    # 900ms response
+
+    # get_mistakes_data(
+    #     'Today i learn more about django and study 8 hour. Im feel good. Today good weather. have nice day')
+
+    import time
+
+    start = time.perf_counter()
+    fixer(input_str="Today i learn more about django. Im feel good. Today good weather. And tomorrow will be better.")
+    print(time.perf_counter() - start)
+
+    # get_rephrased()

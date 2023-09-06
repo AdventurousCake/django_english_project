@@ -17,6 +17,7 @@ from stripe_service.models import Item, Order, Discount, EngFixer
 from stripe_service.services.stripe import create_stripe_session
 import logging
 
+
 class EngMainView(TemplateView):
     template_name = "EngMain.html"
 
@@ -62,8 +63,9 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         # item = EngFixer.objects.get(input_sentence=obj.input_sentence)
 
         item = EngFixer.objects.filter(input_sentence=obj.input_sentence).first()
-        logger.warning(f'using cache: id:{item.id}')
+
         if item:
+            logger.warning(f'using cache: id:{item.id}')
             return redirect('stripe_service:eng_get', item.id)
 
         # todo MAIN FIXER logic
@@ -82,6 +84,8 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
 class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
     """display data by get pk"""
 
+    """UPDATE VIEW FOR FORMS"""
+
     model = EngFixer
     form_class = EngFixerForm
     template_name = "form_ENG.html"
@@ -98,7 +102,38 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
         context = super().get_context_data(**kwargs)
 
         # json to text
-        context['description'] = pprint.pformat(self.object.CORRECT_RESPONSE, indent=4).replace('\n', '<br>')
+        # context['description'] = pprint.pformat(self.object.CORRECT_RESPONSE, indent=4).replace('\n', '<br>')
+
+        # TODO
+        suggestions_rows = []
+        data = list(self.object.CORRECT_RESPONSE)
+        if data:
+            for item in data:
+                text = item.get('mistakeText')
+                long_description = item.get('longDescription')
+                short_description = item.get('shortDescription')
+
+                item = item.get('suggestions')
+
+                sugg_list = []
+                if item:
+                    for s in item:
+                        sugg_list.append(s)
+
+                if sugg_list:
+                    sugg_list = map(str, sugg_list)
+                    sugg_list = '\n'.join(sugg_list)
+
+                suggestions_rows.append((text, long_description, short_description, sugg_list))
+
+                    # fix_text = item.get('text')
+                    # category = item.get('category')
+                    # definition = item.get('definition')
+                # suggestions_rows.append((text, fix_text, category, definition, short_description, long_description))
+
+
+        context['suggestions_rows'] = suggestions_rows
+
         return context
 
     # def get_context_data(self, **kwargs):

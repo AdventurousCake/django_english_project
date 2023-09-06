@@ -33,9 +33,38 @@
 {#        {% bootstrap_button button_type="submit" content="OK" %}#}
     </form>
 
-    {% if description %}
-        <p>Description</p>
-        {{ description|safe }}
+{#old#}
+{#        <p>Description of mistakes (suggestions)</p>#}
+{#        {{ description|safe }}#}
+
+
+    {% if suggestions_rows %}
+        <p>Description of mistakes (suggestions)</p>
+
+        <table class="table table-striped">
+{#            <thead>#}
+{#            <tr>#}
+{#                <th scope="col">#</th>#}
+{#                <th scope="col">input</th>#}
+{#                <th scope="col">output</th>#}
+{#                <th scope="col">link</th>#}
+{#            </tr>#}
+{#            </thead>#}
+
+            <tbody>
+
+            {% for item in suggestions_rows %}
+            <tr>
+                <td>{{ item.0 }}</td>
+                <td>{{ item.1 }}</td>
+                <td>{{ item.2 }}</td>
+                <td>{{ item.3|safe }}</td>
+            </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+
     {% endif %}
 
     {#    <form method="post" enctype="multipart/form-data">#}
