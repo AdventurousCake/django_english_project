@@ -148,7 +148,9 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
 
                 if sugg_list:
                     FIXED_TEXT = sugg_list[0]['text']
-                    sugg_list = '\n'.join(map(str, sugg_list))
+
+                    # sugg_list = '\n'.join(map(str, sugg_list))
+                    sugg_list = '\n'.join(f"{s['text']} ({s['category']}, {s.get('definition', '')})" for s in sugg_list)
 
                 suggestions_rows.append((text, FIXED_TEXT, long_description, short_description, sugg_list))
 
