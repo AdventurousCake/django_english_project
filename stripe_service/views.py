@@ -109,22 +109,48 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
         data = list(self.object.CORRECT_RESPONSE)
         if data:
             for item in data:
+                # input
                 text = item.get('mistakeText')
                 long_description = item.get('longDescription')
+
+                # грамм ошибка
                 short_description = item.get('shortDescription')
 
+                # suggestions
                 item = item.get('suggestions')
+                """'suggestions': [
+                                    {
+                                        'text': 'I feel',
+                                        'category': 'Verb'
+                                    },
+                                    {
+                                        'text': "I'm feel",
+                                        'category': 'Spelling'
+                                    },
+                                    {
+                                        'text': "I'm feeling",
+                                        'category': 'Verb'
+                                    },
+                                    {
+                                        'text': 'I felt',
+                                        'category': 'Verb'
+                                    }
+                                ],"""
+
+                # TODO ITEM = LIST
 
                 sugg_list = []
                 if item:
                     for s in item:
                         sugg_list.append(s)
 
-                if sugg_list:
-                    sugg_list = map(str, sugg_list)
-                    sugg_list = '\n'.join(sugg_list)
+                FIXED_TEXT = ""
 
-                suggestions_rows.append((text, long_description, short_description, sugg_list))
+                if sugg_list:
+                    FIXED_TEXT = sugg_list[0]['text']
+                    sugg_list = '\n'.join(map(str, sugg_list))
+
+                suggestions_rows.append((text, FIXED_TEXT, long_description, short_description, sugg_list))
 
                     # fix_text = item.get('text')
                     # category = item.get('category')
