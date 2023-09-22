@@ -117,7 +117,7 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
                 short_description = item.get('shortDescription')
 
                 # suggestions
-                item = item.get('suggestions')
+                suggestions = item.get('suggestions')
                 """'suggestions': [
                                     {
                                         'text': 'I feel',
@@ -137,22 +137,26 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
                                     }
                                 ],"""
 
-                # TODO ITEM = LIST
-
-                sugg_list = []
-                if item:
-                    for s in item:
-                        sugg_list.append(s)
-
                 FIXED_TEXT = ""
 
-                if sugg_list:
-                    FIXED_TEXT = sugg_list[0]['text']
+                # sugg_list = []
+                # if item:
+                #     for s in suggestions:
+                #         sugg_list.append(s)
+                # if sugg_list:
+                #     FIXED_TEXT = sugg_list[0]['text']
+                #     # sugg_list = '\n'.join(map(str, sugg_list))
+                #     sugg_list = '\n'.join(f"{s['text']} ({s['category']}, {s.get('definition', '')})" for s in sugg_list)
+
+                if suggestions:
+                    FIXED_TEXT = suggestions[0]['text']
 
                     # sugg_list = '\n'.join(map(str, sugg_list))
-                    sugg_list = '\n'.join(f"{s['text']} ({s['category']}, {s.get('definition', '')})" for s in sugg_list)
+                    sugg_string = '\n'.join(f"{s['text']} ({s['category']}, {s.get('definition', '')})" for s in suggestions)
+                else:
+                    sugg_string = ""
 
-                suggestions_rows.append((text, FIXED_TEXT, long_description, short_description, sugg_list))
+                suggestions_rows.append((text, FIXED_TEXT, long_description, short_description, sugg_string))
 
                     # fix_text = item.get('text')
                     # category = item.get('category')
