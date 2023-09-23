@@ -3,6 +3,8 @@ import pprint
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.db.models import Prefetch
+from django.forms import Form
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 
@@ -11,7 +13,7 @@ from rest_framework.generics import CreateAPIView, get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from stripe_service.ENG_FIX_logic import fixer
+from stripe_service.ENG_FIX_logic import fixer, EngRephr
 from stripe_service.FORMS_TEST import StripeTestForm1, EngFixerForm
 from stripe_service.models import Item, Order, Discount, EngFixer
 from stripe_service.services.stripe import create_stripe_session
@@ -53,8 +55,8 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
     #     context['description'] = pprint.pformat(self.object.CORRECT_RESPONSE)
     #     return context
 
-    def form_valid(self, form):
-        obj = form.save(commit=False)
+    def form_valid(self, form) -> HttpResponseRedirect:
+        obj: EngFixer = form.save(commit=False)
         # obj.author = self.request.user
 
         # todo if in cache or db then redirect
@@ -73,6 +75,12 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         obj.fixed_result = fix.get('text')
         obj.CORRECT_RESPONSE = fix.get('corrections')
         print(obj.fixed_result)
+
+        # rephraser TODO
+        rephrases = EngRephr().get_rephrased_sentences(input_str=obj.input_sentence)
+        if rephrases:
+            obj.rephrases = rephrases
+
 
         # save and redirect
         return super(CheckENGView, self).form_valid(form)
@@ -165,6 +173,10 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
 
 
         context['suggestions_rows'] = suggestions_rows
+        context['rephrases'] = '\n'.join(self.object.rephrases) if self.object.rephrases else None
+
+        # rephr
+        # data = get_rephrased(input_str=None)
 
         return context
 

@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
     <title>English Fixer</title>
     {% load bootstrap5 %}
     {% bootstrap_css %}
 </head>
 <body>
 
-<div class="container md-5">
-    <p>English Fixer | <a href="{% url 'stripe_service:eng_list' %}">List</a></p>
+{## md-5#}
+<div class="container">
+    <p class="display-4">English Fixer | <a href="{% url 'stripe_service:eng_list' %}">List</a></p>
 
 {#    {% if form.errors %}#}
 {#        <div class="alert alert-danger" role="alert">#}
@@ -17,6 +21,8 @@
 {#            </span>#}
 {#        </div>#}
 {#    {% endif %}#}
+
+    <h1>Fixer</h1>
 
     {% bootstrap_form_errors form layout='inline' %}
 
@@ -39,7 +45,7 @@
 
 
     {% if suggestions_rows %}
-        <p>Description of mistakes (suggestions)</p>
+        <h1>Description of mistakes (suggestions)</h1>
 
         <table class="table table-striped table-hover">
 {#            <thead>#}
@@ -65,8 +71,14 @@
 
             </tbody>
         </table>
-
     {% endif %}
+
+    {% if rephrases %}
+        <br>
+        <h1>Rephrases</h1>
+        {{ rephrases|linebreaks }}
+    {% endif %}
+
 
     {#    <form method="post" enctype="multipart/form-data">#}
     {#        {% csrf_token %}#}

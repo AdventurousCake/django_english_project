@@ -3,34 +3,45 @@ import json
 import requests
 from pprint import pprint
 
-def get_rephrased(input_str=None):
-    headers = {
-        'authority': 'rephraser-api.reverso.net',
-        'accept': 'application/json',
-        'accept-language': 'ru,en-US;q=0.9,en;q=0.8',
-        'dnt': '1',
-        'origin': 'https://www.reverso.net',
-        'referer': 'https://www.reverso.net/',
-        'sec-ch-ua': '"Chromium";v="116", "Not)A;Brand";v="24", "Google Chrome";v="116"',
-        'sec-ch-ua-mobile': '?0',
-        'sec-ch-ua-platform': '"Windows"',
-        'sec-fetch-dest': 'empty',
-        'sec-fetch-mode': 'cors',
-        'sec-fetch-site': 'same-site',
-        'sec-gpc': '1',
-        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36',
-        'x-reverso-origin': 'speller.web',
-    }
+class EngRephr():
+    def __init__(self, input_str=None):
+        self.input_str = input_str
 
-    params = {
-        'language': 'en',
-        'sentence': "Today's good weather.",
-        'candidates': '10',  # 6
-    }
+    @staticmethod
+    def get_rephrased_raw(input_str=None):
+        headers = {
+            'authority': 'rephraser-api.reverso.net',
+            'accept': 'application/json',
+            'accept-language': 'ru,en-US;q=0.9,en;q=0.8',
+            'dnt': '1',
+            'origin': 'https://www.reverso.net',
+            'referer': 'https://www.reverso.net/',
+            'sec-ch-ua': '"Chromium";v="116", "Not)A;Brand";v="24", "Google Chrome";v="116"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+            'sec-fetch-dest': 'empty',
+            'sec-fetch-mode': 'cors',
+            'sec-fetch-site': 'same-site',
+            'sec-gpc': '1',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36',
+            'x-reverso-origin': 'speller.web',
+        }
 
-    response = requests.get('https://rephraser-api.reverso.net/v1/rephrase', params=params, headers=headers)
-    pprint(response.json())
-    return response.json()
+        params = {
+            'language': 'en',
+            'sentence': input_str,
+            'candidates': '10',  # 6
+        }
+
+        response = requests.get('https://rephraser-api.reverso.net/v1/rephrase', params=params, headers=headers)
+        # pprint(response.json())
+        return response.json()
+
+    def get_rephrased_sentences(self, input_str="Today's good weather. I feel good"):
+        data = self.get_rephrased_raw(input_str)
+        data = data.get('candidates')  # feature: order by diversity
+        sentences = [item['candidate'] for item in data]
+        return sentences
 
 def get_mistakes_data(input_str):
     headers = {
@@ -180,9 +191,11 @@ if __name__ == '__main__':
     #     'Today i learn more about django and study 8 hour. Im feel good. Today good weather. have nice day')
 
     import time
-
     start = time.perf_counter()
-    fixer(input_str="Today i learn more about django. Im feel good. Today good weather. And tomorrow will be better.")
+
+    print(EngRephr().get_rephrased_sentences(input_str='hello im fine'))
+    # fixer(input_str="Today i learn more about django. Im feel good. Today good weather. And tomorrow will be better.")
+
     print(time.perf_counter() - start)
 
-    # get_rephrased()
+

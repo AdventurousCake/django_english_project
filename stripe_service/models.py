@@ -12,6 +12,7 @@ class EngFixer(models.Model):
 
     CORRECT_RESPONSE = models.JSONField(null=True)
     fixed_result = models.CharField(null=False, blank=True, max_length=256)
+    # rephrases_list
     rephrases = ArrayField(models.CharField(max_length=150, blank=True), null=True)
     # size=8,)
     mistakes = models.CharField(null=True, max_length=256)
