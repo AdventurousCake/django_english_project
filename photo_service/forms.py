@@ -1,7 +1,7 @@
 
 from django.forms import ModelForm, ValidationError
 
-from service.models import MenuItem
+from photo_service.models import MenuItem
 
 
 class MenuForm(ModelForm):

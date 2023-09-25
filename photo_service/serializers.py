@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from service.models import PhotoItem
+from photo_service.models import PhotoItem
 
 
 class PhotoItemSerializer(serializers.ModelSerializer):

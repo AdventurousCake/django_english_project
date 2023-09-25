@@ -7,7 +7,6 @@ from stripe_payments.views import CreateCheckoutSessionAPIView, ProductLandingPa
     CancelView, CreateOrderCheckoutSessionAPIView, Form1View
 
 app_name = 'stripe_payments'
-from service import views, views_API
 
 # router = DefaultRouter()
 # router.register('photos', PhotoItemViewSet)  # VSET

@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'bootstrap5',
 
-    'service',
+    'photo_service',
     'eng_service',
     'stripe_payments',
     'BOOKS',

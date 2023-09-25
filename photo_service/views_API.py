@@ -10,8 +10,8 @@ from rest_framework.viewsets import ModelViewSet
 from django.core import serializers
 from django.forms.models import model_to_dict
 
-from service.models import PhotoItem
-from service.serializers import PhotoItemSerializer, QueryCustomSerializerRAWQ, QueryCustomSerializerFORSEARCH
+from photo_service.models import PhotoItem
+from photo_service.serializers import PhotoItemSerializer, QueryCustomSerializerRAWQ, QueryCustomSerializerFORSEARCH
 
 
 class ThrottleMix:

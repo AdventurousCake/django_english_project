@@ -3,10 +3,10 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 from django_test1 import settings
-from service.views_API import PhotoItemViewSet
+from photo_service.views_API import PhotoItemViewSet
 
-app_name = 'service'
-from service import views, views_API
+app_name = 'photo_service'
+from photo_service import views, views_API
 
 router = DefaultRouter()
 router.register('photos', PhotoItemViewSet)  # VSET

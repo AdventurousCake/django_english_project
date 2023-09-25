@@ -5,7 +5,6 @@ from rest_framework.routers import DefaultRouter
 from eng_service.views import CheckENGView, CheckENGViewUpdate, EngMainView
 
 app_name = 'eng_service'
-from service import views, views_API
 
 # router = DefaultRouter()
 # router.register('photos', PhotoItemViewSet)  # VSET
