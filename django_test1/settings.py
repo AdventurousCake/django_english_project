@@ -53,7 +53,8 @@ INSTALLED_APPS = [
     'bootstrap5',
 
     'service',
-    'stripe_service',
+    'eng_service',
+    'stripe_payments',
     'BOOKS',
 ]
 
@@ -101,7 +102,7 @@ WSGI_APPLICATION = 'django_test1.wsgi.application'
 #     }
 # }
 
-
+# TODO OVERRIDES IN PROD SETTINGS
 DATABASES = {
     'default':
         {

@@ -3,10 +3,10 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 from django_test1 import settings
-from stripe_service.views import CreateCheckoutSessionAPIView, ProductLandingPageView, OrderPageView, SuccessesView, \
-    CancelView, CreateOrderCheckoutSessionAPIView, Form1View, CheckENGView, CheckENGViewUpdate, EngMainView
+from stripe_payments.views import CreateCheckoutSessionAPIView, ProductLandingPageView, OrderPageView, SuccessesView, \
+    CancelView, CreateOrderCheckoutSessionAPIView, Form1View
 
-app_name = 'stripe_service'
+app_name = 'stripe_payments'
 from service import views, views_API
 
 # router = DefaultRouter()
@@ -25,8 +25,4 @@ urlpatterns = [
 
     # test
     path('form1/', Form1View.as_view(), name='form_test1'),
-
-    path('eng/', CheckENGView.as_view(), name='eng'),
-    path('eng_list/', EngMainView.as_view(), name='eng_list'),
-    path('eng_get/<int:pk>/', CheckENGViewUpdate.as_view(), name='eng_get'),
 ]

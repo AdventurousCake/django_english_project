@@ -1,13 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>English Fixer</title>
-    {% load bootstrap5 %}
-    {% bootstrap_css %}
-</head>
-<body>
+{% extends 'Eng_base.html' %}
+{% load static %}
+{% load bootstrap5 %}
+
+{% block content %}
 <div class="container md-5">
-    <p>English Fixer | <a href="{% url 'stripe_service:eng' %}">Fix New</a></p>
+    <p class="display-4">English Fixer | <a href="{% url 'eng_service:eng' %}">Fix New</a></p>
 
 
     {#    {% for item in data_list %}#}
@@ -18,7 +15,7 @@
     {% for item in data_list %}
         <div class="card">
             <div class="card-header">
-                <a href="{% url 'stripe_service:eng_get' item.id %}" class="btn btn-warning">Sentence #{{ item.id }}</a>
+                <a href="{% url 'eng_service:eng_get' item.id %}" class="btn btn-warning">Sentence #{{ item.id }}</a>
             </div>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">{{ item.input_sentence }}</li>
@@ -54,6 +51,5 @@
     {#        </tbody>#}
     {#    </table>#}
 
-
-</body>
-</html>
+</div>
+{% endblock %}

@@ -1,18 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% extends 'Eng_base.html' %}
+{% load bootstrap5 %}
+{#{% bootstrap_css %}#}
+{% load static %}
 
-    <title>English Fixer</title>
-    {% load bootstrap5 %}
-    {% bootstrap_css %}
-</head>
-<body>
-
+{% block content %}
 {## md-5#}
 <div class="container">
-    <p class="display-4">English Fixer | <a href="{% url 'stripe_service:eng_list' %}">List</a></p>
+    <p class="display-4">English Fixer | <a href="{% url 'eng_service:eng_list' %}">List</a></p>
 
 {#    {% if form.errors %}#}
 {#        <div class="alert alert-danger" role="alert">#}
@@ -22,7 +16,7 @@
 {#        </div>#}
 {#    {% endif %}#}
 
-    <h1>Fixer</h1>
+    <h1>Fix</h1>
 
     {% bootstrap_form_errors form layout='inline' %}
 
@@ -92,5 +86,4 @@
     {#    </form>#}
 
 </div>
-</body>
-</html>
+{% endblock %}

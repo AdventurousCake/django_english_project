@@ -22,7 +22,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('service.urls'), name='service'),
 
-    path('stripe_service/', include('stripe_service.urls'), name='stripe_service'),
+    path('stripe_payments/', include('stripe_payments.urls'), name='stripe_payments'),
+    path('eng/', include('eng_service.urls'), name='eng_service'),
 
     path('b/', include('BOOKS.urls'), name='books_service'),
 ]

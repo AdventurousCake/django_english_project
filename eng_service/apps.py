@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class StripeServiceConfig(AppConfig):
+class EngServiceConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'stripe_service'
+    name = 'eng_service'
