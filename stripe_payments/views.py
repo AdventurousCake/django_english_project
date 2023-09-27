@@ -1,4 +1,6 @@
-from django.http import HttpResponseRedirect
+from pprint import pprint
+
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse
 
@@ -10,8 +12,11 @@ from rest_framework.views import APIView
 from eng_service.ENG_FIX_logic import fixer, EngRephr
 from stripe_payments.forms import StripeTestForm1
 from stripe_payments.models import Item, Order
-from stripe_payments.services.stripe import create_stripe_session
+from stripe_payments.services.stripe import create_stripe_session, stripe
 import logging
+
+# todo!
+# stripe.api_key = ''
 
 # Create your views here.
 # STRIPE
@@ -121,14 +126,17 @@ class CreateOrderCheckoutSessionAPIView(APIView):
         curr = 'RUB'
         # curr = order.items.first().currency
 
+        # TODO PATH WITH PORT; webhook success pay process
         session = create_stripe_session(product_name=order.id, currency=curr, quantity=1, price=price,
-                                        redirect_url="http://127.0.0.1/stripe_payments/success/",
-                                        cancel_url="http://127.0.0.1/stripe_payments/cancel/")
+                                        redirect_url="http://127.0.0.1:8000/stripe_payments/success/",
+                                        cancel_url="http://127.0.0.1:8000/stripe_payments/cancel/")
         # redirect_url=reverse("stripe_service:success"), cancel_url=reverse("stripe_service:cancel"))  # no domain link
 
-        print(session.to_dict())
+        pprint(session.to_dict())
         print(session.stripe_id)
-        return Response({'id': session.id})
+
+        return JsonResponse({'session_id': session.id})
+        # return Response({'id': session.id})
 
 
 # one product
@@ -145,13 +153,20 @@ class CreateCheckoutSessionAPIView(APIView):
         price = 99999
         # price = int(product.price * 100)
 
-        session = create_stripe_session(product_name=product.id, currency=product.currency, quantity=1, price=price,
-                                        redirect_url="http://127.0.0.1/stripe_payments/success/",
-                                        cancel_url="http://127.0.0.1/stripe_payments/cancel/")
+        try:
+        # TODO PATH WITH PORT
+            session = create_stripe_session(product_name=product.id, currency=product.currency, quantity=1, price=price,
+                                            redirect_url="http://127.0.0.1:8000/stripe_payments/success/",
+                                            cancel_url="http://127.0.0.1:8000/stripe_payments/cancel/")
+
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+
         # redirect_url=reverse("stripe_service:success"), cancel_url=reverse("stripe_service:cancel"))  # no domain link
 
-        print(session.to_dict())
+        pprint(session.to_dict())
         print(session.stripe_id)
-        # return redirect(session)
+
+        # return redirect(session.url)
         return Response({'id': session.id})  # получает в index js
         # переход работает только по прямой ссылке

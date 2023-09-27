@@ -103,6 +103,7 @@ WSGI_APPLICATION = 'django_test1.wsgi.application'
 # }
 
 # TODO OVERRIDES IN PROD SETTINGS
+STRIPE_KEY = ''
 DATABASES = {
     'default':
         {
