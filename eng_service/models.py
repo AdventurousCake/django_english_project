@@ -4,10 +4,11 @@ from django.db.models import Sum
 from django.utils.text import gettext_lazy as _
 
 
-# TODO
+# !!!TODO INDEX INPUT
 class EngFixer(models.Model):
     id = models.BigAutoField(primary_key=True, auto_created=True, null=False)
     input_sentence = models.CharField(null=False, max_length=256, unique=True)
+    # input_sentence = models.CharField(null=False, max_length=256)
     translatedRU = models.CharField(null=True, max_length=256)
 
     CORRECT_RESPONSE = models.JSONField(null=True)

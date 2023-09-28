@@ -49,6 +49,25 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
     #     context['description'] = pprint.pformat(self.object.CORRECT_RESPONSE)
     #     return context
 
+    # def post(self, request, *args, **kwargs):
+    #     pass
+
+    """AFTER POST METHOD VALIDATION
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+            if form.is_valid():
+                return self.form_valid(form)
+            else:
+                return self.form_invalid(form)
+    
+    """
+
+    # TODO SAVE UNIQUE, FIX LOGIC PROCESS
+
+    def form_invalid(self, form):
+        print('ERR FORM INVALID')
+        return super(CheckENGView, self).form_invalid(form)
+
     def form_valid(self, form) -> HttpResponseRedirect:
         obj: EngFixer = form.save(commit=False)
 
@@ -61,11 +80,15 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         logger = logging.getLogger()
         # item = EngFixer.objects.get(input_sentence=obj.input_sentence)
 
-        item = EngFixer.objects.filter(input_sentence=obj.input_sentence).first()
+        # existing
+        db_item = EngFixer.objects.filter(input_sentence=obj.input_sentence).first()
+        # item = EngFixer.objects.filter(input_sentence=obj.input_sentence).exists()
 
-        if item:
-            logger.warning(f'using cache: id:{item.id}')
-            return redirect('eng_service:eng_get', item.id)
+        if db_item:
+            logger.warning(f'using cache: id:{db_item.id}')
+            return redirect('eng_service:eng_get', db_item.id,
+                            # use_cache=True
+                            )
 
         # todo MAIN FIXER logic
         fix = fixer(obj.input_sentence)
@@ -87,9 +110,11 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
 
 
 class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
-    """display data by get pk"""
+    """display data by get pk + CONTEXT FOR UPDATEVIEW"""
 
-    """UPDATE VIEW FOR FORMS"""
+    """UPDATE VIEW FOR FORMS
+    eng_get/<int:pk>/
+    """
 
     model = EngFixer
     form_class = EngFixerForm
@@ -186,7 +211,7 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
     #     return context
 
     def form_valid(self, form):
-        obj = form.save(commit=False)
+        # obj = form.save(commit=False)
         # obj.author = self.request.user
 
         return super(CheckENGViewUpdate, self).form_valid(form)
