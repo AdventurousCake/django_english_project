@@ -37,6 +37,11 @@
 {#        <p>Description of mistakes (suggestions)</p>#}
 {#        {{ description|safe }}#}
 
+    {% if translate %}
+        <h1>Translate RU</h1>
+        {{ translate|linebreaks }}
+    {% endif %}
+
 
     {% if suggestions_rows %}
         <h1>Description of mistakes (suggestions)</h1>

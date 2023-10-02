@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -9,6 +10,7 @@ from rest_framework.views import APIView
 
 from eng_service.ENG_FIX_logic import fixer, EngRephr
 from eng_service.forms import EngFixerForm
+from eng_service.local_lib.google_translate import T
 from eng_service.models import EngFixer
 # from stripe_payments.services import create_stripe_session
 import logging
@@ -65,6 +67,22 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
     # TODO SAVE UNIQUE, FIX LOGIC PROCESS
 
     def form_invalid(self, form):
+        # if 'non_field_errors' in form.errors:
+        #     for error in form.errors['non_field_errors']:
+        #         if isinstance(error, ValidationError): #and 'unique' in error.message:
+        #             # Handle the Unique constraint error here
+        #             # For example, you can add a custom error message to the form
+        #             form.add_error(None, 'This record violates a unique constraint.')
+        #             break
+
+        err_ = form.errors['input_sentence'].data[0]
+        print(isinstance(err_, ValidationError))
+
+        # form.add_error(None, '123')
+
+        print(form.fields['input_sentence'])
+        print(form.error_class)
+
         print('ERR FORM INVALID')
         return super(CheckENGView, self).form_invalid(form)
 
@@ -101,6 +119,8 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         if rephrases:
             obj.rephrases = rephrases
 
+        # translate
+        obj.translatedRU = T().get_ru_from_eng(text=obj.input_sentence)
 
         # save and redirect
         return super(CheckENGView, self).form_valid(form)
@@ -196,6 +216,8 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
 
         context['suggestions_rows'] = suggestions_rows
         context['rephrases'] = '\n'.join(self.object.rephrases) if self.object.rephrases else None
+
+        context['translate'] = self.object.translatedRU
 
         # rephr
         # data = get_rephrased(input_str=None)
