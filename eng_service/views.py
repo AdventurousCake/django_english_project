@@ -120,7 +120,12 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
             obj.rephrases = rephrases
 
         # translate
-        obj.translatedRU = T().get_ru_from_eng(text=obj.input_sentence)
+        tr_input = T().get_ru_from_eng(text=obj.input_sentence)
+        tr_correct = T().get_ru_from_eng(text=obj.fixed_result)
+
+        # todo
+        obj.translatedRU = f"{tr_input} ->\n{tr_correct}"
+        # obj.translatedRU = T().get_ru_from_eng(text=obj.input_sentence)
 
         # save and redirect
         return super(CheckENGView, self).form_valid(form)
