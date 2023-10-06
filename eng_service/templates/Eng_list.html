@@ -12,6 +12,11 @@
     {#    {% endfor %}#}
 
     {#    CARD#}
+
+    {% if not data_list %}
+        <p>Create New</p>
+    {% endif %}
+
     {% for item in data_list %}
         <div class="card">
             <div class="card-header">

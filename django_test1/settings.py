@@ -30,6 +30,10 @@ ALLOWED_HOSTS = []
 if ENV_HOSTS:
     ALLOWED_HOSTS.extend(ENV_HOSTS.split(" "))
 
+# USE CORRECT NGINX PROXY proxy_set_header Host $host; ...
+# https://docs.djangoproject.com/en/4.1/ref/settings/#std:setting-CSRF_TRUSTED_ORIGINS
+# CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', '').split(' ')
+
 REST_FRAMEWORK = {
     # 'DEFAULT_RENDERER_CLASSES': [
     #     'rest_framework.renderers.JSONRenderer',
@@ -170,6 +174,7 @@ USE_TZ = True
 
 # STATIC_URL = "/static/"
 # STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATIC_URL = 'static/'
 MEDIA_URL = 'media/'

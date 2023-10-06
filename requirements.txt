@@ -1,6 +1,6 @@
-asgiref==3.5.2
-Django==4.1.4
-djangorestframework==3.14.0
+asgiref
+Django>=4.2
+djangorestframework~=3.14
 django-filter
 psycopg2-binary
 # psycopg2

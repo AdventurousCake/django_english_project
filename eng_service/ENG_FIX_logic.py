@@ -189,8 +189,8 @@ def fixer(input_str=None):
 if __name__ == '__main__':
     # 900ms response
 
-    get_mistakes_data_LANGtool(
-        'Today i learn more about django and study 8 hour. Im feel good. Today good weather. have nice day')
+    # get_mistakes_data_LANGtool(
+    #     'Today i learn more about django and study 8 hour. Im feel good. Today good weather. have nice day')
 
     import time
     start = time.perf_counter()
