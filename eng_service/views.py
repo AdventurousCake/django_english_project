@@ -16,6 +16,7 @@ from eng_service.models import EngFixer
 import logging
 
 
+# TODO LIST BY USER
 class EngMainView(TemplateView):
     template_name = "Eng_list.html"
 
@@ -67,6 +68,9 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
     # TODO SAVE UNIQUE, FIX LOGIC PROCESS
 
     def form_invalid(self, form):
+        # TODO
+
+        # form.add_error(None, '123')
         # if 'non_field_errors' in form.errors:
         #     for error in form.errors['non_field_errors']:
         #         if isinstance(error, ValidationError): #and 'unique' in error.message:
