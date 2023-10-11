@@ -49,7 +49,7 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
 
     # def get_context_data(self, **kwargs):
     #     context = super().get_context_data(**kwargs)
-    #     context['description'] = pprint.pformat(self.object.CORRECT_RESPONSE)
+    #     context['description'] = pprint.pformat(self.object.fixed_sentence)
     #     return context
 
     # def post(self, request, *args, **kwargs):
@@ -115,13 +115,13 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         # todo MAIN FIXER logic
         fix = fixer(obj.input_sentence)
         obj.fixed_result = fix.get('text')
-        obj.CORRECT_RESPONSE = fix.get('corrections')
+        obj.fixed_sentence = fix.get('corrections')
         print(obj.fixed_result)
 
         # rephraser
         rephrases = EngRephr().get_rephrased_sentences(input_str=obj.input_sentence)
         if rephrases:
-            obj.rephrases = rephrases
+            obj.rephrases_list = rephrases
 
         # translate
         tr_input = T().get_ru_from_eng(text=obj.input_sentence)
@@ -161,11 +161,11 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
         context = super().get_context_data(**kwargs)
 
         # json to text
-        # context['description'] = pprint.pformat(self.object.CORRECT_RESPONSE, indent=4).replace('\n', '<br>')
+        # context['description'] = pprint.pformat(self.object.fixed_sentence, indent=4).replace('\n', '<br>')
 
         # TODO
         suggestions_rows = []
-        data = list(self.object.CORRECT_RESPONSE)
+        data = list(self.object.fixed_sentence)
         if data:
             for item in data:
                 # input
@@ -224,7 +224,7 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
 
 
         context['suggestions_rows'] = suggestions_rows
-        context['rephrases'] = '\n'.join(self.object.rephrases) if self.object.rephrases else None
+        context['rephrases_list'] = '\n'.join(self.object.rephrases_list) if self.object.rephrases_list else None
 
         context['translate'] = self.object.translatedRU
 

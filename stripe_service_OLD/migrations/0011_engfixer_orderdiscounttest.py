@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
                 ('input_sentence', models.CharField(max_length=256)),
                 ('translatedRU', models.CharField(max_length=256, null=True)),
                 ('fixed_result', models.CharField(max_length=256)),
-                ('rephrases', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(blank=True, max_length=150), null=True, size=None)),
+                ('rephrases_list', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(blank=True, max_length=150), null=True, size=None)),
                 ('mistakes', models.CharField(max_length=256, null=True)),
             ],
         ),

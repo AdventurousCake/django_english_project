@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterField(
             model_name='engfixer',
-            name='CORRECT_RESPONSE',
+            name='fixed_sentence',
             field=models.JSONField(null=True),
         ),
     ]

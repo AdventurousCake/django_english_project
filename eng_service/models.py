@@ -19,14 +19,13 @@ class EngFixer(models.Model):
     input_sentence = models.CharField(null=False, max_length=256, unique=True, validators=[validate_text_string])
     # input_sentence = models.CharField(null=False, max_length=256)
     translatedRU = models.CharField(null=True, max_length=256)
-
-    # fixed_sentence
-    CORRECT_RESPONSE = models.JSONField(null=True)
+    fixed_sentence = models.JSONField(null=True)
     fixed_result = models.CharField(null=False, blank=True, max_length=256)
-    # rephrases_list
-    rephrases = ArrayField(models.CharField(max_length=150, blank=True), null=True)
+    rephrases_list = ArrayField(models.CharField(max_length=150, blank=True), null=True)
     # size=8,)
     mistakes = models.CharField(null=True, max_length=256)
+
+    date = models.DateTimeField(null=False, auto_now_add=True)
 
     # model-level validation; validators - field level (by full_clean)
     def clean(self):
