@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterField(
             model_name='engfixer',
-            name='fixed_result',
+            name='fixed_sentence',
             field=models.CharField(blank=True, max_length=256),
         ),
         migrations.AlterField(

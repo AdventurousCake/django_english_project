@@ -49,7 +49,7 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
 
     # def get_context_data(self, **kwargs):
     #     context = super().get_context_data(**kwargs)
-    #     context['description'] = pprint.pformat(self.object.fixed_sentence)
+    #     context['description'] = pprint.pformat(self.object.fixed_result_JSON)
     #     return context
 
     # def post(self, request, *args, **kwargs):
@@ -114,9 +114,9 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
 
         # todo MAIN FIXER logic
         fix = fixer(obj.input_sentence)
-        obj.fixed_result = fix.get('text')
-        obj.fixed_sentence = fix.get('corrections')
-        print(obj.fixed_result)
+        obj.fixed_sentence = fix.get('text')
+        obj.fixed_result_JSON = fix.get('corrections')
+        print(obj.fixed_sentence)
 
         # rephraser
         rephrases = EngRephr().get_rephrased_sentences(input_str=obj.input_sentence)
@@ -125,11 +125,11 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
 
         # translate
         tr_input = T().get_ru_from_eng(text=obj.input_sentence)
-        tr_correct = T().get_ru_from_eng(text=obj.fixed_result)
+        tr_correct = T().get_ru_from_eng(text=obj.fixed_sentence)
 
         # todo
-        obj.translatedRU = f"{tr_input} ->\n{tr_correct}"
-        # obj.translatedRU = T().get_ru_from_eng(text=obj.input_sentence)
+        obj.translated_RU = f"{tr_input} ->\n{tr_correct}"
+        # obj.translated_RU = T().get_ru_from_eng(text=obj.input_sentence)
 
         # save and redirect
         return super(CheckENGView, self).form_valid(form)
@@ -161,11 +161,11 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
         context = super().get_context_data(**kwargs)
 
         # json to text
-        # context['description'] = pprint.pformat(self.object.fixed_sentence, indent=4).replace('\n', '<br>')
+        # context['description'] = pprint.pformat(self.object.fixed_result_JSON, indent=4).replace('\n', '<br>')
 
         # TODO
         suggestions_rows = []
-        data = list(self.object.fixed_sentence)
+        data = list(self.object.fixed_result_JSON)
         if data:
             for item in data:
                 # input
@@ -226,7 +226,7 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
         context['suggestions_rows'] = suggestions_rows
         context['rephrases_list'] = '\n'.join(self.object.rephrases_list) if self.object.rephrases_list else None
 
-        context['translate'] = self.object.translatedRU
+        context['translate'] = self.object.translated_RU
 
         # rephr
         # data = get_rephrased(input_str=None)
