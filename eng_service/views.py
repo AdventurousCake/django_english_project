@@ -1,3 +1,6 @@
+from collections import Counter
+from enum import Enum
+
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
@@ -68,7 +71,7 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
     # TODO SAVE UNIQUE, FIX LOGIC PROCESS
 
     def form_invalid(self, form):
-        # TODO
+        # TODO; WHEN SENTENCE IS EXISTS THEN REDIRECT
 
         # form.add_error(None, '123')
         # if 'non_field_errors' in form.errors:
@@ -106,6 +109,7 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         db_item = EngFixer.objects.filter(input_sentence=obj.input_sentence).first()
         # item = EngFixer.objects.filter(input_sentence=obj.input_sentence).exists()
 
+        # todo ПРОВЕРКА В def post FORM VALID/NON VALID
         if db_item:
             logger.warning(f'using cache: id:{db_item.id}')
             return redirect('eng_service:eng_get', db_item.id,
@@ -118,6 +122,33 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         obj.fixed_result_JSON = fix.get('corrections')
         print(obj.fixed_sentence)
 
+        # TEST
+        known_types = ['grammar', 'punctuation' , 'syntax', 'style', 'vocabulary', 'spelling','typos']
+        # class Enum_(str, Enum):
+        #     pass
+        # x:str in Enum_.__members__
+
+        # todo COUNT
+        # type_ = fix.get('corrections')[0].get('type')
+        types_ = fix.get('error_types')
+        # save to json
+        types_cnt_dict = Counter(types_)
+        types_list = list(types_cnt_dict.keys())
+        types_most = types_cnt_dict.most_common(1)[0]
+
+        # todo save to db ENUM. LIST?
+        db_list = []
+        for item in types_list:
+            if item in known_types:
+                db_list.append(item)
+            else:
+                db_list.append('unknown')
+
+        # file
+        with open('!ENG_TYPES.txt', 'a', encoding='utf-8') as f:
+            # json.dump(types_cnt_dict, f, ensure_ascii=False, indent=4)
+            f.write(','.join(types_list))
+
         # rephraser
         rephrases = EngRephr().get_rephrased_sentences(input_str=obj.input_sentence)
         if rephrases:
@@ -127,7 +158,6 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         tr_input = T().get_ru_from_eng(text=obj.input_sentence)
         tr_correct = T().get_ru_from_eng(text=obj.fixed_sentence)
 
-        # todo
         obj.translated_RU = f"{tr_input} ->\n{tr_correct}"
         # obj.translated_RU = T().get_ru_from_eng(text=obj.input_sentence)
 
@@ -168,7 +198,7 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
         data = list(self.object.fixed_result_JSON)
         if data:
             for item in data:
-                # input
+                # input TODO NAMING
                 text = item.get('mistakeText')
                 long_description = item.get('longDescription')
 

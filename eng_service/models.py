@@ -1,10 +1,13 @@
 import re
 
+import uuid
 from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Sum
 from django.utils.text import gettext_lazy as _
+
+from eng_service.models_core import User
 
 
 def validate_text_string(value):
@@ -12,9 +15,16 @@ def validate_text_string(value):
     if not re.match(pattern, value):
         raise ValidationError("Only text are allowed")
 
+class Request(models.Model):
+    id = models.BigAutoField(primary_key=True, auto_created=True, null=False)  # db_index=True
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)  # or anonymous user
+    fix = models.ForeignKey(to='EngFixer', on_delete=models.CASCADE, null=False)
+    created_date = models.DateTimeField(null=False, auto_now_add=True)
+
 
 # INDEX INPUT UNIQUE
 class EngFixer(models.Model):
+    # uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     id = models.BigAutoField(primary_key=True, auto_created=True, null=False)
 
     input_sentence = models.CharField(null=False, max_length=256, unique=True, validators=[validate_text_string])
@@ -38,6 +48,9 @@ class EngFixer(models.Model):
         from django.urls import reverse
         return reverse("eng_service:eng_get", kwargs={"pk": self.pk})
         # return reverse("eng_service:eng_get", kwargs={"pk": self.id})
+
+    # def __repr__(self):
+    #     return self.input_sentence
 
     # form class clean
     # def clean(self):

@@ -136,14 +136,21 @@ def fixer(input_str=None):
     v2 = get_fixed(input_str)
     # result = v2.get("text")
 
+    # TODO REMOVE; todo check none; simple types
+    error_types = []
+
     mistakes = []
     corrs = v2.get('corrections')  # todo MANY
+
     for c in corrs:
         # mistakes.append({c['shortDescription'], c['longDescription'], c['correctionText'], c['correctionDefinition'],
         #                  c['suggestions']})
 
         # get by keys from response
-        mistakes.append({k: c[k] for k in ['shortDescription', 'longDescription', 'mistakeText', 'suggestions']})
+        mistakes.append(
+            {k: c[k] for k in ['type', 'shortDescription', 'longDescription', 'mistakeText', 'suggestions']})
+
+        error_types.append(c['type'])
 
     # corrections
     """[ { 'longDescription': 'A word was not spelled correctly',
@@ -175,7 +182,8 @@ def fixer(input_str=None):
          'stats': {'textLength': 91, 'wordCount': 18, 'sentenceCount': 2, 'longestSentence': 45}}"""
 
 
-    result = {"text": v2.get("text"), 'corrections': mistakes}
+    # result = {"text": v2.get("text"), 'corrections': mistakes, 'error_types': error_types}
+    result = dict(text=v2.get("text"), corrections = mistakes, error_types=error_types)
 
     print(input_str, result, sep="\n")
     print()
