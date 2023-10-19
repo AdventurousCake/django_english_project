@@ -71,12 +71,20 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
     # TODO SAVE UNIQUE, FIX LOGIC PROCESS
 
     def form_invalid(self, form):
-        # Исходя из метода post, можно сделать obj
-        # 19.10 ЗАДАТЬ ВОПРОС!!! TODO; WHEN SENTENCE IS EXISTS THEN REDIRECT
-        # obj = form.save(commit=False)
-        # return redirect('eng_service:eng_get', obj.id,
-        #                 use_cache=True
-        #                 )
+        print('ERR FORM INVALID')
+        print(form.data['input_sentence'])
+
+        err_ = form.errors['input_sentence'].data[0]
+        check_unique = isinstance(err_, ValidationError) and err_.code == 'unique'
+        # print(check_unique)
+
+        if check_unique:
+            # obj = form.save(commit=False)  # не было запроса для взятия даты
+            # get_object_or_404(EngFixer, input_sentence=form.data['input_sentence'])
+            obj = EngFixer.objects.get(input_sentence=form.data['input_sentence'])
+            return redirect('eng_service:eng_get', obj.id,
+                            # use_cache=True
+                            )
 
         # form.add_error(None, '123')
         # if 'non_field_errors' in form.errors:
@@ -87,15 +95,8 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         #             form.add_error(None, 'This record violates a unique constraint.')
         #             break
 
-        err_ = form.errors['input_sentence'].data[0]
-        print(isinstance(err_, ValidationError))
-
         # form.add_error(None, '123')
 
-        print(form.fields['input_sentence'])
-        print(form.error_class)
-
-        print('ERR FORM INVALID')
         return super(CheckENGView, self).form_invalid(form)
 
     def form_valid(self, form) -> HttpResponseRedirect:
@@ -116,6 +117,7 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
 
         # выше
         # todo ПРОВЕРКА В def post FORM VALID/NON VALID
+        # NONE
         if db_item:
             logger.warning(f'using cache: id:{db_item.id}')
             return redirect('eng_service:eng_get', db_item.id,
