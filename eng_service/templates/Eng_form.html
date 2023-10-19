@@ -8,6 +8,8 @@
 <div class="container">
     <p class="display-4">English Fixer | <a href="{% url 'eng_service:eng_list' %}">List</a></p>
 
+    <hr>
+
 {#    {% if form.errors %}#}
 {#        <div class="alert alert-danger" role="alert">#}
 {#            <span style="display: flex">#}
@@ -24,11 +26,15 @@
         {% csrf_token %}
 
         {% bootstrap_form form %}
+
+        <div class="text-center">
         {% buttons %}
-            <button type="submit" class="btn btn-primary">
+{#            center button  #}
+            <button type="submit" class="btn btn-primary-custom btn-lg col-5" >
                 Fix
             </button>
         {% endbuttons %}
+        </div>
 
 {#        {% bootstrap_button button_type="submit" content="OK" %}#}
     </form>

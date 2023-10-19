@@ -13,7 +13,7 @@ from rest_framework.views import APIView
 
 from eng_service.ENG_FIX_logic import fixer, EngRephr
 from eng_service.forms import EngFixerForm
-from eng_service.local_lib.google_translate import T
+from eng_service.local_lib.google_translate import Translate
 from eng_service.models import EngFixer
 # from stripe_payments.services import create_stripe_session
 import logging
@@ -71,7 +71,12 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
     # TODO SAVE UNIQUE, FIX LOGIC PROCESS
 
     def form_invalid(self, form):
-        # TODO; WHEN SENTENCE IS EXISTS THEN REDIRECT
+        # Исходя из метода post, можно сделать obj
+        # 19.10 ЗАДАТЬ ВОПРОС!!! TODO; WHEN SENTENCE IS EXISTS THEN REDIRECT
+        # obj = form.save(commit=False)
+        # return redirect('eng_service:eng_get', obj.id,
+        #                 use_cache=True
+        #                 )
 
         # form.add_error(None, '123')
         # if 'non_field_errors' in form.errors:
@@ -109,6 +114,7 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         db_item = EngFixer.objects.filter(input_sentence=obj.input_sentence).first()
         # item = EngFixer.objects.filter(input_sentence=obj.input_sentence).exists()
 
+        # выше
         # todo ПРОВЕРКА В def post FORM VALID/NON VALID
         if db_item:
             logger.warning(f'using cache: id:{db_item.id}')
@@ -155,11 +161,11 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
             obj.rephrases_list = rephrases
 
         # translate
-        tr_input = T().get_ru_from_eng(text=obj.input_sentence)
-        tr_correct = T().get_ru_from_eng(text=obj.fixed_sentence)
+        tr_input = Translate().get_ru_from_eng(text=obj.input_sentence)
+        tr_correct = Translate().get_ru_from_eng(text=obj.fixed_sentence)
 
         obj.translated_RU = f"{tr_input} ->\n{tr_correct}"
-        # obj.translated_RU = T().get_ru_from_eng(text=obj.input_sentence)
+        # obj.translated_RU = Translate().get_ru_from_eng(text=obj.input_sentence)
 
         # save and redirect
         return super(CheckENGView, self).form_valid(form)
@@ -207,6 +213,7 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
 
                 # suggestions
                 suggestions = item.get('suggestions')
+
                 """'suggestions': [
                                     {
                                         'text': 'I feel',
@@ -224,7 +231,8 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
                                         'text': 'I felt',
                                         'category': 'Verb'
                                     }
-                                ],"""
+                                ],
+                """
 
                 FIXED_TEXT = ""
 

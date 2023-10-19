@@ -14,7 +14,7 @@
 from eng_service.local_lib.main import google_translator
 
 
-class T():
+class Translate():
     def __init__(self):
         self.translator = google_translator()
 
@@ -33,5 +33,5 @@ if __name__ == '__main__':
     import time
 
     start = time.perf_counter()
-    print(T().get_ru_from_eng(text="""hello"""))
+    print(Translate().get_ru_from_eng(text="""hello"""))
     print(time.perf_counter() - start)

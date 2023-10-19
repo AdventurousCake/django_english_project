@@ -1,0 +1,15 @@
+#main-block {
+    background-color: #fffcdd5e !important;
+}
+
+button.btn-primary-custom {
+    color: #000;
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+
+#primary-custom {
+    color: #000;
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
