@@ -6,6 +6,12 @@ button.btn-primary-custom {
     color: #000;
     background-color: #ffc107;
     border-color: #ffc107;
+
+    transition: transform .2s;
+}
+
+button.btn-primary-custom:hover {
+    transform: scale(1.2);
 }
 
 #primary-custom {

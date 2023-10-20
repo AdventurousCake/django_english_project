@@ -67,24 +67,18 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
                 return self.form_invalid(form)
     
     """
-
-    # TODO SAVE UNIQUE, FIX LOGIC PROCESS
-
     def form_invalid(self, form):
         print('ERR FORM INVALID')
         print(form.data['input_sentence'])
 
-        err_ = form.errors['input_sentence'].data[0]
-        check_unique = isinstance(err_, ValidationError) and err_.code == 'unique'
-        # print(check_unique)
+        form_error = form.errors['input_sentence'].data[0]
+        check_unique_input = isinstance(form_error, ValidationError) and form_error.code == 'unique'
 
-        if check_unique:
+        if check_unique_input:
             # obj = form.save(commit=False)  # не было запроса для взятия даты
             # get_object_or_404(EngFixer, input_sentence=form.data['input_sentence'])
-            obj = EngFixer.objects.get(input_sentence=form.data['input_sentence'])
-            return redirect('eng_service:eng_get', obj.id,
-                            # use_cache=True
-                            )
+            obj = EngFixer.objects.values('id').get(input_sentence=form.data['input_sentence'])
+            return redirect('eng_service:eng_get', obj['id'])
 
         # form.add_error(None, '123')
         # if 'non_field_errors' in form.errors:
@@ -94,7 +88,6 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         #             # For example, you can add a custom error message to the form
         #             form.add_error(None, 'This record violates a unique constraint.')
         #             break
-
         # form.add_error(None, '123')
 
         return super(CheckENGView, self).form_invalid(form)
@@ -112,26 +105,24 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         # item = EngFixer.objects.get(input_sentence=obj.input_sentence)
 
         # existing
-        db_item = EngFixer.objects.filter(input_sentence=obj.input_sentence).first()
+        # db_item = EngFixer.objects.filter(input_sentence=obj.input_sentence).first()
         # item = EngFixer.objects.filter(input_sentence=obj.input_sentence).exists()
-
-        # выше
-        # todo ПРОВЕРКА В def post FORM VALID/NON VALID
-        # NONE
-        if db_item:
-            logger.warning(f'using cache: id:{db_item.id}')
-            return redirect('eng_service:eng_get', db_item.id,
-                            # use_cache=True
-                            )
+        # выше ПРОВЕРКА В def post FORM VALID/NON VALID
+        # NONE db_item
+        # if db_item:
+        #     logger.warning(f'using cache: id:{db_item.id}')
+        #     return redirect('eng_service:eng_get', db_item.id,
+        #                     # use_cache=True
+        #                     )
 
         # todo MAIN FIXER logic
         fix = fixer(obj.input_sentence)
+
         obj.fixed_sentence = fix.get('text')
         obj.fixed_result_JSON = fix.get('corrections')
-        print(obj.fixed_sentence)
 
         # TEST
-        known_types = ['grammar', 'punctuation' , 'syntax', 'style', 'vocabulary', 'spelling','typos']
+        known_types = ['grammar', 'punctuation' , 'syntax', 'style', 'vocabulary', 'spelling', 'typos']
         # class Enum_(str, Enum):
         #     pass
         # x:str in Enum_.__members__
@@ -139,7 +130,6 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         # todo COUNT
         # type_ = fix.get('corrections')[0].get('type')
         types_ = fix.get('error_types')
-        # save to json
         types_cnt_dict = Counter(types_)
         types_list = list(types_cnt_dict.keys())
         types_most = types_cnt_dict.most_common(1)[0]
@@ -171,9 +161,6 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
 
         # save and redirect
         return super(CheckENGView, self).form_valid(form)
-
-    # def form_invalid(self, form):
-    #     return super(CheckENGView, self).form_invalid(form)
 
 
 class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
