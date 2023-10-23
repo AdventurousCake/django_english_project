@@ -125,7 +125,7 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         #     pass
         # x:str in Enum_.__members__
 
-        # todo COUNT
+        # todo SAVE TO MODEL
         # type_ = fix.get('corrections')[0].get('type')
         types_ = fix.get('error_types')
         if types_:
@@ -133,7 +133,6 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
             types_list = list(types_cnt_dict.keys())
             types_most = types_cnt_dict.most_common(1)[0]
 
-            # todo save to db ENUM. LIST?
             db_list = []
             for item in types_list:
                 if item in known_types:

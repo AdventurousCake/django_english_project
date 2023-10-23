@@ -19,3 +19,11 @@ button.btn-primary-custom:hover {
     background-color: #ffc107;
     border-color: #ffc107;
 }
+
+#rephrases {
+    padding: 1em;
+
+    border-radius: 20px;
+    border: solid wheat;
+    box-shadow: 3px 7px 7px 0px #fcdcdc;
+}
