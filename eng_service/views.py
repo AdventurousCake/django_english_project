@@ -99,8 +99,6 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
 
         # obj.author = self.request.user
 
-        # todo if in cache or db then redirect
-        # return redirect('stripe_service:eng_get', obj.id)
         logger = logging.getLogger()
         # item = EngFixer.objects.get(input_sentence=obj.input_sentence)
 
@@ -130,22 +128,23 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         # todo COUNT
         # type_ = fix.get('corrections')[0].get('type')
         types_ = fix.get('error_types')
-        types_cnt_dict = Counter(types_)
-        types_list = list(types_cnt_dict.keys())
-        types_most = types_cnt_dict.most_common(1)[0]
+        if types_:
+            types_cnt_dict = Counter(types_)
+            types_list = list(types_cnt_dict.keys())
+            types_most = types_cnt_dict.most_common(1)[0]
 
-        # todo save to db ENUM. LIST?
-        db_list = []
-        for item in types_list:
-            if item in known_types:
-                db_list.append(item)
-            else:
-                db_list.append('unknown')
+            # todo save to db ENUM. LIST?
+            db_list = []
+            for item in types_list:
+                if item in known_types:
+                    db_list.append(item)
+                else:
+                    db_list.append('unknown')
 
-        # file
-        with open('!ENG_TYPES.txt', 'a', encoding='utf-8') as f:
-            # json.dump(types_cnt_dict, f, ensure_ascii=False, indent=4)
-            f.write(','.join(types_list))
+            # file
+            with open('!ENG_TYPES.txt', 'a', encoding='utf-8') as f:
+                # json.dump(types_cnt_dict, f, ensure_ascii=False, indent=4)
+                f.write(',' + ','.join(types_list))
 
         # rephraser
         rephrases = EngRephr().get_rephrased_sentences(input_str=obj.input_sentence)

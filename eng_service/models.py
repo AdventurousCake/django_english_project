@@ -74,3 +74,9 @@ class EngFixer(models.Model):
     #     constraints = [
     #         models.UniqueConstraint(fields=['id', 'input_sentence'], name='unique_id_input_sentence'),
     #     ]
+
+
+# profile = UserProfile.objects.select_related('user').get(id=user_profile_id)
+class UserProfile(models.Model):
+    id = models.BigAutoField(primary_key=True, auto_created=True, null=False)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=False)
