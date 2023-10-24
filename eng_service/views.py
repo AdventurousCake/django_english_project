@@ -11,12 +11,14 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from eng_service.ENG_FIX_logic import fixer, EngRephr
+from eng_service.ENG_FIX_logic import eng_fixer, EngRephr
 from eng_service.forms import EngFixerForm
 from eng_service.local_lib.google_translate import Translate
 from eng_service.models import EngFixer
 # from stripe_payments.services import create_stripe_session
 import logging
+
+from eng_service.models_core import User
 
 
 # TODO LIST BY USER
@@ -92,16 +94,25 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
 
         return super(CheckENGView, self).form_invalid(form)
 
+
+    @staticmethod
+    def process_data(obj: EngFixer):
+        input_ = obj.input_sentence
+        fix = eng_fixer(input_)
+
+        fixed_sentence = fix.get('text')
+
+
+        return obj  # ? or dict(data=data)
+
+
     def form_valid(self, form) -> HttpResponseRedirect:
+        # TODO !!! form.cleaned_data
         obj: EngFixer = form.save(commit=False)
 
-        # TODO !!! form.cleaned_data
-
         # obj.author = self.request.user
-
-        logger = logging.getLogger()
+        # logger = logging.getLogger()
         # item = EngFixer.objects.get(input_sentence=obj.input_sentence)
-
         # existing
         # db_item = EngFixer.objects.filter(input_sentence=obj.input_sentence).first()
         # item = EngFixer.objects.filter(input_sentence=obj.input_sentence).exists()
@@ -114,7 +125,7 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         #                     )
 
         # todo MAIN FIXER logic
-        fix = fixer(obj.input_sentence)
+        fix = eng_fixer(obj.input_sentence)
 
         obj.fixed_sentence = fix.get('text')
         obj.fixed_result_JSON = fix.get('corrections')
@@ -125,7 +136,7 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         #     pass
         # x:str in Enum_.__members__
 
-        # todo SAVE TO MODEL
+        # todo SAVE TO MODEL?
         # type_ = fix.get('corrections')[0].get('type')
         types_ = fix.get('error_types')
         if types_:
@@ -138,6 +149,7 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
                 if item in known_types:
                     db_list.append(item)
                 else:
+                    # create new tag?
                     db_list.append('unknown')
 
             # file
@@ -156,6 +168,19 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
 
         obj.translated_RU = f"{tr_input} ->\n{tr_correct}"
         # obj.translated_RU = Translate().get_ru_from_eng(text=obj.input_sentence)
+
+        ###################################
+        # 24 todo check anonuser
+        user = self.request.user
+        print(user)
+
+        if isinstance(user, User):
+            pass
+
+        profile = self.request.user.objects.select_related('userprofile')
+        if profile:
+            print(profile)
+
 
         # save and redirect
         return super(CheckENGView, self).form_valid(form)

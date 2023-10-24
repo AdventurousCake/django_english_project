@@ -4,100 +4,113 @@
 {% load static %}
 
 {% block content %}
-{## md-5#}
-<div class="container">
-    <p class="display-4">English Fixer | <a href="{% url 'eng_service:eng_list' %}">List</a></p>
+    {## md-5#}
+    <div class="container">
+        <p class="display-4">English Fixer | <a href="{% url 'eng_service:eng_list' %}">List</a></p>
 
-    <hr>
+        <hr>
 
-{#    {% if form.errors %}#}
-{#        <div class="alert alert-danger" role="alert">#}
-{#            <span style="display: flex">#}
-{#                ❗ {{ form.errors }}#}
-{#            </span>#}
-{#        </div>#}
-{#    {% endif %}#}
+        {#    {% if form.errors %}#}
+        {#        <div class="alert alert-danger" role="alert">#}
+        {#            <span style="display: flex">#}
+        {#                ❗ {{ form.errors }}#}
+        {#            </span>#}
+        {#        </div>#}
+        {#    {% endif %}#}
 
-    <h1>Fix</h1>
+        {% if form %}
+            <div class="form1">
 
-    {% bootstrap_form_errors form layout='inline' %}
+            <h1>Fix</h1>
 
-    <form method="post" class="form" enctype="multipart/form-data">
-        {% csrf_token %}
+        {% bootstrap_form_errors form layout='inline' %}
 
-        {% bootstrap_form form %}
+        <form method="post" class="form" enctype="multipart/form-data">
+            {% csrf_token %}
 
-        <div class="text-center">
-        {% buttons %}
-{#            center button  #}
-            <button type="submit" class="btn btn-primary-custom btn-lg col-5" >
-                Fix
-            </button>
-        {% endbuttons %}
+            {% bootstrap_form form %}
+
+            <div class="text-center">
+                {% buttons %}
+                    {#            center button  #}
+                    <button type="submit" class="btn btn-primary-custom btn-lg col-5">
+                        Fix
+                    </button>
+                {% endbuttons %}
+            </div>
+
+            {#        {% bootstrap_button button_type="submit" content="OK" %}#}
+        </form>
+
+            </div>
+
+
+            {% else %}
+
+        {% endif %}
+
+
+        {% if translate %}
+            <div class="translate">
+            <h1>Translate RU</h1>
+            {{ translate|linebreaks }}
+            </div>
+        {% endif %}
+
+
+
+        {% if suggestions_rows %}
+            <div class="suggestions">
+                <h1>Description of mistakes (suggestions)</h1>
+
+                <table class="table table-striped table-hover">
+                    {#            <thead>#}
+                    {#            <tr>#}
+                    {#                <th scope="col">#</th>#}
+                    {#                <th scope="col">input</th>#}
+                    {#                <th scope="col">output</th>#}
+                    {#                <th scope="col">link</th>#}
+                    {#            </tr>#}
+                    {#            </thead>#}
+
+                    <tbody>
+
+                    {% for item in suggestions_rows %}
+                        <tr>
+                            <td>{{ item.0 }}</td>
+                            <td><b>{{ item.1 }}</b></td>
+                            <td>{{ item.2 }}</td>
+                            <td>{{ item.3 }}</td>
+                            <td>{{ item.4|linebreaks|safe }}</td>
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+
+
+        {#    # todo new styles + separte h1?#}
+        <div class="rephrases">
+            {% if rephrases_list %}
+                <br>
+                <h1>Rephrases</h1>
+                {{ rephrases_list|linebreaks }}
+            {% endif %}
         </div>
 
-{#        {% bootstrap_button button_type="submit" content="OK" %}#}
-    </form>
 
-{#old#}
-{#        <p>Description of mistakes (suggestions)</p>#}
-{#        {{ description|safe }}#}
+        {#    <form method="post" enctype="multipart/form-data">#}
+        {#        {% csrf_token %}#}
+        {#        {{ form.as_p }}#}
+        {##}
+        {#        <div class="row justify-content-center">#}
+        {#            <button type="submit" class="btn btn-primary">#}
+        {#                FIX#}
+        {#            </button>#}
+        {#        </div>#}
+        {#    </form>#}
 
-    {% if translate %}
-        <h1>Translate RU</h1>
-        {{ translate|linebreaks }}
-    {% endif %}
-
-
-    {% if suggestions_rows %}
-        <h1>Description of mistakes (suggestions)</h1>
-
-        <table class="table table-striped table-hover">
-{#            <thead>#}
-{#            <tr>#}
-{#                <th scope="col">#</th>#}
-{#                <th scope="col">input</th>#}
-{#                <th scope="col">output</th>#}
-{#                <th scope="col">link</th>#}
-{#            </tr>#}
-{#            </thead>#}
-
-            <tbody>
-
-            {% for item in suggestions_rows %}
-            <tr>
-                <td>{{ item.0 }}</td>
-                <td><b>{{ item.1 }}</b></td>
-                <td>{{ item.2 }}</td>
-                <td>{{ item.3 }}</td>
-                <td>{{ item.4|linebreaks|safe }}</td>
-            </tr>
-            {% endfor %}
-
-            </tbody>
-        </table>
-    {% endif %}
-
-{#    # todo new styles + separte h1?#}
-    <div class="rephrases">
-    {% if rephrases_list %}
-        <br>
-        <h1>Rephrases</h1>
-        {{ rephrases_list|linebreaks }}
-    {% endif %}
     </div>
-
-
-    {#    <form method="post" enctype="multipart/form-data">#}
-    {#        {% csrf_token %}#}
-    {#        {{ form.as_p }}#}
-    {##}
-    {#        <div class="row justify-content-center">#}
-    {#            <button type="submit" class="btn btn-primary">#}
-    {#                FIX#}
-    {#            </button>#}
-    {#        </div>#}
-    {#    </form>#}
-
-</div>
 {% endblock %}

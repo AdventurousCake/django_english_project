@@ -129,7 +129,7 @@ def get_fixed(input_str, response_lang='ru'):
     return response.json()
 
 
-def fixer(input_str=None):
+def eng_fixer(input_str=None):
     # mstk = get_mistakes_data(input_str)  # languagetool
     # https://translate.yandex.ru/dictionary/%D0%90%D0%BD%D0%B3%D0%BB%D0%B8%D0%B9%D1%81%D0%BA%D0%B8%D0%B9-%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9/today's
 

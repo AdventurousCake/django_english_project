@@ -24,7 +24,9 @@ def validate_text_string(value):
 # o2m
 class Request(models.Model):
     id = models.BigAutoField(primary_key=True, auto_created=True, null=False)  # db_index=True
-    user = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)  # or anonymous user
+
+    user = models.ForeignKey(to='UserProfile', on_delete=models.CASCADE, null=True)  # or anonymous user
+
     fix = models.ForeignKey(to='EngFixer', on_delete=models.CASCADE, null=False)
     created_date = models.DateTimeField(null=False, auto_now_add=True)
 
@@ -78,5 +80,12 @@ class EngFixer(models.Model):
 
 # profile = UserProfile.objects.select_related('user').get(id=user_profile_id)
 class UserProfile(models.Model):
+    """
+    A OneToOneField is essentially the same as a ForeignKey, with the exception
+    that it always carries a "unique" constraint with it and the reverse
+    relation always returns the object pointed to (since there will only ever
+    be one), rather than returning a list.
+    """
+
     id = models.BigAutoField(primary_key=True, auto_created=True, null=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=False)

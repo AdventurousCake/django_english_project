@@ -9,7 +9,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from eng_service.ENG_FIX_logic import fixer, EngRephr
+from eng_service.ENG_FIX_logic import eng_fixer, EngRephr
 from stripe_payments.forms import StripeTestForm1
 from stripe_payments.models import Item, Order
 from stripe_payments.services.stripe import create_stripe_session, stripe
