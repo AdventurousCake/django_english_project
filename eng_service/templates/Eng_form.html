@@ -20,43 +20,36 @@
 
         {% if form %}
             <div class="form1">
+                <h1>Fix</h1>
 
-            <h1>Fix</h1>
+                {% bootstrap_form_errors form layout='inline' %}
 
-        {% bootstrap_form_errors form layout='inline' %}
+                <form method="post" class="form" enctype="multipart/form-data">
+                    {% csrf_token %}
 
-        <form method="post" class="form" enctype="multipart/form-data">
-            {% csrf_token %}
+                    {% bootstrap_form form %}
 
-            {% bootstrap_form form %}
-
-            <div class="text-center">
-                {% buttons %}
-                    {#            center button  #}
-                    <button type="submit" class="btn btn-primary-custom btn-lg col-5">
-                        Fix
-                    </button>
-                {% endbuttons %}
+                    <div class="text-center">
+                        {% buttons %}
+                            {#            center button  #}
+                            <button type="submit" class="btn btn-primary-custom btn-lg col-5">
+                                Fix
+                            </button>
+                        {% endbuttons %}
+                    </div>
+                    {#        {% bootstrap_button button_type="submit" content="OK" %}#}
+                </form>
             </div>
 
-            {#        {% bootstrap_button button_type="submit" content="OK" %}#}
-        </form>
-
-            </div>
-
-
-            {% else %}
-
+        {% else %}
         {% endif %}
-
 
         {% if translate %}
             <div class="translate">
-            <h1>Translate RU</h1>
-            {{ translate|linebreaks }}
+                <h1>Translate RU</h1>
+                {{ translate|linebreaks }}
             </div>
         {% endif %}
-
 
 
         {% if suggestions_rows %}
