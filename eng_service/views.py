@@ -42,9 +42,6 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
     def get_success_url(self):
         return reverse('eng_service:eng_get', args=(self.object.id,))  # lazy?
 
-    # initial = {'text': 'example'}
-    # success_url = reverse_lazy('form_msg:send_msg')
-    #
     # def get_context_data(self, **kwargs):
     #     context = super().get_context_data(**kwargs)
     #     context['title'] = "📨 Send message form"
@@ -55,10 +52,8 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # context['description'] = pprint.pformat(self.object.fixed_result_JSON)
-
+        # hide field from create form
         context['form'].fields['fixed_sentence'].widget = forms.HiddenInput()
-        # context['form'].fields['fixed_sentence'].widget = forms.HiddenInput()
         return context
 
     # def post(self, request, *args, **kwargs):
