@@ -1,6 +1,7 @@
 from collections import Counter
 from enum import Enum
 
+from django import forms
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
@@ -52,10 +53,13 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
     #
     #     return context
 
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context['description'] = pprint.pformat(self.object.fixed_result_JSON)
-    #     return context
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # context['description'] = pprint.pformat(self.object.fixed_result_JSON)
+
+        context['form'].fields['fixed_sentence'].widget = forms.HiddenInput()
+        # context['form'].fields['fixed_sentence'].widget = forms.HiddenInput()
+        return context
 
     # def post(self, request, *args, **kwargs):
     #     pass
