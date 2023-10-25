@@ -59,6 +59,9 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'bootstrap5',
 
+    'crispy_forms',
+    'crispy_bootstrap5',
+
     'photo_service',
     'eng_service',
     'stripe_payments',
@@ -199,3 +202,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+
+# crispy
+CRISPY_TEMPLATE_PACK = 'bootstrap5'

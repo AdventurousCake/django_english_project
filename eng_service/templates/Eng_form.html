@@ -1,12 +1,14 @@
 {% extends 'Eng_base.html' %}
-{% load bootstrap5 %}
+{#{% load bootstrap5 %}#}
+{% load crispy_forms_tags %}
 {#{% bootstrap_css %}#}
 {% load static %}
 
 {% block content %}
     {## md-5#}
     <div class="container">
-        <p class="display-4">English Fixer | <a href="{% url 'eng_service:eng_list' %}">List</a> | <a href="{% url 'eng_service:eng' %}" class="btn btn-warning btn-lg">Fix New</a> </p>
+        <p class="display-4">English Fixer | <a href="{% url 'eng_service:eng_list' %}">List</a> |
+            <a href="{% url 'eng_service:eng' %}" class="btn btn-warning btn-lg">Fix New</a></p>
 
         <hr>
 
@@ -22,22 +24,25 @@
             <div id="form1">
                 <h1>Fix</h1>
 
-                {% bootstrap_form_errors form layout='inline' %}
+                {#                {% bootstrap_form_errors form layout='inline' %}#}
 
                 <form method="post" class="form" enctype="multipart/form-data">
                     {% csrf_token %}
 
-                    {% bootstrap_form form %}
+                    {{ form|crispy }}
+                    {#                    {% bootstrap_form form %}#}
 
                     {% if not disable_buttons %}
-                    <div class="text-center">
-                        {% buttons %}
+                        <div class="text-center">
+                            {#                        {% buttons %}#}
                             {#            center button  #}
-                            <button type="submit" class="btn btn-primary-custom btn-lg col-5">
+
+                            <button type="submit" class="btn btn-warning btn-lg col-5" id="btn-orange">
+{#                            <button type="submit" class="btn btn-primary-custom btn-lg col-5">#}
                                 Fix!
                             </button>
-                        {% endbuttons %}
-                    </div>
+                            {#                        {% endbuttons %}#}
+                        </div>
                     {% endif %}
 
                     {#        {% bootstrap_button button_type="submit" content="OK" %}#}
