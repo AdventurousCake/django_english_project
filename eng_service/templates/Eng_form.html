@@ -6,7 +6,7 @@
 {% block content %}
     {## md-5#}
     <div class="container">
-        <p class="display-4">English Fixer | <a href="{% url 'eng_service:eng_list' %}">List</a></p>
+        <p class="display-4">English Fixer | <a href="{% url 'eng_service:eng_list' %}">List</a> | <a href="{% url 'eng_service:eng' %}" class="btn btn-warning btn-lg">Fix New</a> </p>
 
         <hr>
 
@@ -19,7 +19,7 @@
         {#    {% endif %}#}
 
         {% if form %}
-            <div class="form1">
+            <div id="form1">
                 <h1>Fix</h1>
 
                 {% bootstrap_form_errors form layout='inline' %}
@@ -29,14 +29,17 @@
 
                     {% bootstrap_form form %}
 
+                    {% if not disable_buttons %}
                     <div class="text-center">
                         {% buttons %}
                             {#            center button  #}
                             <button type="submit" class="btn btn-primary-custom btn-lg col-5">
-                                Fix
+                                Fix!
                             </button>
                         {% endbuttons %}
                     </div>
+                    {% endif %}
+
                     {#        {% bootstrap_button button_type="submit" content="OK" %}#}
                 </form>
             </div>
@@ -45,7 +48,7 @@
         {% endif %}
 
         {% if translate %}
-            <div class="translate">
+            <div id="translate">
                 <h1>Translate RU</h1>
                 {{ translate|linebreaks }}
             </div>
@@ -53,7 +56,7 @@
 
 
         {% if suggestions_rows %}
-            <div class="suggestions">
+            <div id="suggestions">
                 <h1>Description of mistakes (suggestions)</h1>
 
                 <table class="table table-striped table-hover">
@@ -83,15 +86,15 @@
             </div>
         {% endif %}
 
-
+        <br>
         {#    # todo new styles + separte h1?#}
-        <div class="rephrases">
-            {% if rephrases_list %}
-                <br>
+        {% if rephrases_list %}
+            <div id="rephrases">
                 <h1>Rephrases</h1>
                 {{ rephrases_list|linebreaks }}
-            {% endif %}
-        </div>
+            </div>
+        {% endif %}
+
 
 
         {#    <form method="post" enctype="multipart/form-data">#}

@@ -174,12 +174,10 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         user = self.request.user
         print(user)
 
-        if isinstance(user, User):
-            pass
-
-        profile = self.request.user.objects.select_related('userprofile')
-        if profile:
-            print(profile)
+        if isinstance(user, User): # else AnonymousUser
+            profile = self.request.user.objects.select_related('userprofile')
+            if profile:
+                print(profile)
 
 
         # save and redirect
@@ -207,6 +205,7 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['disable_buttons'] = True
 
         # json to text
         # context['description'] = pprint.pformat(self.object.fixed_result_JSON, indent=4).replace('\n', '<br>')

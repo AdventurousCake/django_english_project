@@ -25,5 +25,9 @@ button.btn-primary-custom:hover {
 
     border-radius: 20px;
     border: solid wheat;
-    box-shadow: 3px 7px 7px 0px #fcdcdc;
+    box-shadow: 0px 3px 7px 0px #ececec;
+}
+
+textarea#id_fixed_sentence {
+    font-weight: 500;
 }
