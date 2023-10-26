@@ -16,7 +16,7 @@ from rest_framework.views import APIView
 from eng_service.ENG_FIX_logic import eng_fixer, EngRephr
 from eng_service.forms import EngFixerForm
 from eng_service.local_lib.google_translate import Translate
-from eng_service.models import EngFixer
+from eng_service.models import EngFixer, Request
 # from stripe_payments.services import create_stripe_session
 import logging
 
@@ -53,22 +53,11 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
     def get_success_url(self):
         return reverse('eng_service:eng_get', args=(self.object.id,))  # lazy?
 
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context['title'] = "📨 Send message form"
-    #     context['btn_caption'] = "Send"
-    #     context['table_data'] = Message.objects.select_related().order_by('-created_date')[:5]
-    #
-    #     return context
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # hide field from create form
         context['form'].fields['fixed_sentence'].widget = forms.HiddenInput()
         return context
-
-    # def post(self, request, *args, **kwargs):
-    #     pass
 
     """AFTER POST METHOD VALIDATION
     def post(self, request, *args, **kwargs):
@@ -77,8 +66,8 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
                 return self.form_valid(form)
             else:
                 return self.form_invalid(form)
-    
     """
+
     def form_invalid(self, form):
         print('ERR FORM INVALID')
         print(form.data['input_sentence'])
@@ -173,18 +162,6 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         obj.translated_RU = f"{tr_input} ->\n{tr_correct}"
         # obj.translated_RU = Translate().get_ru_from_eng(text=obj.input_sentence)
 
-        ###################################
-        # check anonuser
-        user = self.request.user
-        print('USER: ', user)
-
-        if isinstance(user, User): # else AnonymousUser
-            # UserProfile.objects.get(user=request.user)
-            profile = self.request.user.userprofile
-            if profile:
-                print(profile)
-
-
         # save and redirect
         return super(CheckENGView, self).form_valid(form)
 
@@ -202,10 +179,32 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
 
     # success_url = reverse_lazy('form_msg:send_msg')
 
+    @staticmethod
+    def save_request(request, obj):
+        user = request.user
+        print('USER: ', user)
+
+        profile = None
+
+        if isinstance(user, User):  # else AnonymousUser
+            # UserProfile.objects.get(user=request.user)
+            profile = request.user.userprofile
+
+
+        Request.objects.create(
+            user_profile=profile,
+            fix=obj,
+        )
+
+
     def get_object(self, *args, **kwargs):
         obj = super(CheckENGViewUpdate, self).get_object(*args, **kwargs)
         # if obj.author != self.request.user:
         #     raise PermissionDenied()  # or Http404
+
+        # 26 todo
+        self.save_request(self.request, obj)
+
         return obj
 
     def get_context_data(self, **kwargs):
