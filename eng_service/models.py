@@ -25,7 +25,7 @@ def validate_text_string(value):
 class Request(models.Model):
     id = models.BigAutoField(primary_key=True, auto_created=True, null=False)  # db_index=True
 
-    user = models.ForeignKey(to='UserProfile', on_delete=models.CASCADE, null=True)  # or anonymous user
+    user_profile = models.ForeignKey(to='UserProfile', on_delete=models.CASCADE, null=True)  # or anonymous user
 
     fix = models.ForeignKey(to='EngFixer', on_delete=models.CASCADE, null=False)
     created_date = models.DateTimeField(null=False, auto_now_add=True)

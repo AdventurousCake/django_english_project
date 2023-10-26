@@ -1,4 +1,5 @@
 import json
+from collections import Counter
 
 import requests
 from pprint import pprint
@@ -140,17 +141,44 @@ def eng_fixer(input_str=None):
     error_types = []
 
     mistakes = []
-    corrs = v2.get('corrections')  # todo MANY
+    corrections = v2.get('corrections')  # todo MANY
 
-    for c in corrs:
-        # mistakes.append({c['shortDescription'], c['longDescription'], c['correctionText'], c['correctionDefinition'],
-        #                  c['suggestions']})
+    for corr in corrections:
+        # mistakes.append({corr['shortDescription'], corr['longDescription'], corr['correctionText'], corr['correctionDefinition'],
+        #                  corr['suggestions']})
 
         # get by keys from response
         mistakes.append(
-            {k: c[k] for k in ['type', 'shortDescription', 'longDescription', 'mistakeText', 'suggestions']})
+            {k: corr[k] for k in ['type', 'shortDescription', 'longDescription', 'mistakeText', 'suggestions']})
 
-        error_types.append(c['type'])
+        error_types.append(corr['type'])
+
+
+    known_types = ['grammar', 'punctuation', 'syntax', 'style', 'vocabulary', 'spelling', 'typos']
+
+    # real: 'Grammar', 'MisusedWord', 'Punctuation', 'Spelling'
+
+    # class Enum_(str, Enum):
+    #     pass
+    # x:str in Enum_.__members__
+
+    if error_types:
+        types_cnt_dict = Counter(error_types)
+        types_list = list(types_cnt_dict.keys())
+        types_most = types_cnt_dict.most_common(1)[0]
+
+        db_list = []
+        for item in types_list:
+            if item in known_types:
+                db_list.append(item)
+            else:
+                # create new tag?
+                db_list.append('unknown')
+
+        # file
+        with open('!ENG_TYPES.txt', 'a', encoding='utf-8') as f:
+            # json.dump(types_cnt_dict, f, ensure_ascii=False, indent=4)
+            f.write(',' + ','.join(types_list))
 
     # corrections
     """[ { 'longDescription': 'A word was not spelled correctly',
@@ -186,9 +214,6 @@ def eng_fixer(input_str=None):
     result = dict(text=v2.get("text"), corrections = mistakes, error_types=error_types)
 
     print(input_str, result, sep="\n")
-    print()
-    # pprint.pp(mstk)
-    # print()
     pprint(v2)
 
     return result

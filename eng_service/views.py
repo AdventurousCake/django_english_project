@@ -2,6 +2,7 @@ from collections import Counter
 from enum import Enum
 
 from django import forms
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
@@ -23,6 +24,16 @@ from eng_service.models_core import User
 
 
 # TODO LIST BY USER
+class EngListUserView(TemplateView, LoginRequiredMixin):
+    template_name = "Eng_list.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        user = self.request.user
+        context['data_list'] = EngFixer.objects.filter()
+        return context
+
 class EngMainView(TemplateView):
     template_name = "Eng_list.html"
 
@@ -95,18 +106,18 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
 
 
     @staticmethod
-    def process_data(obj: EngFixer):
-        input_ = obj.input_sentence
+    def process_data(input_str):
+        input_ = input_str
         fix = eng_fixer(input_)
+        fixed_result_JSON = fix.get('corrections')
 
         fixed_sentence = fix.get('text')
 
-
-        return obj  # ? or dict(data=data)
+        return dict(input=input_, fixed_sentence=fixed_sentence, fixed_result_JSON=fixed_result_JSON)
 
 
     def form_valid(self, form) -> HttpResponseRedirect:
-        # TODO !!! form.cleaned_data
+        # 25 TODO !!! form.cleaned_data
         obj: EngFixer = form.save(commit=False)
 
         # obj.author = self.request.user
@@ -119,9 +130,7 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         # NONE db_item
         # if db_item:
         #     logger.warning(f'using cache: id:{db_item.id}')
-        #     return redirect('eng_service:eng_get', db_item.id,
-        #                     # use_cache=True
-        #                     )
+        #     return redirect('eng_service:eng_get', db_item.id)
 
         # todo MAIN FIXER logic
         fix = eng_fixer(obj.input_sentence)
@@ -129,32 +138,28 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         obj.fixed_sentence = fix.get('text')
         obj.fixed_result_JSON = fix.get('corrections')
 
-        # TEST
-        known_types = ['grammar', 'punctuation' , 'syntax', 'style', 'vocabulary', 'spelling', 'typos']
-        # class Enum_(str, Enum):
-        #     pass
-        # x:str in Enum_.__members__
+
 
         # todo SAVE TO MODEL?
-        # type_ = fix.get('corrections')[0].get('type')
-        types_ = fix.get('error_types')
-        if types_:
-            types_cnt_dict = Counter(types_)
-            types_list = list(types_cnt_dict.keys())
-            types_most = types_cnt_dict.most_common(1)[0]
-
-            db_list = []
-            for item in types_list:
-                if item in known_types:
-                    db_list.append(item)
-                else:
-                    # create new tag?
-                    db_list.append('unknown')
-
-            # file
-            with open('!ENG_TYPES.txt', 'a', encoding='utf-8') as f:
-                # json.dump(types_cnt_dict, f, ensure_ascii=False, indent=4)
-                f.write(',' + ','.join(types_list))
+        # # type_ = fix.get('corrections')[0].get('type')
+        # types_ = fix.get('error_types')
+        # if types_:
+        #     types_cnt_dict = Counter(types_)
+        #     types_list = list(types_cnt_dict.keys())
+        #     types_most = types_cnt_dict.most_common(1)[0]
+        #
+        #     db_list = []
+        #     for item in types_list:
+        #         if item in known_types:
+        #             db_list.append(item)
+        #         else:
+        #             # create new tag?
+        #             db_list.append('unknown')
+        #
+        #     # file
+        #     with open('!ENG_TYPES.txt', 'a', encoding='utf-8') as f:
+        #         # json.dump(types_cnt_dict, f, ensure_ascii=False, indent=4)
+        #         f.write(',' + ','.join(types_list))
 
         # rephraser
         rephrases = EngRephr().get_rephrased_sentences(input_str=obj.input_sentence)
@@ -169,12 +174,13 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         # obj.translated_RU = Translate().get_ru_from_eng(text=obj.input_sentence)
 
         ###################################
-        # 24 todo check anonuser
+        # check anonuser
         user = self.request.user
-        print(user)
+        print('USER: ', user)
 
         if isinstance(user, User): # else AnonymousUser
-            profile = self.request.user.objects.select_related('userprofile')
+            # UserProfile.objects.get(user=request.user)
+            profile = self.request.user.userprofile
             if profile:
                 print(profile)
 
