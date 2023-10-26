@@ -34,6 +34,7 @@ class EngListUserView(TemplateView, LoginRequiredMixin):
         context['data_list'] = EngFixer.objects.filter()
         return context
 
+
 class EngMainView(TemplateView):
     template_name = "Eng_list.html"
 
@@ -93,74 +94,43 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
 
         return super(CheckENGView, self).form_invalid(form)
 
-
     @staticmethod
     def process_data(input_str):
-        input_ = input_str
-        fix = eng_fixer(input_)
+        fix = eng_fixer(input_str)
         fixed_result_JSON = fix.get('corrections')
 
         fixed_sentence = fix.get('text')
 
-        return dict(input=input_, fixed_sentence=fixed_sentence, fixed_result_JSON=fixed_result_JSON)
+        # rephraser
+        rephrases_list = None
+        rephrases = EngRephr().get_rephrased_sentences(input_str=input_str)
+        if rephrases:
+            rephrases_list = rephrases
 
+        # translate
+        translated_input = Translate().get_ru_from_eng(text=input_str)
+        translated_fixed = Translate().get_ru_from_eng(text=fixed_sentence)
+
+        # translated_RU = f"{tr_input} ->\n{tr_correct}"
+        # obj.translated_RU = Translate().get_ru_from_eng(text=obj.input_sentence)
+
+        return dict(input_str=input_str, fixed_sentence=fixed_sentence, fixed_result_JSON=fixed_result_JSON,
+                    rephrases_list=rephrases_list, translated_input=translated_input, translated_fixed=translated_fixed)
 
     def form_valid(self, form) -> HttpResponseRedirect:
         # 25 TODO !!! form.cleaned_data
         obj: EngFixer = form.save(commit=False)
 
-        # obj.author = self.request.user
-        # logger = logging.getLogger()
-        # item = EngFixer.objects.get(input_sentence=obj.input_sentence)
-        # existing
-        # db_item = EngFixer.objects.filter(input_sentence=obj.input_sentence).first()
-        # item = EngFixer.objects.filter(input_sentence=obj.input_sentence).exists()
-        # выше ПРОВЕРКА В def post FORM VALID/NON VALID
-        # NONE db_item
-        # if db_item:
-        #     logger.warning(f'using cache: id:{db_item.id}')
-        #     return redirect('eng_service:eng_get', db_item.id)
+        # not obj.input_sentence, use cleaned_data
+        input_str = form.cleaned_data['input_sentence']
+        data = self.process_data(input_str)
 
-        # todo MAIN FIXER logic
-        fix = eng_fixer(obj.input_sentence)
+        obj.fixed_sentence = data['fixed_sentence']
+        obj.fixed_result_JSON = data['fixed_result_JSON']
+        obj.rephrases_list = data['rephrases_list']
+        obj.translated_input = data['translated_input']
+        obj.translated_fixed = data['translated_fixed']
 
-        obj.fixed_sentence = fix.get('text')
-        obj.fixed_result_JSON = fix.get('corrections')
-
-
-
-        # todo SAVE TO MODEL?
-        # # type_ = fix.get('corrections')[0].get('type')
-        # types_ = fix.get('error_types')
-        # if types_:
-        #     types_cnt_dict = Counter(types_)
-        #     types_list = list(types_cnt_dict.keys())
-        #     types_most = types_cnt_dict.most_common(1)[0]
-        #
-        #     db_list = []
-        #     for item in types_list:
-        #         if item in known_types:
-        #             db_list.append(item)
-        #         else:
-        #             # create new tag?
-        #             db_list.append('unknown')
-        #
-        #     # file
-        #     with open('!ENG_TYPES.txt', 'a', encoding='utf-8') as f:
-        #         # json.dump(types_cnt_dict, f, ensure_ascii=False, indent=4)
-        #         f.write(',' + ','.join(types_list))
-
-        # rephraser
-        rephrases = EngRephr().get_rephrased_sentences(input_str=obj.input_sentence)
-        if rephrases:
-            obj.rephrases_list = rephrases
-
-        # translate
-        tr_input = Translate().get_ru_from_eng(text=obj.input_sentence)
-        tr_correct = Translate().get_ru_from_eng(text=obj.fixed_sentence)
-
-        obj.translated_RU = f"{tr_input} ->\n{tr_correct}"
-        # obj.translated_RU = Translate().get_ru_from_eng(text=obj.input_sentence)
 
         # save and redirect
         return super(CheckENGView, self).form_valid(form)
@@ -190,19 +160,16 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
             # UserProfile.objects.get(user=request.user)
             profile = request.user.userprofile
 
-
         Request.objects.create(
             user_profile=profile,
             fix=obj,
         )
-
 
     def get_object(self, *args, **kwargs):
         obj = super(CheckENGViewUpdate, self).get_object(*args, **kwargs)
         # if obj.author != self.request.user:
         #     raise PermissionDenied()  # or Http404
 
-        # 26 todo
         self.save_request(self.request, obj)
 
         return obj
@@ -251,39 +218,28 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
 
                 FIXED_TEXT = ""
 
-                # sugg_list = []
-                # if item:
-                #     for s in suggestions:
-                #         sugg_list.append(s)
-                # if sugg_list:
-                #     FIXED_TEXT = sugg_list[0]['text']
-                #     # sugg_list = '\n'.join(map(str, sugg_list))
-                #     sugg_list = '\n'.join(f"{s['text']} ({s['category']}, {s.get('definition', '')})" for s in sugg_list)
-
                 if suggestions:
+                    # first suggestion
                     FIXED_TEXT = suggestions[0]['text']
-
                     # sugg_list = '\n'.join(map(str, sugg_list))
-                    sugg_string = '\n'.join(f"{s['text']} ({s['category']}, {s.get('definition', '')})" for s in suggestions)
+                    sugg_string = '\n'.join(
+                        f"{s['text']} ({s['category']}, {s.get('definition', '')})" for s in suggestions)
                 else:
                     sugg_string = ""
 
                 suggestions_rows.append((text, FIXED_TEXT, long_description, short_description, sugg_string))
 
-                    # fix_text = item.get('text')
-                    # category = item.get('category')
-                    # definition = item.get('definition')
+                # fix_text = item.get('text')
+                # category = item.get('category')
+                # definition = item.get('definition')
                 # suggestions_rows.append((text, fix_text, category, definition, short_description, long_description))
-
 
         context['suggestions_rows'] = suggestions_rows
         context['rephrases_list'] = '\n'.join(self.object.rephrases_list) if self.object.rephrases_list else None
 
-        context['translate'] = self.object.translated_RU
-
-        # rephr
-        # data = get_rephrased(input_str=None)
-
+        if self.object.translated_input and self.object.translated_fixed:
+            context['translate'] = f"{self.object.translated_input} ->\n{self.object.translated_fixed}"
+        # context['translate'] = self.object.translated_RU
         return context
 
     # def get_context_data(self, **kwargs):
@@ -300,10 +256,7 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
 
         return super(CheckENGViewUpdate, self).form_valid(form)
 
-
 ####################################################################################################################
 
 # for mix detail
 # https://stackoverflow.com/questions/45659986/django-implementing-a-form-within-a-generic-detailview
-
-

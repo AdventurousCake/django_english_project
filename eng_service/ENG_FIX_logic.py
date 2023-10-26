@@ -134,14 +134,14 @@ def eng_fixer(input_str=None):
     # mstk = get_mistakes_data(input_str)  # languagetool
     # https://translate.yandex.ru/dictionary/%D0%90%D0%BD%D0%B3%D0%BB%D0%B8%D0%B9%D1%81%D0%BA%D0%B8%D0%B9-%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9/today's
 
-    v2 = get_fixed(input_str)
-    # result = v2.get("text")
+    data = get_fixed(input_str)
+    # result = data.get("text")
 
     # TODO REMOVE; todo check none; simple types
     error_types = []
 
     mistakes = []
-    corrections = v2.get('corrections')  # todo MANY
+    corrections = data.get('corrections')  # todo MANY
 
     for corr in corrections:
         # mistakes.append({corr['shortDescription'], corr['longDescription'], corr['correctionText'], corr['correctionDefinition'],
@@ -210,11 +210,11 @@ def eng_fixer(input_str=None):
          'stats': {'textLength': 91, 'wordCount': 18, 'sentenceCount': 2, 'longestSentence': 45}}"""
 
 
-    # result = {"text": v2.get("text"), 'corrections': mistakes, 'error_types': error_types}
-    result = dict(text=v2.get("text"), corrections = mistakes, error_types=error_types)
+    # result = {"text": data.get("text"), 'corrections': mistakes, 'error_types': error_types}
+    result = dict(text=data.get("text"), corrections = mistakes, error_types=error_types)
 
     print(input_str, result, sep="\n")
-    pprint(v2)
+    pprint(data)
 
     return result
 
