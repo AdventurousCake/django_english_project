@@ -12,8 +12,13 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 from pathlib import Path
 
+from environs import Env
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+env = Env()
+env.read_env(path=os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -26,16 +31,16 @@ DEBUG = True
 
 # TODO env lib
 # ALLOWED_HOSTS = ['*'] # non gunicorn
-ENV_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS")
-ALLOWED_HOSTS = []
+ENV_HOSTS = env.list("DJANGO_ALLOWED_HOSTS")
+ALLOWED_HOSTS = ['127.0.0.1', '0.0.0.0']
 # ALLOWED_HOSTS = ['0.0.0.0:8000','147.78.64.31','engproj9.servehttp.com']
 if ENV_HOSTS:
     ALLOWED_HOSTS.extend(ENV_HOSTS.split(" "))
 
 # USE CORRECT NGINX PROXY proxy_set_header Host $host; ...
 # https://docs.djangoproject.com/en/4.1/ref/settings/#std:setting-CSRF_TRUSTED_ORIGINS
-# CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', '').split(' ')
 # CSRF_TRUSTED_ORIGINS = ['http://engproj9.servehttp.com:9000']
+CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS")
 
 REST_FRAMEWORK = {
     # 'DEFAULT_RENDERER_CLASSES': [
@@ -57,7 +62,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'debug_toolbar',
-    'bootstrap5',
+    # 'bootstrap5',
 
     'crispy_forms',
     'crispy_bootstrap5',

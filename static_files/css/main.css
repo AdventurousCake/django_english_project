@@ -11,11 +11,11 @@ button.btn-primary-custom {
 }
 
 button.btn-primary-custom:hover {
-    transform: scale(1.2);
+    transform: scale(1.1);
 }
 
 #btn-orange:hover {
-    transform: scale(1.2);
+    transform: scale(1.1);
     transition: transform .2s;
 }
 

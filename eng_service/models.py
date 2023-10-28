@@ -11,8 +11,8 @@ from eng_service.models_core import User
 
 
 def validate_text_string(value):
-    # todo and nubmers?
-    pattern = r'^[a-zA-Z\s\.,?!]+$'
+    # todo and numbers?
+    pattern = r'^[a-zA-Z\s\.,?!’]+$'  # ’
     if not re.match(pattern, value):
         raise ValidationError("Only text are allowed")
 
