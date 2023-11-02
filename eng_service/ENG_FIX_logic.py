@@ -4,9 +4,16 @@ from collections import Counter
 import requests
 from pprint import pprint
 
+class HttpEng():
+    def get_request(self):
+        pass
+
 class EngRephr():
     def __init__(self, input_str=None):
         self.input_str = input_str
+
+    def get_data(self):
+        pass
 
     @staticmethod
     def get_rephrased_raw(input_str=None):
@@ -126,8 +133,18 @@ def get_fixed(input_str, response_lang='ru'):
            '"insertFeedback":true,"userLoggedOn":false},"origin":"interactive","isHtml":false} ' \
         .replace('MY_INPUT', input_str)
 
-    response = requests.post('https://orthographe.reverso.net/api/v1/Spelling/', headers=headers, data=data)
-    return response.json()
+    try:
+        response = requests.post('https://orthographe.reverso.net/api/v1/Spelling/', headers=headers, data=data)
+        print(response.status_code)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            print('Request failed with status code: ', response.status_code)
+            return
+
+    except Exception as e:
+        print(e)
+        return
 
 
 def eng_fixer(input_str=None):
@@ -135,11 +152,13 @@ def eng_fixer(input_str=None):
     # https://translate.yandex.ru/dictionary/%D0%90%D0%BD%D0%B3%D0%BB%D0%B8%D0%B9%D1%81%D0%BA%D0%B8%D0%B9-%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9/today's
 
     data = get_fixed(input_str)
+    if not data:
+        raise Exception('No data')
+
     # result = data.get("text")
 
     # TODO REMOVE; todo check none; simple types
     error_types = []
-
     mistakes = []
     corrections = data.get('corrections')  # todo MANY
 
@@ -163,13 +182,14 @@ def eng_fixer(input_str=None):
     # x:str in Enum_.__members__
 
     types_most = None
+    types_list_unique = None
     if error_types:
         types_cnt_dict = Counter(error_types)
-        types_list = list(types_cnt_dict.keys())
+        types_list_unique = list(types_cnt_dict.keys())
         types_most = types_cnt_dict.most_common(1)[0]
 
         db_list = []
-        for item in types_list:
+        for item in types_list_unique:
             if item in known_types:
                 db_list.append(item)
             else:
@@ -179,7 +199,7 @@ def eng_fixer(input_str=None):
         # file
         with open('!ENG_TYPES.txt', 'a', encoding='utf-8') as f:
             # json.dump(types_cnt_dict, f, ensure_ascii=False, indent=4)
-            f.write(',' + ','.join(types_list))
+            f.write(',' + ','.join(types_list_unique))
 
     # corrections
     """[ { 'longDescription': 'A word was not spelled correctly',
@@ -212,7 +232,7 @@ def eng_fixer(input_str=None):
 
 
     # result = {"text": data.get("text"), 'corrections': mistakes, 'error_types': error_types}
-    result = dict(text=data.get("text"), corrections = mistakes, error_types=error_types,
+    result = dict(text=data.get("text"), corrections = mistakes, error_types=types_list_unique,
                   types_most=types_most)
 
     print(input_str, result, sep="\n")

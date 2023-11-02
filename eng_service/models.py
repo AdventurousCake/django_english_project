@@ -43,11 +43,12 @@ class EngFixer(models.Model):
     fixed_sentence = models.CharField(null=False, blank=True, max_length=256)
     rephrases_list = ArrayField(models.CharField(max_length=150, blank=True), null=True)
     # size=8,)
-    mistakes = models.CharField(null=True, max_length=256)
+
+    mistakes_most_TMP = models.CharField(null=True, max_length=256)
+    mistakes_list_TMP = ArrayField(models.CharField(max_length=150, blank=True), null=True)
 
     translated_input = models.CharField(null=True, max_length=256)
     translated_fixed = models.CharField(null=True, max_length=256)
-
     created_date = models.DateTimeField(null=False, auto_now_add=True)
 
     # model-level validation; validators - field level (by full_clean)

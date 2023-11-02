@@ -29,7 +29,10 @@ class EngProfileView(TemplateView, LoginRequiredMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # filter by user LEN; limits?
-        data = Request.objects.filter(user_profile=self.request.user).order_by('-created_date')
+
+        profile = self.request.user.userprofile
+        data = Request.objects.filter(user_profile=profile).order_by('-created_date')
+
         count = len(data) # .count()
         last_using = data[0].created_date
 
@@ -101,16 +104,6 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
             obj = EngFixer.objects.values('id').get(input_sentence=form.data['input_sentence'])
             return redirect('eng_service:eng_get', obj['id'])
 
-        # form.add_error(None, '123')
-        # if 'non_field_errors' in form.errors:
-        #     for error in form.errors['non_field_errors']:
-        #         if isinstance(error, ValidationError): #and 'unique' in error.message:
-        #             # Handle the Unique constraint error here
-        #             # For example, you can add a custom error message to the form
-        #             form.add_error(None, 'This record violates a unique constraint.')
-        #             break
-        # form.add_error(None, '123')
-
         return super(CheckENGView, self).form_invalid(form)
 
     @staticmethod
@@ -129,9 +122,6 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         # translate
         translated_input = Translate().get_ru_from_eng(text=input_str)
         translated_fixed = Translate().get_ru_from_eng(text=fixed_sentence)
-
-        # translated_RU = f"{tr_input} ->\n{tr_correct}"
-        # obj.translated_RU = Translate().get_ru_from_eng(text=obj.input_sentence)
 
         return dict(input_str=input_str, fixed_sentence=fixed_sentence, fixed_result_JSON=fixed_result_JSON,
                     rephrases_list=rephrases_list, translated_input=translated_input, translated_fixed=translated_fixed)
@@ -247,11 +237,6 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
                     sugg_string = ""
 
                 suggestions_rows.append((text, FIXED_TEXT, long_description, short_description, sugg_string))
-
-                # fix_text = item.get('text')
-                # category = item.get('category')
-                # definition = item.get('definition')
-                # suggestions_rows.append((text, fix_text, category, definition, short_description, long_description))
 
         context['suggestions_rows'] = suggestions_rows
         context['rephrases_list'] = '\n'.join(self.object.rephrases_list) if self.object.rephrases_list else None
