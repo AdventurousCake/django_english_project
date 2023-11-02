@@ -29,13 +29,12 @@ SECRET_KEY = 'django-insecure-rh#^1f*3i1h7p+640-n!!4l0m*ivthh+2yxkcr0%i#=ehh1!p2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# TODO env lib
 # ALLOWED_HOSTS = ['*'] # non gunicorn
 ENV_HOSTS = env.list("DJANGO_ALLOWED_HOSTS")
 ALLOWED_HOSTS = ['127.0.0.1', '0.0.0.0']
 # ALLOWED_HOSTS = ['0.0.0.0:8000','147.78.64.31','engproj9.servehttp.com']
 if ENV_HOSTS:
-    ALLOWED_HOSTS.extend(ENV_HOSTS.split(" "))
+    ALLOWED_HOSTS.extend(ENV_HOSTS)
 
 # USE CORRECT NGINX PROXY proxy_set_header Host $host; ...
 # https://docs.djangoproject.com/en/4.1/ref/settings/#std:setting-CSRF_TRUSTED_ORIGINS

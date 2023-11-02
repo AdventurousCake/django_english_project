@@ -22,6 +22,23 @@ import logging
 
 from eng_service.models_core import User
 
+class EngProfileView(TemplateView, LoginRequiredMixin):
+    template_name = "Eng_profile.html"
+    # only for user?
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # filter by user LEN; limits?
+        data = Request.objects.filter(user_profile=self.request.user).order_by('-created_date')
+        count = len(data) # .count()
+        last_using = data[0].created_date
+
+        context['count'] = count
+        context['last_using'] = last_using
+
+
+        context['data_list'] = data
+        return context
 
 # TODO LIST BY USER
 class EngListUserView(TemplateView, LoginRequiredMixin):
@@ -31,6 +48,7 @@ class EngListUserView(TemplateView, LoginRequiredMixin):
         context = super().get_context_data(**kwargs)
 
         user = self.request.user
+        # todo filter request
         context['data_list'] = EngFixer.objects.filter()
         return context
 
@@ -40,7 +58,8 @@ class EngMainView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['data_list'] = EngFixer.objects.all()
+        LIMIT = 20
+        context['data_list'] = EngFixer.objects.all().order_by('-created_date')[:LIMIT]
         return context
 
 
@@ -241,14 +260,6 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
             context['translate'] = f"{self.object.translated_input} ->\n{self.object.translated_fixed}"
         # context['translate'] = self.object.translated_RU
         return context
-
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context['title'] = "📨 Send message form"
-    #     context['btn_caption'] = "Send"
-    #     context['table_data'] = Message.objects.select_related().order_by('-created_date')[:5]
-    #
-    #     return context
 
     def form_valid(self, form):
         # obj = form.save(commit=False)

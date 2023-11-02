@@ -1,0 +1,26 @@
+{% extends 'Eng_base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+
+    <div class="container">
+
+        <p class="display-3">English Fixer | <a href="{% url 'eng_service:eng' %}">Fix New</a></p>
+
+        <h1>User Profile</h1>
+
+        <div id="stats">
+
+            <p><b>Username:</b> {{ user.username }}</p>
+            <p><b>Email:</b> {{ user.email }}</p>
+
+            Fixer:
+            <p><b>Requests:</b> {{ user.email }}</p>
+            <p></p>
+
+        </div>
+
+    </div>
+
+{% endblock %}

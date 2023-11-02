@@ -162,6 +162,7 @@ def eng_fixer(input_str=None):
     #     pass
     # x:str in Enum_.__members__
 
+    types_most = None
     if error_types:
         types_cnt_dict = Counter(error_types)
         types_list = list(types_cnt_dict.keys())
@@ -211,7 +212,8 @@ def eng_fixer(input_str=None):
 
 
     # result = {"text": data.get("text"), 'corrections': mistakes, 'error_types': error_types}
-    result = dict(text=data.get("text"), corrections = mistakes, error_types=error_types)
+    result = dict(text=data.get("text"), corrections = mistakes, error_types=error_types,
+                  types_most=types_most)
 
     print(input_str, result, sep="\n")
     pprint(data)
