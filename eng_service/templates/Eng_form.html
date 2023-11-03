@@ -48,6 +48,13 @@
         {% else %}
         {% endif %}
 
+        <div id="btns" class="text-center">
+            <button onclick="copy_result()" class="btn btn-primary btn-lg">Copy result</button>
+            <button onclick="copy_url()" class="btn btn-primary btn-lg">Share url (copy url)</button>
+        </div>
+
+        <br>
+
         {% if translate %}
             <div id="translate">
                 <h1>Translate RU</h1>
