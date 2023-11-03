@@ -48,10 +48,12 @@
         {% else %}
         {% endif %}
 
+        {% if disable_buttons %}
         <div id="btns" class="text-center">
             <button onclick="copy_result()" class="btn btn-primary btn-lg">Copy result</button>
             <button onclick="copy_url()" class="btn btn-primary btn-lg">Share url (copy url)</button>
         </div>
+        {% endif %}
 
         <br>
 
@@ -60,12 +62,14 @@
                 <h1>Translate RU</h1>
                 {#                {{ translate|linebreaks }}#}
 
-{#                {% for item in translate %}#}
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><span class="badge rounded-pill bg-primary">Input</span> {{ translate.0 }}</li>
-                        <li class="list-group-item"><span class="badge rounded-pill bg-primary">Fix</span> {{ translate.1 }}</li>
-                    </ul>
-{#                {% endfor %}#}
+                {#                {% for item in translate %}#}
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <span class="badge rounded-pill bg-primary">Input</span> {{ translate.0 }}</li>
+                    <li class="list-group-item">
+                        <span class="badge rounded-pill bg-primary">Fix</span> {{ translate.1 }}</li>
+                </ul>
+                {#                {% endfor %}#}
 
             </div>
         {% endif %}

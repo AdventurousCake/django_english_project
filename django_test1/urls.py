@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 from django_test1 import settings
+from eng_service.core.views import core_auth
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,9 +27,16 @@ urlpatterns = [
     path('stripe_payments/', include('stripe_payments.urls'), name='stripe_payments'),
     path('eng/', include('eng_service.urls'), name='eng_service'),
 
+    path('auth_github/', include('social_django.urls', namespace='social')),
+    path('page_github/', core_auth),
+
     path('b/', include('BOOKS.urls'), name='books_service'),
 ]
 
+urlpatterns += [
+    # custom login
+    path('accounts/', include('django.contrib.auth.urls')),
+]
 
 urlpatterns += [
     path('__debug__/', include('debug_toolbar.urls')),
