@@ -107,11 +107,15 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         return super(CheckENGView, self).form_invalid(form)
 
     @staticmethod
-    def process_data(input_str):
+    def get_eng_data(input_str):
         fix = eng_fixer(input_str)
         fixed_result_JSON = fix.get('corrections')
 
         fixed_sentence = fix.get('text')
+
+        # TODO 03
+        error_types = fix.get('error_types')
+        types_most = fix.get('types_most')
 
         # rephraser
         rephrases_list = None
@@ -124,21 +128,26 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         translated_fixed = Translate().get_ru_from_eng(text=fixed_sentence)
 
         return dict(input_str=input_str, fixed_sentence=fixed_sentence, fixed_result_JSON=fixed_result_JSON,
-                    rephrases_list=rephrases_list, translated_input=translated_input, translated_fixed=translated_fixed)
+                    rephrases_list=rephrases_list, translated_input=translated_input, translated_fixed=translated_fixed,
+                    types_most=types_most, error_types=error_types)
+
 
     def form_valid(self, form) -> HttpResponseRedirect:
-        # 25 TODO !!! form.cleaned_data
         obj: EngFixer = form.save(commit=False)
 
         # not obj.input_sentence, use cleaned_data
         input_str = form.cleaned_data['input_sentence']
-        data = self.process_data(input_str)
+        data = self.get_eng_data(input_str)
 
         obj.fixed_sentence = data['fixed_sentence']
         obj.fixed_result_JSON = data['fixed_result_JSON']
         obj.rephrases_list = data['rephrases_list']
         obj.translated_input = data['translated_input']
         obj.translated_fixed = data['translated_fixed']
+
+
+        obj.mistakes_list_TMP = data['error_types']
+        obj.mistakes_most_TMP = data['types_most']
 
 
         # save and redirect
@@ -190,7 +199,7 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
         # json to text
         # context['description'] = pprint.pformat(self.object.fixed_result_JSON, indent=4).replace('\n', '<br>')
 
-        # TODO
+        # TODO JSON PARSING
         suggestions_rows = []
         data = list(self.object.fixed_result_JSON)
         if data:
@@ -239,10 +248,17 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
                 suggestions_rows.append((text, FIXED_TEXT, long_description, short_description, sugg_string))
 
         context['suggestions_rows'] = suggestions_rows
-        context['rephrases_list'] = '\n'.join(self.object.rephrases_list) if self.object.rephrases_list else None
+        # context['rephrases_list'] = '\n'.join(self.object.rephrases_list) if self.object.rephrases_list else None
+        context['rephrases_list'] = self.object.rephrases_list if self.object.rephrases_list else None
+
+        if self.object.mistakes_list_TMP:
+            context['types_most'] = self.object.mistakes_most_TMP
+            # context['error_types'] = '#'+' #'.join(self.object.mistakes_list_TMP)
+            context['error_types'] = self.object.mistakes_list_TMP
 
         if self.object.translated_input and self.object.translated_fixed:
-            context['translate'] = f"{self.object.translated_input} ->\n{self.object.translated_fixed}"
+            # context['translate'] = f"{self.object.translated_input} ->\n{self.object.translated_fixed}"
+            context['translate'] = self.object.translated_input, self.object.translated_fixed
         # context['translate'] = self.object.translated_RU
         return context
 

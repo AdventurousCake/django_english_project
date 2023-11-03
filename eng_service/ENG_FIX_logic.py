@@ -4,7 +4,7 @@ from collections import Counter
 import requests
 from pprint import pprint
 
-class HttpEng():
+class HttpEngService():
     def get_request(self):
         pass
 
@@ -186,17 +186,20 @@ def eng_fixer(input_str=None):
     if error_types:
         types_cnt_dict = Counter(error_types)
         types_list_unique = list(types_cnt_dict.keys())
-        types_most = types_cnt_dict.most_common(1)[0]
+        types_most_tuple = types_cnt_dict.most_common(1)[0]
+        types_most = types_most_tuple[0]
+        types_most_cnt = types_most_tuple[1]
 
-        db_list = []
-        for item in types_list_unique:
-            if item in known_types:
-                db_list.append(item)
-            else:
-                # create new tag?
-                db_list.append('unknown')
+        # for db m2m
+        # db_list = []
+        # for item in types_list_unique:
+        #     if item in known_types:
+        #         db_list.append(item)
+        #     else:
+        #         # create new tag?
+        #         db_list.append('unknown')
 
-        # file
+        # TODO TMP file
         with open('!ENG_TYPES.txt', 'a', encoding='utf-8') as f:
             # json.dump(types_cnt_dict, f, ensure_ascii=False, indent=4)
             f.write(',' + ','.join(types_list_unique))
