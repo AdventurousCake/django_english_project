@@ -134,7 +134,8 @@ def get_fixed(input_str, response_lang='ru'):
         .replace('MY_INPUT', input_str)
 
     try:
-        response = requests.post('https://orthographe.reverso.net/api/v1/Spelling/', headers=headers, data=data)
+        response = requests.post('https://orthographe.reverso.net/api/v1/Spelling/', headers=headers, data=data,
+                                 timeout=5)
         print(response.status_code)
         if response.status_code == 200:
             return response.json()

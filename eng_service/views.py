@@ -78,6 +78,7 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
         # hide field from create form
         context['form'].fields['fixed_sentence'].widget = forms.HiddenInput()
         return context
@@ -259,7 +260,6 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
         if self.object.translated_input and self.object.translated_fixed:
             # context['translate'] = f"{self.object.translated_input} ->\n{self.object.translated_fixed}"
             context['translate'] = self.object.translated_input, self.object.translated_fixed
-        # context['translate'] = self.object.translated_RU
         return context
 
     def form_valid(self, form):
