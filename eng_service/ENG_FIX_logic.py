@@ -8,7 +8,7 @@ class HttpEngService():
     def get_request(self):
         pass
 
-class EngRephr():
+class EngRephr:  # inherits HttpEngService?
     def __init__(self, input_str=None):
         self.input_str = input_str
 
