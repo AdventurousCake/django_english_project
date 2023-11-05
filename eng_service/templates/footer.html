@@ -1,0 +1,9 @@
+<section id="creator" class="text-center">
+    {% if user.is_authenticated %}
+    User: {{ user.username }} | <a href="{% url 'logout' %}" class="href">Logout</a>
+    {% else %}
+    <a href="{% url 'social:begin' 'github' %}" class="href">Login using GitHub</a>
+    {% endif %}
+    <br>
+    <a href="https://github.com/AdventurousCake">Igor T.</a>
+</section>
