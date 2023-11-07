@@ -16,7 +16,7 @@ from rest_framework.views import APIView
 from eng_service.ENG_FIX_logic import eng_fixer, EngRephr
 from eng_service.forms import EngFixerForm
 from eng_service.local_lib.google_translate import Translate
-from eng_service.models import EngFixer, Request
+from eng_service.models import EngFixer, Request, UserProfile
 # from stripe_payments.services import create_stripe_session
 import logging
 
@@ -30,7 +30,10 @@ class EngProfileView(TemplateView, LoginRequiredMixin):
         context = super().get_context_data(**kwargs)
         # filter by user LEN; limits?
 
-        profile = self.request.user.userprofile
+        # get or 404
+        profile = get_object_or_404(UserProfile, user=self.request.user)
+        # profile = self.request.user.userprofile
+
         data = Request.objects.filter(user_profile=profile).order_by('-created_date')
 
         count = len(data) # .count()
@@ -204,9 +207,9 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
 
         # TODO JSON PARSING
         suggestions_rows = []
-        data = list(self.object.fixed_result_JSON)
+        data = self.object.fixed_result_JSON
         if data:
-            for item in data:
+            for item in list(data):
                 # input TODO NAMING
                 text = item.get('mistakeText')
                 long_description = item.get('longDescription')
@@ -254,6 +257,7 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
         # context['rephrases_list'] = '\n'.join(self.object.rephrases_list) if self.object.rephrases_list else None
         context['rephrases_list'] = self.object.rephrases_list if self.object.rephrases_list else None
 
+        # TODO
         if self.object.mistakes_list_TMP:
             context['types_most'] = self.object.mistakes_most_TMP
             # context['error_types'] = '#'+' #'.join(self.object.mistakes_list_TMP)
