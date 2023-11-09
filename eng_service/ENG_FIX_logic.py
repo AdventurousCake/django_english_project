@@ -154,7 +154,7 @@ def eng_fixer(input_str=None):
 
     data = get_fixed(input_str)
     if not data:
-        raise Exception('No data')
+        raise Exception('No data from resource')
 
     # result = data.get("text")
 

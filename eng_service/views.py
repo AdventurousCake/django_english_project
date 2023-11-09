@@ -30,22 +30,64 @@ class EngProfileView(TemplateView, LoginRequiredMixin):
         context = super().get_context_data(**kwargs)
         # filter by user LEN; limits?
 
+        # todo anon user
         # get or 404
         profile = get_object_or_404(UserProfile, user=self.request.user)
         # profile = self.request.user.userprofile
 
-        data = Request.objects.filter(user_profile=profile).order_by('-created_date')
+        requests = (Request.objects.filter(user_profile=profile)
+                    .select_related('fix')
+                    .order_by('-created_date')
+                    .values('fix__fixed_result_JSON', # todo
+                            'fix__mistakes_most_TMP', 'fix__mistakes_list_TMP', 'created_date')
+                    )
 
-        count = len(data) # .count()
-        last_using = data[0].created_date
+        # requests = Request.objects.filter(user_profile=profile).select_related('fix').order_by('-created_date')
+        # requests = Request.objects.filter(user_profile=profile).order_by('-created_date')
+
+        count = len(requests) # .count()
+        last_using = requests[0]['created_date']  # .created_date
+
+        # todo test
+        # FROM JSON
+        # tst = EngFixer.objects.values_list('fixed_result_JSON', flat=True)
+        # m = []
+        # for json_item in tst:
+        #     for item in json_item:
+        #         if 'type' in item:
+        #             m.append(item['type'])
+
+
+        ####################### TODO RC
+        # x= tst[0]['fixed_result_JSON'][0]['type']
+        m=[]
+        for item in requests:
+            tmp = item['fix__mistakes_most_TMP']
+            if tmp:
+                m.append(tmp)
+            else:
+                eng_json = item['fix__fixed_result_JSON']
+                if eng_json:
+                    for sentence in eng_json:
+                        if 'type' in sentence:
+                            m.append(sentence['type'])
+
+        top3_str = ''
+        if m:
+            types_cnt_dict = Counter(m)
+            # types_list_unique = list(types_cnt_dict.keys())
+            # types_most_tuple = types_cnt_dict.most_common(1)[0]
+            # types_most = types_most_tuple[0]
+            # types_most_cnt = types_most_tuple[1]
+
+            top = types_cnt_dict.most_common(3)
+            top3_str = '\n'.join([f'{item[0]} - {item[1]}' for item in top])
+
 
         context['count'] = count
         context['last_using'] = last_using
-
-        # TODO TOP 3 MIST
-
-
-        context['data_list'] = data
+        context['top3_str'] = top3_str
+        context['data_list'] = requests
         return context
 
 # TODO LIST BY USER
@@ -181,8 +223,18 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
         profile = None
 
         if isinstance(user, User):  # else AnonymousUser
-            # UserProfile.objects.get(user=request.user)
-            profile = request.user.userprofile
+            # TODO GET OR CREATE
+            profile = UserProfile.objects.filter(user=user).first()
+
+            # try:
+            #     profile = UserProfile.objects.get(user=user)
+            # except UserProfile.DoesNotExist:
+            #     pass
+            #     # profile = UserProfile.objects.create(user=user)
+
+            # profile = UserProfile.objects.get(user=request.user)
+            # profile = UserProfile.objects.get_or_create(user=request.user)
+            # profile = request.user.userprofile
 
         Request.objects.create(
             user_profile=profile,
@@ -245,6 +297,7 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
                 if suggestions:
                     # first suggestion
                     FIXED_TEXT = suggestions[0]['text']
+
                     # sugg_list = '\n'.join(map(str, sugg_list))
                     sugg_string = '\n'.join(
                         f"{s['text']} ({s['category']}, {s.get('definition', '')})" for s in suggestions)

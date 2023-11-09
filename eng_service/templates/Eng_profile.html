@@ -15,9 +15,16 @@
             <p><b>Username:</b> {{ user.username }}</p>
             <p><b>Email:</b> {{ user.email }}</p>
 
-            Fixer:
+            <br>
+
+            <h1>Fixer:</h1>
             <p><b>Requests count:</b> {{ count }}</p>
             <p><b>Last using:</b> {{ last_using }}</p>
+
+            <br>
+
+            <h1>Top mistakes</h1>
+            <p><b>{{ top3_str|linebreaksbr }}</b></p>
 
             <p></p>
 

@@ -24,6 +24,8 @@ class CreateEngTestBase(TestCase):
 
         cls.profile1 = UserProfile.objects.create(user=user3)
 
+        # cls.profile2 = UserProfile.objects.create(user=User.objects.get(username='user1'))
+
 # BASE CLASS
 class CreateClientsTestBase(TestCase):
     @classmethod
@@ -62,19 +64,21 @@ class CreateClientsTestBase(TestCase):
 #         self.assertEqual(r.status_code, 200)
 
 
-class MessageTestURLS(CreateClientsTestBase, CreateEngTestBase):
+class MessageTestURLS(CreateClientsTestBase,
+                      CreateEngTestBase
+                      ):
 
     def test_urls(self):
         """ 'eng_service:eng', 'eng_service:eng_get', 'eng_service:eng_profile', 'eng_service:eng_list',
                        """
         urlpatterns = [('eng_service:eng', None),
-                       # ('eng_service:eng_get', 1), # EMPTY DB
+                       ('eng_service:eng_get', 1), # EMPTY DB
                        # ('eng_service:eng_profile', 1), # EMPTY DB
                        ('eng_service:eng_list', None),
                        ]
 
         for pattern in urlpatterns:
-            print(pattern)
+            print(f'testing url: {pattern}')
             # url = reverse(pattern.name)
             if pattern[1] is None:
                 kwargs = {}
