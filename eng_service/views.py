@@ -60,9 +60,11 @@ class EngProfileView(TemplateView, LoginRequiredMixin):
 
         ####################### TODO RC
         # x= tst[0]['fixed_result_JSON'][0]['type']
+
+        # requests = [{'fix__mistakes_most_TMP': 'example', 'fix__fixed_result_JSON': [{'type': 'noun'}]}]
         m=[]
         for item in requests:
-            tmp = item['fix__mistakes_most_TMP']
+            tmp = item.get('fix__mistakes_most_TMP')
             if tmp:
                 m.append(tmp)
             else:
@@ -254,7 +256,10 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
         context = super().get_context_data(**kwargs)
         context['disable_buttons'] = True
 
-        # json to text
+        tag = self.request.GET.get("tag")
+        print(tag)
+
+        # json to input_text
         # context['description'] = pprint.pformat(self.object.fixed_result_JSON, indent=4).replace('\n', '<br>')
 
         # TODO JSON PARSING
@@ -262,8 +267,7 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
         data = self.object.fixed_result_JSON
         if data:
             for item in list(data):
-                # input TODO NAMING
-                text = item.get('mistakeText')
+                input_text = item.get('mistakeText')
                 long_description = item.get('longDescription')
 
                 # грамм ошибка
@@ -304,7 +308,7 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
                 else:
                     sugg_string = ""
 
-                suggestions_rows.append((text, FIXED_TEXT, long_description, short_description, sugg_string))
+                suggestions_rows.append((input_text, FIXED_TEXT, long_description, short_description, sugg_string))
 
         context['suggestions_rows'] = suggestions_rows
         # context['rephrases_list'] = '\n'.join(self.object.rephrases_list) if self.object.rephrases_list else None

@@ -14,6 +14,17 @@
 
         <hr>
 
+
+        {#    filter#}
+        {#        <form action="">#}
+        {#            <select class="form-select" aria-label="Default select example" name="tag">#}
+        {#                <option selected>Все</option>#}
+        {#                <option value="Все">Все</option>#}
+        {#                <option value="тэг1">тэг1</option>#}
+        {#            </select>#}
+        {#            <button type="submit" class="btn btn-sm btn-primary mt-3">Выбрать</button>#}
+        {#        </form>#}
+
         {#    {% if form.errors %}#}
         {#        <div class="alert alert-danger" role="alert">#}
         {#            <span style="display: flex">#}
@@ -49,10 +60,10 @@
         {% endif %}
 
         {% if disable_buttons %}
-        <div id="btns" class="text-center">
-            <button onclick="copy_result()" class="btn btn-primary btn-lg">Copy result</button>
-            <button onclick="copy_url()" class="btn btn-primary btn-lg">Share url (copy url)</button>
-        </div>
+            <div id="btns" class="text-center">
+                <button onclick="copy_result()" class="btn btn-primary btn-lg">Copy result</button>
+                <button onclick="copy_url()" class="btn btn-primary btn-lg">Share url (copy url)</button>
+            </div>
         {% endif %}
 
         {% if translate %}
@@ -92,30 +103,36 @@
             <div id="suggestions">
                 <h1>Description of mistakes (suggestions)</h1>
 
-                <table class="table table-striped table-hover">
-                    {#            <thead>#}
-                    {#            <tr>#}
-                    {#                <th scope="col">#</th>#}
-                    {#                <th scope="col">input</th>#}
-                    {#                <th scope="col">output</th>#}
-                    {#                <th scope="col">link</th>#}
-                    {#            </tr>#}
-                    {#            </thead>#}
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">input</th>
+                                        <th scope="col">fix</th>
+                                        <th scope="col">description</th>
+                                        <th scope="col">error type</th>
+                                        <th scope="col">suggestions</th>
+                                    </tr>
+                                    </thead>
 
-                    <tbody>
+                        <tbody>
 
-                    {% for item in suggestions_rows %}
-                        <tr>
-                            <td>{{ item.0 }}</td>
-                            <td><b>{{ item.1 }}</b></td>
-                            <td>{{ item.2 }}</td>
-                            <td>{{ item.3 }}</td>
-                            <td>{{ item.4|linebreaks|safe }}</td>
-                        </tr>
-                    {% endfor %}
+                        {% for item in suggestions_rows %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
 
-                    </tbody>
-                </table>
+                                <td>{{ item.0 }}</td>
+                                <td><b>{{ item.1 }}</b></td>
+                                <td>{{ item.2 }}</td>
+                                <td>{{ item.3 }}</td>
+                                <td>{{ item.4|linebreaks|safe }}</td>
+                            </tr>
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
             </div>
         {% endif %}
 

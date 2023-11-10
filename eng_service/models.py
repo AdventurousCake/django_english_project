@@ -17,9 +17,12 @@ def validate_text_string(value):
         raise ValidationError("Only text are allowed")
 
 #m2m; неявное созд доп таблицы
-# class Tag(models.Model):
-#     id = models.BigAutoField(primary_key=True, auto_created=True, null=False)
-#     name = models.CharField(null=False, max_length=256)
+class Tag(models.Model):
+    id = models.BigAutoField(primary_key=True, auto_created=True, null=False)
+    name = models.CharField(null=False, max_length=256)
+
+    def __repr__(self):
+        return self.name
 
 # o2m
 class Request(models.Model):
@@ -46,6 +49,9 @@ class EngFixer(models.Model):
 
     mistakes_most_TMP = models.CharField(null=True, max_length=256)
     mistakes_list_TMP = ArrayField(models.CharField(max_length=150, blank=True), null=True)
+
+    # TODO migr
+    # tags = models.ManyToManyField(to='Tag', null=True, on_delete=models.SET_NULL)
 
     translated_input = models.CharField(null=True, max_length=256)
     translated_fixed = models.CharField(null=True, max_length=256)
