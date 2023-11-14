@@ -156,6 +156,8 @@ def eng_fixer(input_str=None):
     if not data:
         raise Exception('No data from resource')
 
+    ########### todo method parsing
+
     # result = data.get("text")
 
     # TODO REMOVE; todo check none; simple types

@@ -20,6 +20,7 @@ def validate_text_string(value):
 class Tag(models.Model):
     id = models.BigAutoField(primary_key=True, auto_created=True, null=False)
     name = models.CharField(null=False, max_length=256)
+    str_name = models.CharField(null=True, max_length=256)
 
     def __repr__(self):
         return self.name

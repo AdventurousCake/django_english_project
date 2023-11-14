@@ -22,8 +22,10 @@ import logging
 
 from eng_service.models_core import User
 
+
 class EngProfileView(TemplateView, LoginRequiredMixin):
     template_name = "Eng_profile.html"
+
     # only for user?
 
     def get_context_data(self, **kwargs):
@@ -35,18 +37,27 @@ class EngProfileView(TemplateView, LoginRequiredMixin):
         profile = get_object_or_404(UserProfile, user=self.request.user)
         # profile = self.request.user.userprofile
 
+        # RIGHT 762
         requests = (Request.objects.filter(user_profile=profile)
                     .select_related('fix')
-                    .order_by('-created_date')
-                    .values('fix__fixed_result_JSON', # todo
-                            'fix__mistakes_most_TMP', 'fix__mistakes_list_TMP', 'created_date')
+                    # .order_by('-created_date')
+                    .values(
+            'fix_id',
+            'fix__fixed_result_JSON',  # todo
+            'fix__mistakes_most_TMP', 'fix__mistakes_list_TMP',
+            # 'created_date'
+        )
+                    .distinct()
+                    # .distinct('fix_id')
                     )
 
         # requests = Request.objects.filter(user_profile=profile).select_related('fix').order_by('-created_date')
         # requests = Request.objects.filter(user_profile=profile).order_by('-created_date')
 
-        count = len(requests) # .count()
-        last_using = requests[0]['created_date']  # .created_date
+        count = len(requests)  # .count()
+        last_using = \
+        Request.objects.filter(user_profile=profile).values_list('created_date').order_by('-created_date').first()[0]
+        # last_using = last_using.strftime('%Y-%m-%d %H:%M')
 
         # todo test
         # FROM JSON
@@ -57,22 +68,21 @@ class EngProfileView(TemplateView, LoginRequiredMixin):
         #         if 'type' in item:
         #             m.append(item['type'])
 
-
         ####################### TODO RC
         # x= tst[0]['fixed_result_JSON'][0]['type']
 
         # requests = [{'fix__mistakes_most_TMP': 'example', 'fix__fixed_result_JSON': [{'type': 'noun'}]}]
-        m=[]
+        m = []
         for item in requests:
-            tmp = item.get('fix__mistakes_most_TMP')
-            if tmp:
-                m.append(tmp)
-            else:
-                eng_json = item['fix__fixed_result_JSON']
-                if eng_json:
-                    for sentence in eng_json:
-                        if 'type' in sentence:
-                            m.append(sentence['type'])
+            # tmp = item.get('fix__mistakes_most_TMP')
+            # if tmp:
+            #     m.append(tmp)
+            # else:
+            eng_json = item.get('fix__fixed_result_JSON')
+            if eng_json:
+                for sentence in eng_json:
+                    if 'type' in sentence:
+                        m.append(sentence['type'])
 
         top3_str = ''
         if m:
@@ -85,12 +95,12 @@ class EngProfileView(TemplateView, LoginRequiredMixin):
             top = types_cnt_dict.most_common(3)
             top3_str = '\n'.join([f'{item[0]} - {item[1]}' for item in top])
 
-
         context['count'] = count
         context['last_using'] = last_using
         context['top3_str'] = top3_str
         context['data_list'] = requests
         return context
+
 
 # TODO LIST BY USER
 class EngListUserView(TemplateView, LoginRequiredMixin):
@@ -151,6 +161,7 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         if check_unique_input:
             # obj = form.save(commit=False)  # не было запроса для взятия даты
             # get_object_or_404(EngFixer, input_sentence=form.data['input_sentence'])
+
             obj = EngFixer.objects.values('id').get(input_sentence=form.data['input_sentence'])
             return redirect('eng_service:eng_get', obj['id'])
 
@@ -181,7 +192,6 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
                     rephrases_list=rephrases_list, translated_input=translated_input, translated_fixed=translated_fixed,
                     types_most=types_most, error_types=error_types)
 
-
     def form_valid(self, form) -> HttpResponseRedirect:
         obj: EngFixer = form.save(commit=False)
 
@@ -195,10 +205,8 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         obj.translated_input = data['translated_input']
         obj.translated_fixed = data['translated_fixed']
 
-
         obj.mistakes_list_TMP = data['error_types']
         obj.mistakes_most_TMP = data['types_most']
-
 
         # save and redirect
         return super(CheckENGView, self).form_valid(form)

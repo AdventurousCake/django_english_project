@@ -1,7 +1,5 @@
 {% extends 'Eng_base.html' %}
-{#{% load bootstrap5 %}#}
 {% load crispy_forms_tags %}
-{#{% bootstrap_css %}#}
 {% load static %}
 
 {% block content %}
@@ -37,13 +35,10 @@
             <div id="form1">
                 <h1>Fix</h1>
 
-                {#                {% bootstrap_form_errors form layout='inline' %}#}
-
                 <form method="post" class="form" enctype="multipart/form-data">
                     {% csrf_token %}
 
                     {{ form|crispy }}
-                    {#                    {% bootstrap_form form %}#}
 
                     {% if not disable_buttons %}
                         <div class="text-center">
