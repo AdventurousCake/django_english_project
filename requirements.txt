@@ -11,10 +11,13 @@ stripe
 #django-bootstrap-v5
 beautifulsoup4
 environs
+redis
 
 django-debug-toolbar
 
 django-crispy-forms
 crispy-bootstrap5
 social-auth-app-django
+
+django-ratelimit
 

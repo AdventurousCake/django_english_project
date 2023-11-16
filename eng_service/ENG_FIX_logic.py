@@ -12,11 +12,11 @@ class EngRephr:  # inherits HttpEngService?
     def __init__(self, input_str=None):
         self.input_str = input_str
 
-    def get_data(self):
+    def parse_data(self):
         pass
 
     @staticmethod
-    def get_rephrased_raw(input_str=None):
+    def get_data(input_str=None):
         headers = {
             'authority': 'rephraser-api.reverso.net',
             'accept': 'application/json',
@@ -46,11 +46,16 @@ class EngRephr:  # inherits HttpEngService?
         return response.json()
 
     def get_rephrased_sentences(self, input_str="Today's good weather. I feel good"):
-        data = self.get_rephrased_raw(input_str)
+        data = self.get_data(input_str)
         data = data.get('candidates')  # feature: order by diversity
+
+        if not data:
+            raise Exception('No data: rephraser')
+
         sentences = [item['candidate'] for item in data]
         return sentences
 
+# unused tmp
 def get_mistakes_data_LANGtool(input_str):
     """https://languagetool.org/insights/post/grammar-dynamic-vs-stative-verbs/"""
 
@@ -78,7 +83,7 @@ def get_mistakes_data_LANGtool(input_str):
         'v': 'standalone',
     }
 
-    # todo escaping
+    # need escaping
     data = {
         # 'data': '{"text":"We\'ve receive a new proposal for the project. I will keep you informed about how things go."}',
         'data': f'{{"text": "{input_str}"}}',
@@ -99,7 +104,7 @@ def get_mistakes_data_LANGtool(input_str):
     return response.json()
 
 
-def get_fixed(input_str, response_lang='ru'):
+def get_fixed_data(input_str, response_lang='ru'):
     headers = {
         'authority': 'orthographe.reverso.net',
         'accept': 'text/json',
@@ -137,8 +142,12 @@ def get_fixed(input_str, response_lang='ru'):
         response = requests.post('https://orthographe.reverso.net/api/v1/Spelling/', headers=headers, data=data,
                                  timeout=5)
         print(response.status_code)
+
         if response.status_code == 200:
-            return response.json()
+            result_json = response.json()
+            if not result_json:
+                raise Exception('No data from resource')
+            return result_json
         else:
             print('Request failed with status code: ', response.status_code)
             return
@@ -147,17 +156,15 @@ def get_fixed(input_str, response_lang='ru'):
         print(e)
         return
 
+def save_file_TEST(types_list_unique):
+    with open('!ENG_TYPES.txt', 'a', encoding='utf-8') as f:
+        # json.dump(types_cnt_dict, f, ensure_ascii=False, indent=4)
+        f.write(',' + ','.join(types_list_unique))
 
 def eng_fixer(input_str=None):
-    # mstk = get_mistakes_data(input_str)  # languagetool
-    # https://translate.yandex.ru/dictionary/%D0%90%D0%BD%D0%B3%D0%BB%D0%B8%D0%B9%D1%81%D0%BA%D0%B8%D0%B9-%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9/today's
-
-    data = get_fixed(input_str)
-    if not data:
-        raise Exception('No data from resource')
+    data = get_fixed_data(input_str)
 
     ########### todo method parsing
-
     # result = data.get("text")
 
     # TODO REMOVE; todo check none; simple types
@@ -170,14 +177,12 @@ def eng_fixer(input_str=None):
         #                  corr['suggestions']})
 
         # get by keys from response
-        mistakes.append(
-            {k: corr[k] for k in ['type', 'shortDescription', 'longDescription', 'mistakeText', 'suggestions']})
-
+        mistakes.append({key: corr[key] for key in
+                         ['type', 'shortDescription', 'longDescription', 'mistakeText', 'suggestions']})
         error_types.append(corr['type'])
 
 
-    known_types = ['grammar', 'punctuation', 'syntax', 'style', 'vocabulary', 'spelling', 'typos']
-
+    # known_types = ['grammar', 'punctuation', 'syntax', 'style', 'vocabulary', 'spelling', 'typos']
     # real: 'Grammar', 'MisusedWord', 'Punctuation', 'Spelling'
 
     # class Enum_(str, Enum):
@@ -203,9 +208,7 @@ def eng_fixer(input_str=None):
         #         db_list.append('unknown')
 
         # TODO TMP file
-        with open('!ENG_TYPES.txt', 'a', encoding='utf-8') as f:
-            # json.dump(types_cnt_dict, f, ensure_ascii=False, indent=4)
-            f.write(',' + ','.join(types_list_unique))
+        save_file_TEST(types_list_unique)
 
     # corrections
     """[ { 'longDescription': 'A word was not spelled correctly',
@@ -237,12 +240,11 @@ def eng_fixer(input_str=None):
          'stats': {'textLength': 91, 'wordCount': 18, 'sentenceCount': 2, 'longestSentence': 45}}"""
 
 
-    # result = {"text": data.get("text"), 'corrections': mistakes, 'error_types': error_types}
     result = dict(text=data.get("text"), corrections = mistakes, error_types=types_list_unique,
                   types_most=types_most)
 
-    print(input_str, result, sep="\n")
-    pprint(data)
+    # print(input_str, result, sep="\n")
+    # pprint(data)
 
     return result
 

@@ -7,8 +7,10 @@ from django.core.exceptions import ValidationError
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 
 from django.views.generic import TemplateView, FormView, CreateView, UpdateView
+from django_ratelimit.decorators import ratelimit
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -56,10 +58,10 @@ class EngProfileView(TemplateView, LoginRequiredMixin):
 
         count = len(requests)  # .count()
         last_using = \
-        Request.objects.filter(user_profile=profile).values_list('created_date').order_by('-created_date').first()[0]
+            Request.objects.filter(user_profile=profile).values_list('created_date').order_by('-created_date').first()[0]
         # last_using = last_using.strftime('%Y-%m-%d %H:%M')
 
-        # todo test
+        ################### todo test
         # FROM JSON
         # tst = EngFixer.objects.values_list('fixed_result_JSON', flat=True)
         # m = []
@@ -68,7 +70,7 @@ class EngProfileView(TemplateView, LoginRequiredMixin):
         #         if 'type' in item:
         #             m.append(item['type'])
 
-        ####################### TODO RC
+        #######################
         # x= tst[0]['fixed_result_JSON'][0]['type']
 
         # requests = [{'fix__mistakes_most_TMP': 'example', 'fix__fixed_result_JSON': [{'type': 'noun'}]}]
@@ -102,7 +104,7 @@ class EngProfileView(TemplateView, LoginRequiredMixin):
         return context
 
 
-# TODO LIST BY USER
+# TODO LIST BY USER; UNUSED
 class EngListUserView(TemplateView, LoginRequiredMixin):
     template_name = "Eng_list.html"
 
@@ -192,6 +194,8 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
                     rephrases_list=rephrases_list, translated_input=translated_input, translated_fixed=translated_fixed,
                     types_most=types_most, error_types=error_types)
 
+    # processing form data
+    # @method_decorator(ratelimit(key='ip', rate='10/m'))
     def form_valid(self, form) -> HttpResponseRedirect:
         obj: EngFixer = form.save(commit=False)
 
@@ -264,6 +268,7 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
         context = super().get_context_data(**kwargs)
         context['disable_buttons'] = True
 
+        # select
         tag = self.request.GET.get("tag")
         print(tag)
 
@@ -272,9 +277,9 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
 
         # TODO JSON PARSING
         suggestions_rows = []
-        data = self.object.fixed_result_JSON
-        if data:
-            for item in list(data):
+        json_data = self.object.fixed_result_JSON
+        if json_data:
+            for item in list(json_data):
                 input_text = item.get('mistakeText')
                 long_description = item.get('longDescription')
 
@@ -293,36 +298,28 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
                                         'text': "I'm feel",
                                         'category': 'Spelling'
                                     },
-                                    {
-                                        'text': "I'm feeling",
-                                        'category': 'Verb'
-                                    },
-                                    {
-                                        'text': 'I felt',
-                                        'category': 'Verb'
-                                    }
                                 ],
                 """
 
                 FIXED_TEXT = ""
-
+                sugg_string = ""
                 if suggestions:
-                    # first suggestion
+                    # TEXT from first suggestion
                     FIXED_TEXT = suggestions[0]['text']
 
                     # sugg_list = '\n'.join(map(str, sugg_list))
                     sugg_string = '\n'.join(
                         f"{s['text']} ({s['category']}, {s.get('definition', '')})" for s in suggestions)
-                else:
-                    sugg_string = ""
 
                 suggestions_rows.append((input_text, FIXED_TEXT, long_description, short_description, sugg_string))
+
+        ########### CONTEXT
 
         context['suggestions_rows'] = suggestions_rows
         # context['rephrases_list'] = '\n'.join(self.object.rephrases_list) if self.object.rephrases_list else None
         context['rephrases_list'] = self.object.rephrases_list if self.object.rephrases_list else None
 
-        # TODO
+        # TODO TAGS
         if self.object.mistakes_list_TMP:
             context['types_most'] = self.object.mistakes_most_TMP
             # context['error_types'] = '#'+' #'.join(self.object.mistakes_list_TMP)

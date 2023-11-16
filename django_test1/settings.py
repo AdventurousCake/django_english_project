@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'django_filters',
     'debug_toolbar',
     'social_django',
+    # 'django_ratelimit',
     # 'bootstrap5',
 
     'crispy_forms',
@@ -137,7 +138,8 @@ DATABASES = {
 
 # CACHES = {
 #     "default": {
-#         "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+#         "BACKEND": "django.core.cache.backends.redis.RedisCache",
+#         "LOCATION": "redis://127.0.0.1:6379",
 #     }
 # }
 
@@ -226,3 +228,5 @@ AUTHENTICATION_BACKENDS = (
 
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
 LOGIN_REDIRECT_URL = '/'
+
+RATELIMIT_ENABLE = False
