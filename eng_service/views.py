@@ -80,6 +80,8 @@ class EngProfileView(TemplateView, LoginRequiredMixin):
             # if tmp:
             #     m.append(tmp)
             # else:
+
+            # todo to parser
             eng_json = item.get('fix__fixed_result_JSON')
             if eng_json:
                 for sentence in eng_json:
@@ -275,8 +277,9 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
         # json to input_text
         # context['description'] = pprint.pformat(self.object.fixed_result_JSON, indent=4).replace('\n', '<br>')
 
-        # TODO JSON PARSING
-        suggestions_rows = []
+        # TODO JSON PARSING; def get from json
+        suggestions_rows = [] # todo CONTXT ONLY
+
         json_data = self.object.fixed_result_JSON
         if json_data:
             for item in list(json_data):
@@ -289,29 +292,27 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
                 # suggestions
                 suggestions = item.get('suggestions')
 
-                """'suggestions': [
-                                    {
+                """'suggestions': [{
                                         'text': 'I feel',
                                         'category': 'Verb'
                                     },
                                     {
                                         'text': "I'm feel",
                                         'category': 'Spelling'
-                                    },
-                                ],
-                """
+                                    },],"""
 
-                FIXED_TEXT = ""
+                fixed_text = ""
+
                 sugg_string = ""
                 if suggestions:
                     # TEXT from first suggestion
-                    FIXED_TEXT = suggestions[0]['text']
+                    fixed_text = suggestions[0]['text']
 
                     # sugg_list = '\n'.join(map(str, sugg_list))
                     sugg_string = '\n'.join(
                         f"{s['text']} ({s['category']}, {s.get('definition', '')})" for s in suggestions)
 
-                suggestions_rows.append((input_text, FIXED_TEXT, long_description, short_description, sugg_string))
+                suggestions_rows.append((input_text, fixed_text, long_description, short_description, sugg_string))
 
         ########### CONTEXT
 

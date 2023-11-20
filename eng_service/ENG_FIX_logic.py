@@ -169,29 +169,32 @@ def eng_fixer(input_str=None):
 
     # TODO REMOVE; todo check none; simple types
     error_types = []
-    mistakes = []
-    corrections = data.get('corrections')  # todo MANY
+    corrections_list = []
+    corrections_raw = data.get('corrections')  # todo MANY
 
-    for corr in corrections:
+    for corr in corrections_raw:
         # mistakes.append({corr['shortDescription'], corr['longDescription'], corr['correctionText'], corr['correctionDefinition'],
         #                  corr['suggestions']})
 
         # get by keys from response
-        mistakes.append({key: corr[key] for key in
+        corrections_list.append({key: corr[key] for key in
                          ['type', 'shortDescription', 'longDescription', 'mistakeText', 'suggestions']})
         error_types.append(corr['type'])
 
-
+    # TODO COUNT ERRORS
     # known_types = ['grammar', 'punctuation', 'syntax', 'style', 'vocabulary', 'spelling', 'typos']
-    # real: 'Grammar', 'MisusedWord', 'Punctuation', 'Spelling'
+    known_types = ('Grammar', 'MisusedWord', 'Punctuation', 'Spelling')
+    # class Enum_(str, Enum): # x:str in Enum_.__members__
 
-    # class Enum_(str, Enum):
-    #     pass
-    # x:str in Enum_.__members__
-
+    # todo def get types most
     types_most = None
     types_list_unique = None
     if error_types:
+
+        # for i in error_types:
+        #     if i in known_types:
+        #         pass
+
         types_cnt_dict = Counter(error_types)
         types_list_unique = list(types_cnt_dict.keys())
         types_most_tuple = types_cnt_dict.most_common(1)[0]
@@ -225,7 +228,8 @@ def eng_fixer(input_str=None):
     """
 
     # full resp
-    """x = {'id': '8710fb7c-97a8-4545-bd9d-f3b90f33a6e4', 'language': 'eng',
+    """x = 
+    {'id': '8710fb7c-97a8-4545-bd9d-f3b90f33a6e4', 'language': 'eng',
          'text': "We'vereceivedanewproposalfortheproject.Iwillkeepyouinformedabouthowthingsgo.",
          'engine': 'Ginger', 'truncated': False, 'timeTaken': 473, 
          
@@ -240,7 +244,7 @@ def eng_fixer(input_str=None):
          'stats': {'textLength': 91, 'wordCount': 18, 'sentenceCount': 2, 'longestSentence': 45}}"""
 
 
-    result = dict(text=data.get("text"), corrections = mistakes, error_types=types_list_unique,
+    result = dict(text=data.get("text"), corrections = corrections_list, error_types=types_list_unique,
                   types_most=types_most)
 
     # print(input_str, result, sep="\n")
