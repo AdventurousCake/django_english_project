@@ -4,9 +4,11 @@ from collections import Counter
 import requests
 from pprint import pprint
 
+
 class HttpEngService():
     def get_request(self):
         pass
+
 
 class EngRephr:  # inherits HttpEngService?
     def __init__(self, input_str=None):
@@ -54,6 +56,7 @@ class EngRephr:  # inherits HttpEngService?
 
         sentences = [item['candidate'] for item in data]
         return sentences
+
 
 # unused tmp
 def get_mistakes_data_LANGtool(input_str):
@@ -104,7 +107,7 @@ def get_mistakes_data_LANGtool(input_str):
     return response.json()
 
 
-def get_fixed_data(input_str, response_lang='ru'):
+def download_fixed_data(input_str, response_lang='ru'):
     headers = {
         'authority': 'orthographe.reverso.net',
         'accept': 'text/json',
@@ -156,115 +159,103 @@ def get_fixed_data(input_str, response_lang='ru'):
         print(e)
         return
 
+
 def save_file_TEST(types_list_unique):
     with open('!ENG_TYPES.txt', 'a', encoding='utf-8') as f:
         # json.dump(types_cnt_dict, f, ensure_ascii=False, indent=4)
         f.write(',' + ','.join(types_list_unique))
 
-def eng_fixer(input_str=None):
-    data = get_fixed_data(input_str)
+class EngFixParser:
+    def __init__(self):
+        pass
 
-    ########### todo method parsing
-    # result = data.get("text")
+    @staticmethod
+    def get_parsed_data(input_str):
+        data = download_fixed_data(input_str)
 
-    # TODO REMOVE; todo check none; simple types
-    error_types = []
-    corrections_list = []
-    corrections_raw = data.get('corrections')  # todo MANY
+        text = data.get("text")
 
-    for corr in corrections_raw:
-        # mistakes.append({corr['shortDescription'], corr['longDescription'], corr['correctionText'], corr['correctionDefinition'],
-        #                  corr['suggestions']})
+        # todo check none; simple types
+        error_types = []
+        corrections_list: list[dict] = []
 
-        # get by keys from response
-        corrections_list.append({key: corr[key] for key in
-                         ['type', 'shortDescription', 'longDescription', 'mistakeText', 'suggestions']})
-        error_types.append(corr['type'])
+        corrections_raw = data.get('corrections')
+        for corr in corrections_raw:
+            # get by keys from response
+            # mistakes.append({corr['shortDescription'], corr['longDescription'], corr['correctionText'], ...})
+            corrections_list.append(
+                {key: corr[key] for key in
+                 ['type', 'shortDescription', 'longDescription', 'mistakeText', 'suggestions']})
 
-    # TODO COUNT ERRORS
-    # known_types = ['grammar', 'punctuation', 'syntax', 'style', 'vocabulary', 'spelling', 'typos']
-    known_types = ('Grammar', 'MisusedWord', 'Punctuation', 'Spelling')
-    # class Enum_(str, Enum): # x:str in Enum_.__members__
+            error_types.append(corr['type'])
 
-    # todo def get types most
-    types_most = None
-    types_list_unique = None
-    if error_types:
+        #  ['grammar', 'punctuation', 'syntax', 'style', 'vocabulary', 'spelling', 'typos']
+        valid_types = ('Grammar', 'MisusedWord', 'Punctuation', 'Spelling')
 
-        # for i in error_types:
-        #     if i in known_types:
-        #         pass
+        # todo GET MOST
+        types_most_value = None
+        types_list_unique = None
+        if error_types:
+            """error_types contains duplicates for counting"""
+            # for i in error_types:
+            #     if i in known_types:
+            #         pass
 
-        types_cnt_dict = Counter(error_types)
-        types_list_unique = list(types_cnt_dict.keys())
-        types_most_tuple = types_cnt_dict.most_common(1)[0]
-        types_most = types_most_tuple[0]
-        types_most_cnt = types_most_tuple[1]
+            types_cnt_dict = Counter(error_types)
+            types_list_unique = list(types_cnt_dict.keys())
+            types_most_tuple = types_cnt_dict.most_common(1)[0]
+            types_most_value = types_most_tuple[0]
+            types_most_cnt = types_most_tuple[1]
 
-        # for db m2m
-        # db_list = []
-        # for item in types_list_unique:
-        #     if item in known_types:
-        #         db_list.append(item)
-        #     else:
-        #         # create new tag?
-        #         db_list.append('unknown')
+            # TODO TMP file
+            save_file_TEST(types_list_unique)
 
-        # TODO TMP file
-        save_file_TEST(types_list_unique)
+        # corrections from full resp
+        """[ { 'longDescription': 'A word was not spelled correctly',
+            'mistakeText': 'i',
+            'shortDescription': 'Spelling Mistake',
+            'suggestions': [ { 'category': 'Spelling',
+            'definition': 'refers to the speaker or writer',
+            'text': 'I'}]},
 
-    # corrections
-    """[ { 'longDescription': 'A word was not spelled correctly',
-        'mistakeText': 'i',
-        'shortDescription': 'Spelling Mistake',
-        'suggestions': [ { 'category': 'Spelling',
-        'definition': 'refers to the speaker or writer',
-        'text': 'I'}]},
-        
-        { 'longDescription': 'Unknown word - no suggestions available',
-        'mistakeText': 'django',
-        'shortDescription': 'Possible Spelling Mistake',
-        'suggestions': []},
-    """
+            { 'longDescription': 'Unknown word - no suggestions available',
+            'mistakeText': 'django',
+            'shortDescription': 'Possible Spelling Mistake',
+            'suggestions': []},
+        """
 
-    # full resp
-    """x = 
-    {'id': '8710fb7c-97a8-4545-bd9d-f3b90f33a6e4', 'language': 'eng',
-         'text': "We'vereceivedanewproposalfortheproject.Iwillkeepyouinformedabouthowthingsgo.",
-         'engine': 'Ginger', 'truncated': False, 'timeTaken': 473, 
-         
-         'corrections': [
-            {'group': 'AutoCorrected', 'type': 'Grammar', 'shortDescription': 'GrammarMistake',
-             'longDescription': 'Errorinformingorapplyingthepresentperfecttense', 'startIndex': 0, 'endIndex': 12,
-             'mistakeText': "We'vereceive", 'correctionText': "We'vereceived",
-             'suggestions': [{'text': "We'vereceived", 'category': 'Verb'}]}],
-             
-         'sentences': [{'startIndex': 0, 'endIndex': 44, 'status': 'Corrected'},
-                       {'startIndex': 46, 'endIndex': 90, 'status': 'Corrected'}], 'autoReplacements': [],
-         'stats': {'textLength': 91, 'wordCount': 18, 'sentenceCount': 2, 'longestSentence': 45}}"""
+        # full resp
+        """x = 
+        {'id': '8710fb7c-97a8-4545-bd9d-f3b90f33a6e4', 'language': 'eng',
+             'text': "We'vereceivedanewproposalfortheproject.Iwillkeepyouinformedabouthowthingsgo.",
+             'engine': 'Ginger', 'truncated': False, 'timeTaken': 473, 
 
+             'corrections': [
+                {'group': 'AutoCorrected', 'type': 'Grammar', 'shortDescription': 'GrammarMistake',
+                 'longDescription': 'Errorinformingorapplyingthepresentperfecttense', 'startIndex': 0, 'endIndex': 12,
+                 'mistakeText': "We'vereceive", 'correctionText': "We'vereceived",
+                 'suggestions': [{'text': "We'vereceived", 'category': 'Verb'}]}],
 
-    result = dict(text=data.get("text"), corrections = corrections_list, error_types=types_list_unique,
-                  types_most=types_most)
+             'sentences': [{'startIndex': 0, 'endIndex': 44, 'status': 'Corrected'},
+                           {'startIndex': 46, 'endIndex': 90, 'status': 'Corrected'}], 'autoReplacements': [],
+             'stats': {'textLength': 91, 'wordCount': 18, 'sentenceCount': 2, 'longestSentence': 45}}"""
 
-    # print(input_str, result, sep="\n")
-    # pprint(data)
+        result = dict(text=text, corrections=corrections_list, error_types=types_list_unique,
+                      types_most=types_most_value)
 
-    return result
+        # print(input_str, result, sep="\n")
+        return result
 
 
 if __name__ == '__main__':
     # 900ms response
 
-    # get_mistakes_data_LANGtool(
-    #     'Today i learn more about django and study 8 hour. Im feel good. Today good weather. have nice day')
+    # get_mistakes_data_LANGtool('hello im fine')
 
     import time
     start = time.perf_counter()
 
     print(EngRephr().get_rephrased_sentences(input_str='hello im fine'))
-    # fixer(input_str="Today i learn more about django. Im feel good. Today good weather. And tomorrow will be better.")
+    # fixer(input_str="hello im fine")
 
     print(time.perf_counter() - start)
-
-

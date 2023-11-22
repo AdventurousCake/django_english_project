@@ -25,7 +25,8 @@ button.btn-primary-custom:hover {
     border-color: #ffc107;
 }
 
-#rephrases {
+/* div.container > div  */
+#formpage-container > div{
     padding: 1em;
 
     background-color: white;

@@ -15,7 +15,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from eng_service.ENG_FIX_logic import eng_fixer, EngRephr
+from eng_service.ENG_FIX_logic import EngFixParser, EngRephr
 from eng_service.forms import EngFixerForm
 from eng_service.local_lib.google_translate import Translate
 from eng_service.models import EngFixer, Request, UserProfile
@@ -81,7 +81,7 @@ class EngProfileView(TemplateView, LoginRequiredMixin):
             #     m.append(tmp)
             # else:
 
-            # todo to parser
+            # todo to parser; if empty fix__mistakes_most_LIST
             eng_json = item.get('fix__fixed_result_JSON')
             if eng_json:
                 for sentence in eng_json:
@@ -173,7 +173,7 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
 
     @staticmethod
     def get_eng_data(input_str):
-        fix = eng_fixer(input_str)
+        fix = EngFixParser.get_parsed_data(input_str)
         fixed_result_JSON = fix.get('corrections')
 
         fixed_sentence = fix.get('text')
@@ -189,8 +189,12 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
             rephrases_list = rephrases
 
         # translate
-        translated_input = Translate().get_ru_from_eng(text=input_str)
-        translated_fixed = Translate().get_ru_from_eng(text=fixed_sentence)
+        TRANSLATE_ENABLED = True
+        if TRANSLATE_ENABLED:
+            translated_input = Translate().get_ru_from_eng(text=input_str)
+            translated_fixed = Translate().get_ru_from_eng(text=fixed_sentence)
+        else:
+            translated_input, translated_fixed = None, None
 
         return dict(input_str=input_str, fixed_sentence=fixed_sentence, fixed_result_JSON=fixed_result_JSON,
                     rephrases_list=rephrases_list, translated_input=translated_input, translated_fixed=translated_fixed,
@@ -210,6 +214,15 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         obj.rephrases_list = data['rephrases_list']
         obj.translated_input = data['translated_input']
         obj.translated_fixed = data['translated_fixed']
+
+        # for db m2m
+        # db_list = []
+        # for item in types_list_unique:
+        #     if item in known_types:
+        #         db_list.append(item)
+        #     else:
+        #         # create new tag?
+        #         db_list.append('unknown')
 
         obj.mistakes_list_TMP = data['error_types']
         obj.mistakes_most_TMP = data['types_most']
@@ -279,8 +292,7 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
 
         # TODO JSON PARSING; def get from json
         suggestions_rows = [] # todo CONTXT ONLY
-
-        json_data = self.object.fixed_result_JSON
+        json_data: list[dict] = self.object.fixed_result_JSON
         if json_data:
             for item in list(json_data):
                 input_text = item.get('mistakeText')
@@ -290,7 +302,7 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
                 short_description = item.get('shortDescription')
 
                 # suggestions
-                suggestions = item.get('suggestions')
+                suggestions: list[dict] = item.get('suggestions')
 
                 """'suggestions': [{
                                         'text': 'I feel',
@@ -302,13 +314,10 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
                                     },],"""
 
                 fixed_text = ""
-
                 sugg_string = ""
                 if suggestions:
                     # TEXT from first suggestion
                     fixed_text = suggestions[0]['text']
-
-                    # sugg_list = '\n'.join(map(str, sugg_list))
                     sugg_string = '\n'.join(
                         f"{s['text']} ({s['category']}, {s.get('definition', '')})" for s in suggestions)
 
@@ -327,7 +336,6 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
             context['error_types'] = self.object.mistakes_list_TMP
 
         if self.object.translated_input and self.object.translated_fixed:
-            # context['translate'] = f"{self.object.translated_input} ->\n{self.object.translated_fixed}"
             context['translate'] = self.object.translated_input, self.object.translated_fixed
         return context
 

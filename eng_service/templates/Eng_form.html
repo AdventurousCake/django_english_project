@@ -6,7 +6,7 @@
     {## md-5#}
 
     {# TODO HEADER #}
-    <div class="container">
+    <div class="container" id="formpage-container">
         <p class="display-4">English Fixer | <a href="{% url 'eng_service:eng_list' %}">List</a> |
             <a href="{% url 'eng_service:eng' %}" class="btn btn-warning btn-lg">Fix New</a></p>
 
@@ -64,7 +64,7 @@
         {% if translate %}
             <br>
             <div id="translate">
-                <h1>Translate RU</h1>
+                <h1>Translate to RU</h1>
                 {#                {{ translate|linebreaks }}#}
 
                 {#                {% for item in translate %}#}
@@ -83,9 +83,6 @@
             <br>
             <div id="error_types">
                 <h1>Tags</h1>
-
-                {#                {{ error_types|linebreaks }}#}
-
                 {% for item in error_types %}
                     <span class="badge rounded-pill bg-warning text-dark">{{ item }}</span>
                 {% endfor %}
