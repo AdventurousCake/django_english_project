@@ -18,7 +18,7 @@ from rest_framework.views import APIView
 from eng_service.ENG_FIX_logic import EngFixParser, EngRephr
 from eng_service.forms import EngFixerForm
 from eng_service.local_lib.google_translate import Translate
-from eng_service.models import EngFixer, Request, UserProfile
+from eng_service.models import EngFixer, Request, UserProfile, Tag
 # from stripe_payments.services import create_stripe_session
 import logging
 
@@ -214,6 +214,12 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         obj.translated_input = data['translated_input']
         obj.translated_fixed = data['translated_fixed']
 
+        obj.mistakes_list_TMP = data['error_types']
+        obj.mistakes_most_TMP = data['types_most']
+
+        # save obj
+        form.save()
+
         # for db m2m
         # db_list = []
         # for item in types_list_unique:
@@ -223,8 +229,14 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         #         # create new tag?
         #         db_list.append('unknown')
 
-        obj.mistakes_list_TMP = data['error_types']
-        obj.mistakes_most_TMP = data['types_most']
+        tags = []
+        for i in data['error_types']:
+            tag, created = Tag.objects.get_or_create(name=i)
+            tags.append(tag)
+        obj.tags.add(*tags)
+
+        # form.save()
+        form.save_m2m()
 
         # save and redirect
         return super(CheckENGView, self).form_valid(form)
@@ -288,6 +300,26 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
 
         # json to input_text
         # context['description'] = pprint.pformat(self.object.fixed_result_JSON, indent=4).replace('\n', '<br>')
+
+        """
+         'fixed_result_JSON': [{'longDescription': 'Слово было написано неправильно',
+                        'mistakeText': 'didnt',
+                        'shortDescription': 'Орфографическая ошибка',
+                        'suggestions': [{'category': 'Spelling',
+                                         'definition': 'did not',
+                                         'text': "didn't"}],
+                        'type': 'Spelling'},
+                       {'longDescription': 'Число глагола и подлежащего не '
+                                           'согласованы',
+                        'mistakeText': 'feels',
+                        'shortDescription': 'Грамматическая ошибка',
+                        'suggestions': [{'category': 'Verb', 'text': 'feel'},
+                                        {'category': 'Verb',
+                                         'text': 'am feeling'},
+                                        {'category': 'Verb',
+                                         'text': 'have felt'}],
+                        'type': 'Grammar'}],
+        """
 
         # TODO JSON PARSING; def get from json
         suggestions_rows = [] # todo CONTXT ONLY

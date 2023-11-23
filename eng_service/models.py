@@ -19,7 +19,7 @@ def validate_text_string(value):
 #m2m; неявное созд доп таблицы
 class Tag(models.Model):
     id = models.BigAutoField(primary_key=True, auto_created=True, null=False)
-    name = models.CharField(null=False, max_length=256)
+    name = models.CharField(null=False, max_length=256, unique=True)
     str_name = models.CharField(null=True, max_length=256)
 
     class Meta:
@@ -55,8 +55,9 @@ class EngFixer(models.Model):
     mistakes_most_TMP = models.CharField(null=True, max_length=256)
     mistakes_list_TMP = ArrayField(models.CharField(max_length=150, blank=True), null=True)
 
-    # TODO migr
-    # tags = models.ManyToManyField(to='Tag', null=True, on_delete=models.SET_NULL)
+    # TODO m2m 23
+    # using eng_service_engfixer_tags
+    tags = models.ManyToManyField(to='Tag', null=True) #on_delete=models.SET_NULL)
 
     translated_input = models.CharField(null=True, max_length=256)
     translated_fixed = models.CharField(null=True, max_length=256)
