@@ -61,7 +61,7 @@ class EngProfileView(TemplateView, LoginRequiredMixin):
             Request.objects.filter(user_profile=profile).values_list('created_date').order_by('-created_date').first()[0]
         # last_using = last_using.strftime('%Y-%m-%d %H:%M')
 
-        ################### todo test
+        ################### test
         # FROM JSON
         # tst = EngFixer.objects.values_list('fixed_result_JSON', flat=True)
         # m = []
@@ -175,10 +175,9 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
     def get_eng_data(input_str):
         fix = EngFixParser.get_parsed_data(input_str)
         fixed_result_JSON = fix.get('corrections')
-
         fixed_sentence = fix.get('text')
 
-        # TODO 03
+        # TODO 03 error_types
         error_types = fix.get('error_types')
         types_most = fix.get('types_most')
 
@@ -297,10 +296,8 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
             for item in list(json_data):
                 input_text = item.get('mistakeText')
                 long_description = item.get('longDescription')
-
                 # грамм ошибка
                 short_description = item.get('shortDescription')
-
                 # suggestions
                 suggestions: list[dict] = item.get('suggestions')
 

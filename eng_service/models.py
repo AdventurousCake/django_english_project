@@ -22,6 +22,10 @@ class Tag(models.Model):
     name = models.CharField(null=False, max_length=256)
     str_name = models.CharField(null=True, max_length=256)
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['name'], name='tagname_idx'),]
+
     def __repr__(self):
         return self.name
 

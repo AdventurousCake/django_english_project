@@ -175,19 +175,19 @@ class EngFixParser:
 
         text = data.get("text")
 
-        # todo check none; simple types
         error_types = []
         corrections_list: list[dict] = []
 
         corrections_raw = data.get('corrections')
-        for corr in corrections_raw:
-            # get by keys from response
-            # mistakes.append({corr['shortDescription'], corr['longDescription'], corr['correctionText'], ...})
-            corrections_list.append(
-                {key: corr[key] for key in
-                 ['type', 'shortDescription', 'longDescription', 'mistakeText', 'suggestions']})
+        if corrections_raw:
+            for corr in corrections_raw:
+                # get by keys from response
+                # mistakes.append({corr['shortDescription'], corr['longDescription'], corr['correctionText'], ...})
+                corrections_list.append(
+                    {key: corr[key] for key in
+                     ['type', 'shortDescription', 'longDescription', 'mistakeText', 'suggestions']})
 
-            error_types.append(corr['type'])
+                error_types.append(corr['type'])
 
         #  ['grammar', 'punctuation', 'syntax', 'style', 'vocabulary', 'spelling', 'typos']
         valid_types = ('Grammar', 'MisusedWord', 'Punctuation', 'Spelling')
