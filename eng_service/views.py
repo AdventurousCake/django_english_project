@@ -91,11 +91,6 @@ class EngProfileView(TemplateView, LoginRequiredMixin):
         top3_str = ''
         if m:
             types_cnt_dict = Counter(m)
-            # types_list_unique = list(types_cnt_dict.keys())
-            # types_most_tuple = types_cnt_dict.most_common(1)[0]
-            # types_most = types_most_tuple[0]
-            # types_most_cnt = types_most_tuple[1]
-
             top = types_cnt_dict.most_common(3)
             top3_str = '\n'.join([f'{item[0]} - {item[1]}' for item in top])
 
@@ -359,10 +354,12 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
         context['rephrases_list'] = self.object.rephrases_list if self.object.rephrases_list else None
 
         # TODO TAGS
-        if self.object.mistakes_list_TMP:
-            context['types_most'] = self.object.mistakes_most_TMP
-            # context['error_types'] = '#'+' #'.join(self.object.mistakes_list_TMP)
-            context['error_types'] = self.object.mistakes_list_TMP
+        tags = self.object.tags.values_list('name', flat=True)
+        context['error_types'] = tags
+
+        # if self.object.mistakes_list_TMP:
+        #     context['types_most'] = self.object.mistakes_most_TMP
+            # context['error_types'] = self.object.mistakes_list_TMP
 
         if self.object.translated_input and self.object.translated_fixed:
             context['translate'] = self.object.translated_input, self.object.translated_fixed

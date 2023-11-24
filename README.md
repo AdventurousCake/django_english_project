@@ -1,2 +1,1 @@
-# ТЕСТОВЫЕ проекты
-#### Image API + STRIPE API
+# Django private dev repository

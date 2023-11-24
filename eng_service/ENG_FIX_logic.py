@@ -192,7 +192,6 @@ class EngFixParser:
         #  ['grammar', 'punctuation', 'syntax', 'style', 'vocabulary', 'spelling', 'typos']
         valid_types = ('Grammar', 'MisusedWord', 'Punctuation', 'Spelling')
 
-        # todo GET MOST
         types_most_value = None
         types_list_unique = None
         if error_types:

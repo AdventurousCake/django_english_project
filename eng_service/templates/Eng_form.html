@@ -8,7 +8,9 @@
     {# TODO HEADER #}
     <div class="container" id="formpage-container">
         <p class="display-4">English Fixer | <a href="{% url 'eng_service:eng_list' %}">List</a> |
-            <a href="{% url 'eng_service:eng' %}" class="btn btn-warning btn-lg">Fix New</a></p>
+            <a href="{% url 'eng_service:eng' %}" class="btn btn-warning btn-lg">
+                <i class="fa-solid fa-plus"></i> Fix New</a>
+        </p>
 
         <hr>
 
@@ -44,7 +46,7 @@
                         <div class="text-center">
                             <button type="submit" class="btn btn-warning btn-lg col-5" id="btn-orange">
                                 {#                            <button type="submit" class="btn btn-primary-custom btn-lg col-5">#}
-                                Fix!
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> Fix!
                             </button>
                         </div>
                     {% endif %}
@@ -56,8 +58,8 @@
 
         {% if disable_buttons %}
             <div id="btns" class="text-center">
-                <button onclick="copy_result()" class="btn btn-primary btn-lg">Copy result</button>
-                <button onclick="copy_url()" class="btn btn-primary btn-lg">Share url (copy url)</button>
+                <button onclick="copy_result()" class="btn btn-primary btn-lg"><i class="fa-solid fa-copy"></i> Copy result</button>
+                <button onclick="copy_url()" class="btn btn-primary btn-lg"><i class="fa-solid fa-share"></i> Share url (copy url)</button>
             </div>
         {% endif %}
 
@@ -83,10 +85,16 @@
             <br>
             <div id="error_types">
                 <h1>Tags</h1>
+
+                <div id="tags" style="font-size: larger">
                 {% for item in error_types %}
                     <span class="badge rounded-pill bg-warning text-dark">{{ item }}</span>
                 {% endfor %}
+                </div>
+
+                {% if types_most %}
                 <p>Most: {{ types_most }}</p>
+                {% endif %}
             </div>
         {% endif %}
 
