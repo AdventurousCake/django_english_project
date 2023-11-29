@@ -26,7 +26,22 @@
             <h1>Top mistakes</h1>
             <p><b>{{ top3_str|linebreaksbr }}</b></p>
 
-            <p></p>
+            <br>
+            <h1>Test</h1>
+
+            {#    filter#}
+                <form action="">
+                    <select class="form-select" aria-label="Default select example" name="tag">
+                        <option selected>Grammar</option>
+                        <option value="MisusedWord">Misused Word</option>
+                        <option value="Grammar">Grammar</option>
+                        <option value="Spelling">Spelling</option>
+                        <option value="Punctuation">Punctuation</option>
+                    </select>
+                    <button type="submit" class="btn btn-sm btn-primary mt-3">Выбрать</button>
+                </form>
+
+            <p><b>{{ testdata|linebreaksbr }}</b></p>
 
         </div>
 

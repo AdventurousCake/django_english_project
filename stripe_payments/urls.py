@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 
 from django_test1 import settings
 from stripe_payments.views import CreateCheckoutSessionAPIView, ProductLandingPageView, OrderPageView, SuccessesView, \
-    CancelView, CreateOrderCheckoutSessionAPIView, Form1View
+    CancelView, CreateOrderCheckoutSessionAPIView, Form1View, CreateStripeWebhook
 
 app_name = 'stripe_payments'
 
@@ -21,6 +21,8 @@ urlpatterns = [
 
     path('success/', SuccessesView.as_view(), name='success'),
     path('cancel/', CancelView.as_view(), name='cancel'),
+
+    path('webhook/', CreateStripeWebhook.as_view(), name='webhook'),
 
     # test
     path('form1/', Form1View.as_view(), name='form_test1'),

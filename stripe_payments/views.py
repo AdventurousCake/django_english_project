@@ -8,6 +8,7 @@ from django.views.generic import TemplateView, FormView, CreateView, UpdateView
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from stripe.error import SignatureVerificationError
 
 from stripe_payments.forms import StripeTestForm1
 from stripe_payments.models import Item, Order
@@ -169,3 +170,42 @@ class CreateCheckoutSessionAPIView(APIView):
         # return redirect(session.url)
         return Response({'id': session.id})  # получает в index js
         # переход работает только по прямой ссылке
+
+
+"""webhook
+https://testdriven.io/blog/django-stripe-tutorial/#confirm-payment-with-stripe-webhooks
+https://stripe.com/docs/development/dashboard/register-webhook
+https://stripe.com/docs/webhooks/quickstart?lang=python
+
+https://dashboard.stripe.com/test/webhooks"""
+# @csrf_exempt
+class CreateStripeWebhook(APIView):
+    def post(self, request):
+        # stripe.api_key = settings.STRIPE_SECRET_KEY
+        # endpoint_secret = settings.STRIPE_ENDPOINT_SECRET
+
+        """key, client in stripe_payments.services.stripe
+        client_reference_id"""
+
+        endpoint_secret = '/webhook/'
+        payload = request.body
+        sig_header = request.META['HTTP_STRIPE_SIGNATURE']
+        event = None
+
+        try:
+            event = stripe.Webhook.construct_event(
+                payload, sig_header, endpoint_secret
+            )
+        except ValueError as e:
+            # Invalid payload
+            return Response(status=400)
+        except SignatureVerificationError as e:
+            # Invalid signature
+            return Response(status=400)
+
+        # Handle the checkout.session.completed event
+        if event['type'] == 'checkout.session.completed':
+            print("Payment was successful.")
+            # TODO: run some custom code here
+
+        return Response(status=200)

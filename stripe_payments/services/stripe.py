@@ -38,4 +38,6 @@ def create_stripe_session(product_name: str,
         success_url=redirect_url,
         cancel_url=cancel_url,
         mode="payment",
+
+        # client_reference_id=request.user.id if request.user.is_authenticated else None,
     )
