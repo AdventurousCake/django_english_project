@@ -166,14 +166,16 @@ def save_file_TEST(types_list_unique):
         f.write(',' + ','.join(types_list_unique))
 
 class EngFixParser:
-    def __init__(self):
-        pass
+    def __init__(self, downloader=None):
+        self.downloader = downloader
 
     @staticmethod
     def get_parsed_data(input_str):
         data = download_fixed_data(input_str)
 
         text = data.get("text")
+
+        its_correct = text == input_str
 
         error_types = []
         corrections_list: list[dict] = []
@@ -240,7 +242,7 @@ class EngFixParser:
              'stats': {'textLength': 91, 'wordCount': 18, 'sentenceCount': 2, 'longestSentence': 45}}"""
 
         result = dict(text=text, corrections=corrections_list, error_types=types_list_unique,
-                      types_most=types_most_value)
+                      types_most=types_most_value, its_correct=its_correct)
 
         # print(input_str, result, sep="\n")
         return result

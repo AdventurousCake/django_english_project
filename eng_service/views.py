@@ -23,6 +23,56 @@ import logging
 
 from eng_service.models_core import User
 
+class Parser():
+    @staticmethod
+    def parse_json(json_data: list[dict]):
+        """'fixed_result_JSON': [{'longDescription': 'Слово было написано неправильно',
+                                'mistakeText': 'didnt',
+                                'shortDescription': 'Орфографическая ошибка',
+                                'suggestions': [{'category': 'Spelling',
+                                                 'definition': 'did not',
+                                                 'text': "didn't"}],
+                                'type': 'Spelling'},
+                               {'longDescription': 'Число глагола и подлежащего не '
+                                                   'согласованы',
+                                'mistakeText': 'feels',
+                                'shortDescription': 'Грамматическая ошибка',
+                                'suggestions': [{'category': 'Verb', 'text': 'feel'},
+                                                {'category': 'Verb',
+                                                 'text': 'am feeling'},
+                                                {'category': 'Verb',
+                                                 'text': 'have felt'}],
+                                'type': 'Grammar'}],"""
+
+        suggestions_rows = []
+
+        if json_data:
+            for item in list(json_data):
+                input_text = item.get('mistakeText')
+                long_description = item.get('longDescription')
+                # gramm mistake
+                short_description = item.get('shortDescription')
+                suggestions: list[dict] = item.get('suggestions')
+
+                """'suggestions': [{
+                                        'text': 'I feel',
+                                        'category': 'Verb'
+                                    },
+                                    {
+                                        'text': "I'm feel",
+                                        'category': 'Spelling'
+                                    },],"""
+
+                fixed_text = ""
+                sugg_string = ""
+                if suggestions:
+                    # TEXT from first suggestion
+                    fixed_text = suggestions[0]['text']
+                    sugg_string = '\n'.join(
+                        f"{s['text']} ({s['category']}, {s.get('definition', '')})" for s in suggestions)
+
+                suggestions_rows.append((input_text, fixed_text, long_description, short_description, sugg_string))
+        return suggestions_rows
 
 class EngProfileView(TemplateView, LoginRequiredMixin):
     template_name = "Eng_profile.html"
@@ -35,10 +85,18 @@ class EngProfileView(TemplateView, LoginRequiredMixin):
 
         # todo if anon user -> 404
         # get or 404
-        profile = get_object_or_404(UserProfile, user=self.request.user)
+        if self.request.user.is_authenticated:
+            profile = self.request.user.userprofile
+        else:
+            profile = None
+
+        # profile = get_object_or_404(UserProfile, user=self.request.user)
+
         # profile = self.request.user.userprofile
 
-        # RIGHT 762
+        # todo
+        profile = User.objects.get(id=1).userprofile
+
         requests = (Request.objects.filter(user_profile=profile)
                     .select_related('fix')
                     # .order_by('-created_date')
@@ -201,19 +259,19 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         check_unique_input = isinstance(form_error, ValidationError) and form_error.code == 'unique'
 
         if check_unique_input:
-            # obj = form.save(commit=False)  # не было запроса для взятия даты
-            # get_object_or_404(EngFixer, input_sentence=form.data['input_sentence'])
-
+            # redirect if exists (ValidationError)
             obj = EngFixer.objects.values('id').get(input_sentence=form.data['input_sentence'])
             return redirect('eng_service:eng_get', obj['id'])
 
         return super(CheckENGView, self).form_invalid(form)
 
+    # TODO PARSE 1
     @staticmethod
     def get_eng_data(input_str):
         fix = EngFixParser.get_parsed_data(input_str)
         fixed_result_JSON = fix.get('corrections')
         fixed_sentence = fix.get('text')
+        its_correct = fix.get('its_correct')
 
         # TODO 03 error_types
         error_types = fix.get('error_types')
@@ -235,7 +293,7 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
 
         return dict(input_str=input_str, fixed_sentence=fixed_sentence, fixed_result_JSON=fixed_result_JSON,
                     rephrases_list=rephrases_list, translated_input=translated_input, translated_fixed=translated_fixed,
-                    types_most=types_most, error_types=error_types)
+                    types_most=types_most, error_types=error_types, its_correct=its_correct)
 
     # processing form data
     # @method_decorator(ratelimit(key='ip', rate='10/m'))
@@ -254,6 +312,8 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
 
         obj.mistakes_list_TMP = data['error_types']
         obj.mistakes_most_TMP = data['types_most']
+
+        obj.its_correct = data['its_correct']
 
         # save obj
         form.save()
@@ -299,11 +359,9 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
         print('USER: ', user)
 
         profile = None
-
         if isinstance(user, User):  # else AnonymousUser
             # TODO GET OR CREATE
             profile = UserProfile.objects.filter(user=user).first()
-
             # try:
             #     profile = UserProfile.objects.get(user=user)
             # except UserProfile.DoesNotExist:
@@ -339,66 +397,13 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
         # json to input_text
         # context['description'] = pprint.pformat(self.object.fixed_result_JSON, indent=4).replace('\n', '<br>')
 
-        """
-         'fixed_result_JSON': [{'longDescription': 'Слово было написано неправильно',
-                        'mistakeText': 'didnt',
-                        'shortDescription': 'Орфографическая ошибка',
-                        'suggestions': [{'category': 'Spelling',
-                                         'definition': 'did not',
-                                         'text': "didn't"}],
-                        'type': 'Spelling'},
-                       {'longDescription': 'Число глагола и подлежащего не '
-                                           'согласованы',
-                        'mistakeText': 'feels',
-                        'shortDescription': 'Грамматическая ошибка',
-                        'suggestions': [{'category': 'Verb', 'text': 'feel'},
-                                        {'category': 'Verb',
-                                         'text': 'am feeling'},
-                                        {'category': 'Verb',
-                                         'text': 'have felt'}],
-                        'type': 'Grammar'}],
-        """
-
-        # TODO JSON PARSING; def get from json
-        suggestions_rows = [] # todo CONTXT ONLY
-        json_data: list[dict] = self.object.fixed_result_JSON
-        if json_data:
-            for item in list(json_data):
-                input_text = item.get('mistakeText')
-                long_description = item.get('longDescription')
-                # грамм ошибка
-                short_description = item.get('shortDescription')
-                # suggestions
-                suggestions: list[dict] = item.get('suggestions')
-
-                """'suggestions': [{
-                                        'text': 'I feel',
-                                        'category': 'Verb'
-                                    },
-                                    {
-                                        'text': "I'm feel",
-                                        'category': 'Spelling'
-                                    },],"""
-
-                fixed_text = ""
-                sugg_string = ""
-                if suggestions:
-                    # TEXT from first suggestion
-                    fixed_text = suggestions[0]['text']
-                    sugg_string = '\n'.join(
-                        f"{s['text']} ({s['category']}, {s.get('definition', '')})" for s in suggestions)
-
-                suggestions_rows.append((input_text, fixed_text, long_description, short_description, sugg_string))
-
-        ########### CONTEXT
-
-        context['suggestions_rows'] = suggestions_rows
-        # context['rephrases_list'] = '\n'.join(self.object.rephrases_list) if self.object.rephrases_list else None
+        context['suggestions_rows'] = Parser.parse_json(self.object.fixed_result_JSON)
         context['rephrases_list'] = self.object.rephrases_list if self.object.rephrases_list else None
 
         # TODO TAGS
         tags = self.object.tags.values_list('name', flat=True)
         context['error_types'] = tags
+        context['its_correct'] = self.object.its_correct
 
         # if self.object.mistakes_list_TMP:
         #     context['types_most'] = self.object.mistakes_most_TMP

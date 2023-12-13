@@ -52,6 +52,8 @@ class EngFixer(models.Model):
     rephrases_list = ArrayField(models.CharField(max_length=150, blank=True), null=True)
     # size=8,)
 
+    its_correct = models.BooleanField(null=True, default=None)
+
     mistakes_most_TMP = models.CharField(null=True, max_length=256)
     mistakes_list_TMP = ArrayField(models.CharField(max_length=150, blank=True), null=True)
 
