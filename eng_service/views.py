@@ -1,3 +1,4 @@
+import time
 from collections import Counter
 from enum import Enum
 
@@ -268,6 +269,8 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
     # TODO PARSE 1
     @staticmethod
     def get_eng_data(input_str):
+        start = time.perf_counter()
+
         fix = EngFixParser.get_parsed_data(input_str)
         fixed_result_JSON = fix.get('corrections')
         fixed_sentence = fix.get('text')
@@ -284,12 +287,14 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
             rephrases_list = rephrases
 
         # translate
-        TRANSLATE_ENABLED = True
+        TRANSLATE_ENABLED = False
         if TRANSLATE_ENABLED:
             translated_input = Translate().get_ru_from_eng(text=input_str)
             translated_fixed = Translate().get_ru_from_eng(text=fixed_sentence)
         else:
             translated_input, translated_fixed = None, None
+
+        timing = time.perf_counter() - start
 
         return dict(input_str=input_str, fixed_sentence=fixed_sentence, fixed_result_JSON=fixed_result_JSON,
                     rephrases_list=rephrases_list, translated_input=translated_input, translated_fixed=translated_fixed,

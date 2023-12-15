@@ -1,4 +1,5 @@
 import json
+import time
 from collections import Counter
 
 import requests
@@ -171,6 +172,7 @@ class EngFixParser:
 
     @staticmethod
     def get_parsed_data(input_str):
+        """parsing from json. Example in ENG_FIX_resp.md"""
         data = download_fixed_data(input_str)
 
         text = data.get("text")
@@ -211,52 +213,35 @@ class EngFixParser:
             # TODO TMP file
             save_file_TEST(types_list_unique)
 
-        # corrections from full resp
-        """[ { 'longDescription': 'A word was not spelled correctly',
-            'mistakeText': 'i',
-            'shortDescription': 'Spelling Mistake',
-            'suggestions': [ { 'category': 'Spelling',
-            'definition': 'refers to the speaker or writer',
-            'text': 'I'}]},
-
-            { 'longDescription': 'Unknown word - no suggestions available',
-            'mistakeText': 'django',
-            'shortDescription': 'Possible Spelling Mistake',
-            'suggestions': []},
-        """
-
-        # full resp
-        """x = 
-        {'id': '8710fb7c-97a8-4545-bd9d-f3b90f33a6e4', 'language': 'eng',
-             'text': "We'vereceivedanewproposalfortheproject.Iwillkeepyouinformedabouthowthingsgo.",
-             'engine': 'Ginger', 'truncated': False, 'timeTaken': 473, 
-
-             'corrections': [
-                {'group': 'AutoCorrected', 'type': 'Grammar', 'shortDescription': 'GrammarMistake',
-                 'longDescription': 'Errorinformingorapplyingthepresentperfecttense', 'startIndex': 0, 'endIndex': 12,
-                 'mistakeText': "We'vereceive", 'correctionText': "We'vereceived",
-                 'suggestions': [{'text': "We'vereceived", 'category': 'Verb'}]}],
-
-             'sentences': [{'startIndex': 0, 'endIndex': 44, 'status': 'Corrected'},
-                           {'startIndex': 46, 'endIndex': 90, 'status': 'Corrected'}], 'autoReplacements': [],
-             'stats': {'textLength': 91, 'wordCount': 18, 'sentenceCount': 2, 'longestSentence': 45}}"""
-
         result = dict(text=text, corrections=corrections_list, error_types=types_list_unique,
                       types_most=types_most_value, its_correct=its_correct)
 
         # print(input_str, result, sep="\n")
         return result
 
+def time_measure(func):
+    def wrapper(*args, **kwargs):
+        start = time.perf_counter()
+        result = func(*args, **kwargs)
+        print(time.perf_counter() - start)
+        return result
+    return wrapper
+
+@time_measure
+def main():
+    print(EngRephr().get_rephrased_sentences(input_str='hello im fine. Are you fine?'))
 
 if __name__ == '__main__':
     # 900ms response
 
     # get_mistakes_data_LANGtool('hello im fine')
 
-    import time
-    start = time.perf_counter()
+    # import time
+    # start = time.perf_counter()
+    #
+    # print(EngRephr().get_rephrased_sentences(input_str='hello im fine'))
+    # # fixer(input_str="hello im fine")
+    #
+    # print(time.perf_counter() - start)
 
-    print(EngRephr().get_rephrased_sentences(input_str='hello im fine'))
-    # fixer(input_str="hello im fine")
-
-    print(time.perf_counter() - start)
+    main()
