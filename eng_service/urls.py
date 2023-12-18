@@ -2,7 +2,8 @@ from django.conf.urls.static import static
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from eng_service.views import CheckENGView, CheckENGViewUpdate, EngMainView, EngProfileView
+from eng_service.views import CheckENGView, CheckENGViewUpdate, EngMainView
+from eng_service.views_profile import EngProfileView
 from eng_service.views_drf import EngViewSet, UserViewSet
 
 app_name = 'eng_service'
