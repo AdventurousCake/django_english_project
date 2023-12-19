@@ -79,10 +79,11 @@ class EngProfileView(TemplateView, LoginRequiredMixin):
                         m.append(sentence['type'])
 
         top3_str = ''
+        top3 = None
         if m:
             types_cnt_dict = Counter(m)
-            top = types_cnt_dict.most_common(3)
-            top3_str = '\n'.join([f'{item[0]} - {item[1]}' for item in top])
+            top3 = types_cnt_dict.most_common(3)
+            top3_str = '\n'.join([f'{item[0]} - {item[1]}' for item in top3])
 
         ##############
 
@@ -130,7 +131,9 @@ class EngProfileView(TemplateView, LoginRequiredMixin):
 
         context['count'] = count
         context['last_using'] = last_using
+        context['last_using_str'] = last_using.strftime('%Y.%m.%d')
         context['top3_str'] = top3_str
+        context['top3'] = top3
         context['data_list'] = requests
         return context
 

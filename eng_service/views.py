@@ -86,7 +86,7 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
 
     # after fixer
     def get_success_url(self):
-        return reverse('eng_service:eng_get', args=(self.object.id,))  # lazy?
+        return reverse('eng_service:eng_get', args=(self.object.id,))  # todo lazy?
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

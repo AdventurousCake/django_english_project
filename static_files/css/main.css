@@ -39,3 +39,29 @@ button.btn-primary-custom:hover {
 textarea#id_fixed_sentence {
     font-weight: 500;
 }
+
+/*profile*/
+.flex-item1 p, .flex-item1 h3 {
+  margin: 0;
+  padding: 0;
+}
+
+.flex-container1 {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.flex-item1 {
+  width: 30%;
+  margin-bottom: 20px;
+  padding: 20px;
+  background-color: #fff;
+  text-align: center;
+  border-radius: 20px;
+}
+
+/*.shadow1 {*/
+.flex-container1 .flex-item1 {
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
