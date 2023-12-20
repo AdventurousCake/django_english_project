@@ -1,4 +1,5 @@
 from collections import Counter
+from pprint import pprint
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
@@ -24,20 +25,19 @@ class EngProfileView(TemplateView, LoginRequiredMixin):
             profile = None
 
         # profile = get_object_or_404(UserProfile, user=self.request.user)
-
         # profile = self.request.user.userprofile
 
-        # todo
+        # todo; need creating profile!
         profile = User.objects.get(id=1).userprofile
 
         requests = (Request.objects.filter(user_profile=profile)
                     .select_related('fix')
                     # .order_by('-created_date')
                     .values(
-            'fix_id',
-            'fix__fixed_result_JSON',  # todo
-            'fix__mistakes_most_TMP', 'fix__mistakes_list_TMP',
-            # 'created_date'
+                    'fix_id',
+                    'fix__fixed_result_JSON',  # todo
+                    'fix__mistakes_most_TMP', 'fix__mistakes_list_TMP',
+                    # 'created_date'
         )
                     .distinct()
                     # .distinct('fix_id')
@@ -64,6 +64,7 @@ class EngProfileView(TemplateView, LoginRequiredMixin):
         # x= tst[0]['fixed_result_JSON'][0]['type']
 
         # requests = [{'fix__mistakes_most_TMP': 'example', 'fix__fixed_result_JSON': [{'type': 'noun'}]}]
+
         m = []
         for item in requests:
             # tmp = item.get('fix__mistakes_most_TMP')
@@ -117,9 +118,13 @@ class EngProfileView(TemplateView, LoginRequiredMixin):
 
                     # .filter(fix__tags__name='Grammar')
                     .filter(fix__tags__name=selected_tag)
+
+                    [:10]
              )
 
-        res = '\n'.join([f"""{i.get('id')} - {i.get("fix__tags__name")}""" for i in d])
+        # pprint(str(d.query))
+
+        res = '\n'.join([f"""{i.get('id')} - {i.get("fix__tags__name")}; {i.get('fix__tags')}""" for i in d])
 
         # todo simply
         # x = Request.objects.values('id','fix__tags__name', 'fix__tags').filter(fix__tags__name='Grammar')

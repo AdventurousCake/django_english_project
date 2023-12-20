@@ -5,8 +5,10 @@ from django.core.exceptions import ValidationError
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 
 from django.views.generic import TemplateView, CreateView, UpdateView
+from django_ratelimit.decorators import ratelimit
 
 from eng_service.ENG_FIX_logic import EngFixParser, EngRephr
 from eng_service.forms import EngFixerForm
@@ -153,6 +155,8 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
                     types_most=types_most, error_types=error_types, its_correct=its_correct)
 
     # processing form data
+    # from django.utils.decorators import method_decorator
+    # from django_ratelimit.decorators import ratelimit
     # @method_decorator(ratelimit(key='ip', rate='10/m'))
     def form_valid(self, form) -> HttpResponseRedirect:
         obj: EngFixer = form.save(commit=False)
@@ -184,6 +188,7 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         #         # create new tag?
         #         db_list.append('unknown')
 
+        # get or create tags
         tags = []
         if data['error_types']:
             for i in data['error_types']:
