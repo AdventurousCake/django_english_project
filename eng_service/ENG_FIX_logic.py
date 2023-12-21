@@ -1,4 +1,5 @@
 import json
+import logging
 import time
 from collections import Counter
 
@@ -41,7 +42,7 @@ class EngRephr:  # inherits HttpEngService?
         params = {
             'language': 'en',
             'sentence': input_str,
-            'candidates': '10',  # 6
+            'candidates': '10',
         }
 
         response = requests.get('https://rephraser-api.reverso.net/v1/rephrase', params=params, headers=headers)
@@ -53,7 +54,8 @@ class EngRephr:  # inherits HttpEngService?
         data = data.get('candidates')  # feature: order by diversity
 
         if not data:
-            raise Exception('No data: rephraser')
+            logging.warning('No data: rephraser')
+            return None
 
         sentences = [item['candidate'] for item in data]
         return sentences
@@ -103,7 +105,7 @@ def get_mistakes_data_LANGtool(input_str):
     }
 
     response = requests.post('https://api.languagetool.org/v2/check', params=params, headers=headers, data=data)
-    print(response.status_code)
+    logging.info(response.status_code)
     pprint(response.json())
     return response.json()
 
@@ -145,7 +147,7 @@ def download_fixed_data(input_str, response_lang='ru'):
     try:
         response = requests.post('https://orthographe.reverso.net/api/v1/Spelling/', headers=headers, data=data,
                                  timeout=5)
-        print(response.status_code)
+        logging.info(f'Fix Request status code: {response.status_code}')
 
         if response.status_code == 200:
             result_json = response.json()
@@ -153,11 +155,11 @@ def download_fixed_data(input_str, response_lang='ru'):
                 raise Exception('No data from resource')
             return result_json
         else:
-            print('Request failed with status code: ', response.status_code)
+            logging.error(f'Request failed with status code: {response.status_code}')
             return
 
     except Exception as e:
-        print(e)
+        logging.error(str(e))
         return
 
 
@@ -176,7 +178,6 @@ class EngFixParser:
         data = download_fixed_data(input_str)
 
         text = data.get("text")
-
         its_correct = text == input_str
 
         error_types = []

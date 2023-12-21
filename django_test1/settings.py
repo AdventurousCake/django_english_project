@@ -64,7 +64,7 @@ INSTALLED_APPS = [
     'django_filters',
     'debug_toolbar',
     'social_django',
-    # 'django_ratelimit',
+    'django_ratelimit',
     # 'bootstrap5',
 
     'crispy_forms',
@@ -138,12 +138,12 @@ DATABASES = {
         }
 }
 
-# CACHES = {
-#     "default": {
-#         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-#         "LOCATION": "redis://127.0.0.1:6379",
-#     }
-# }
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379",
+    }
+}
 
 # DOCKER prod settings
 # DATABASES = {

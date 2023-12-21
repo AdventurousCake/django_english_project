@@ -1,3 +1,4 @@
+import logging
 import time
 
 from django import forms
@@ -40,15 +41,12 @@ class Parser:
                                 'type': 'Grammar'}],"""
 
         suggestions_rows = []
-
         if json_data:
             for item in list(json_data):
                 input_text = item.get('mistakeText')
-                long_description = item.get('longDescription')
-                # gramm mistake
+                long_description = item.get('longDescription')  # gramm mistake
                 short_description = item.get('shortDescription')
                 suggestions: list[dict] = item.get('suggestions')
-
                 """'suggestions': [{
                                         'text': 'I feel',
                                         'category': 'Verb'
@@ -61,15 +59,14 @@ class Parser:
                 fixed_text = ""
                 sugg_string = ""
                 if suggestions:
-                    # TEXT from first suggestion
-                    fixed_text = suggestions[0]['text']
+                    fixed_text = suggestions[0]['text']  # TEXT from first suggestion
                     sugg_string = '\n'.join(
                         f"{s['text']} ({s['category']}, {s.get('definition', '')})" for s in suggestions)
 
                 suggestions_rows.append((input_text, fixed_text, long_description, short_description, sugg_string))
         return suggestions_rows
 
-
+@method_decorator(ratelimit(key='user_or_ip', rate='1/h', method='GET', block=True), name='get')
 class EngMainView(TemplateView):
     template_name = "Eng_list.html"
 
@@ -79,7 +76,7 @@ class EngMainView(TemplateView):
         context['data_list'] = EngFixer.objects.all().order_by('-created_date')[:LIMIT]
         return context
 
-
+@method_decorator(ratelimit(key='ip', rate='1/m', method='POST', block=True), name='post')
 class CheckENGView(CreateView):  # LoginRequiredMixin
     form_class = EngFixerForm
     template_name = "Eng_form.html"
@@ -107,8 +104,7 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
     """
 
     def form_invalid(self, form):
-        print('ERR FORM INVALID')
-        print(form.data['input_sentence'])
+        logging.error(f"ERR FORM INVALID; input: {form.data['input_sentence']}")
 
         form_error = form.errors['input_sentence'].data[0]
         check_unique_input = isinstance(form_error, ValidationError) and form_error.code == 'unique'
@@ -202,7 +198,6 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         # save and redirect
         return super(CheckENGView, self).form_valid(form)
 
-
 class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
     """display data by get pk + CONTEXT FOR UPDATEVIEW"""
 
@@ -219,20 +214,12 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
     @staticmethod
     def save_request(request, obj):
         user = request.user
-        print('USER: ', user)
+        logging.warning(f'User request: {user}')
 
         profile = None
         if isinstance(user, User):  # else AnonymousUser
-            # TODO GET OR CREATE
-            profile = UserProfile.objects.filter(user=user).first()
-            # try:
-            #     profile = UserProfile.objects.get(user=user)
-            # except UserProfile.DoesNotExist:
-            #     pass
-            #     # profile = UserProfile.objects.create(user=user)
-
-            # profile = UserProfile.objects.get(user=request.user)
-            # profile = UserProfile.objects.get_or_create(user=request.user)
+            profile, created = UserProfile.objects.get_or_create(user=user)
+            # profile = UserProfile.objects.filter(user=user).first()
             # profile = request.user.userprofile
 
         Request.objects.create(
@@ -255,7 +242,7 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
 
         # select
         tag = self.request.GET.get("tag")
-        print(tag)
+        # print(tag)
 
         # json to input_text
         # context['description'] = pprint.pformat(self.object.fixed_result_JSON, indent=4).replace('\n', '<br>')
