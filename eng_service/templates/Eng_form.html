@@ -1,5 +1,5 @@
 {% extends 'Eng_base.html' %}
-{% load crispy_forms_tags %}
+{#{% load crispy_forms_tags %}#}
 {% load static %}
 
 {% block content %}
@@ -41,26 +41,15 @@
         <br>
 
         {% if form %}
-            <div id="form1">
-                <h1>Fix</h1>
-
-                <form method="post" class="form" enctype="multipart/form-data">
-                    {% csrf_token %}
-
-                    {{ form|crispy }}
-
-                    {% if not disable_buttons %}
-                        <div class="text-center">
-                            <button type="submit" class="btn btn-warning btn-lg col-5" id="btn-orange">
-                                <i class="fa-solid fa-wand-magic-sparkles"></i> Fix!
-                            </button>
-                        </div>
-                    {% endif %}
-                </form>
-            </div>
-
+            {% include 'Eng_form_item.html' %}
         {% else %}
         {% endif %}
+
+        <br>
+        <div>
+            <h1><i class="fa-solid fa-circle-xmark"></i> Input: {{ fixed|linebreaks }}</h1>
+            <h1><i class="fa-solid fa-circle-check"></i> Fixed: {{ input|linebreaks }}</h1>
+        </div>
 
         {% if disable_buttons %}
             <br>

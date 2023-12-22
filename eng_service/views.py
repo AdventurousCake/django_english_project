@@ -247,6 +247,9 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
         # json to input_text
         # context['description'] = pprint.pformat(self.object.fixed_result_JSON, indent=4).replace('\n', '<br>')
 
+        context['fixed'] = self.object.fixed_sentence
+        context['input'] = self.object.input_sentence
+
         context['suggestions_rows'] = Parser.parse_json(self.object.fixed_result_JSON)
         context['rephrases_list'] = self.object.rephrases_list if self.object.rephrases_list else None
 

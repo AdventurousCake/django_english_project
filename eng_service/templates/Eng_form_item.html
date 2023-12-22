@@ -1,0 +1,18 @@
+{% load crispy_forms_tags %}
+
+<div id="form1">
+    <h1>Please enter sentence:</h1>
+
+    <form method="post" class="form" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form|crispy }}
+
+        {% if not disable_buttons %}
+            <div class="text-center">
+                <button type="submit" class="btn btn-warning btn-lg col-5" id="btn-orange">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Fix!
+                </button>
+            </div>
+        {% endif %}
+    </form>
+</div>
