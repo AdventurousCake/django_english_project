@@ -40,16 +40,21 @@
         {% endif %}
         <br>
 
+        <div>
+            <h1>Input: {{ fixed|linebreaks }}</h1>
+{#            <h1><i class="fa-solid fa-circle-xmark"></i> Input: {{ fixed|linebreaks }}</h1>#}
+
+            {% if not its_correct %}
+            <h1><i class="fa-solid fa-circle-check"></i> Fixed: {{ input|linebreaks }}</h1>
+            {% endif %}
+        </div>
+        <br>
+
         {% if form %}
             {% include 'Eng_form_item.html' %}
         {% else %}
         {% endif %}
 
-        <br>
-        <div>
-            <h1><i class="fa-solid fa-circle-xmark"></i> Input: {{ fixed|linebreaks }}</h1>
-            <h1><i class="fa-solid fa-circle-check"></i> Fixed: {{ input|linebreaks }}</h1>
-        </div>
 
         {% if disable_buttons %}
             <br>

@@ -19,6 +19,40 @@ from eng_service.models import EngFixer, Request, UserProfile, Tag
 
 from eng_service.models_core import User
 
+class ResultProcessor:
+    @staticmethod
+    def get_result(input_str):
+        start = time.perf_counter()
+
+        fix = EngFixParser.get_parsed_data(input_str)
+        fixed_result_JSON = fix.get('corrections')
+        fixed_sentence = fix.get('text')
+        its_correct = fix.get('its_correct')
+
+        # TODO 03 error_types
+        error_types = fix.get('error_types')
+        types_most = fix.get('types_most')
+
+        # rephraser
+        rephrases_list = None
+        rephrases = EngRephr().get_rephrased_sentences(input_str=input_str)
+        if rephrases:
+            rephrases_list = rephrases
+
+        # translate
+        TRANSLATE_ENABLED = False
+        if TRANSLATE_ENABLED:
+            translated_input = Translate().get_ru_from_eng(text=input_str)
+            translated_fixed = Translate().get_ru_from_eng(text=fixed_sentence)
+        else:
+            translated_input, translated_fixed = None, None
+
+        timing = time.perf_counter() - start
+
+        return dict(input_str=input_str, fixed_sentence=fixed_sentence, fixed_result_JSON=fixed_result_JSON,
+                    rephrases_list=rephrases_list, translated_input=translated_input, translated_fixed=translated_fixed,
+                    types_most=types_most, error_types=error_types, its_correct=its_correct)
+
 class Parser:
     @staticmethod
     def parse_json(json_data: list[dict]):
@@ -116,40 +150,6 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
 
         return super(CheckENGView, self).form_invalid(form)
 
-    # TODO PARSE 1
-    @staticmethod
-    def get_eng_data(input_str):
-        start = time.perf_counter()
-
-        fix = EngFixParser.get_parsed_data(input_str)
-        fixed_result_JSON = fix.get('corrections')
-        fixed_sentence = fix.get('text')
-        its_correct = fix.get('its_correct')
-
-        # TODO 03 error_types
-        error_types = fix.get('error_types')
-        types_most = fix.get('types_most')
-
-        # rephraser
-        rephrases_list = None
-        rephrases = EngRephr().get_rephrased_sentences(input_str=input_str)
-        if rephrases:
-            rephrases_list = rephrases
-
-        # translate
-        TRANSLATE_ENABLED = False
-        if TRANSLATE_ENABLED:
-            translated_input = Translate().get_ru_from_eng(text=input_str)
-            translated_fixed = Translate().get_ru_from_eng(text=fixed_sentence)
-        else:
-            translated_input, translated_fixed = None, None
-
-        timing = time.perf_counter() - start
-
-        return dict(input_str=input_str, fixed_sentence=fixed_sentence, fixed_result_JSON=fixed_result_JSON,
-                    rephrases_list=rephrases_list, translated_input=translated_input, translated_fixed=translated_fixed,
-                    types_most=types_most, error_types=error_types, its_correct=its_correct)
-
     # processing form data
     # from django.utils.decorators import method_decorator
     # from django_ratelimit.decorators import ratelimit
@@ -159,7 +159,7 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
 
         # not obj.input_sentence, use cleaned_data
         input_str = form.cleaned_data['input_sentence']
-        data = self.get_eng_data(input_str)
+        data = ResultProcessor.get_result(input_str)
 
         obj.fixed_sentence = data['fixed_sentence']
         obj.fixed_result_JSON = data['fixed_result_JSON']
