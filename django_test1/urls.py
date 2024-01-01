@@ -30,7 +30,7 @@ urlpatterns = [
     path('auth_github/', include('social_django.urls', namespace='social')),
     path('page_github/', core_auth),
 
-    path('b/', include('BOOKS.urls'), name='books_service'),
+    path('b/', include('BOOKS_drf.urls'), name='books_service'),
 ]
 
 urlpatterns += [

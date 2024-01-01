@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from BOOKS.views import CreateMix
+from BOOKS_drf.views import CreateMix
 
 app_name = 'BOOKS'
 router = DefaultRouter()

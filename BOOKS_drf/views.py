@@ -8,8 +8,8 @@ from rest_framework.reverse import reverse
 from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 
-from BOOKS.models import Book
-from BOOKS.serializers import BookSerializer
+from BOOKS_drf.models import Book
+from BOOKS_drf.serializers import BookSerializer
 
 
 # class UpdateLikeViewAPI(APIView):

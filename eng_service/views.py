@@ -21,10 +21,11 @@ from eng_service.models_core import User
 
 class ResultProcessor:
     @staticmethod
-    def get_result(input_str):
+    def process_data(input_str):
         start = time.perf_counter()
 
-        fix = EngFixParser.get_parsed_data(input_str)
+        # fix = EngFixParser.get_parsed_data(input_str)
+        fix = EngFixParser().get_parsed_data(input_str)
         fixed_result_JSON = fix.get('corrections')
         fixed_sentence = fix.get('text')
         its_correct = fix.get('its_correct')
@@ -100,6 +101,7 @@ class Parser:
                 suggestions_rows.append((input_text, fixed_text, long_description, short_description, sugg_string))
         return suggestions_rows
 
+# TODO FIX RATELIMIT
 @method_decorator(ratelimit(key='user_or_ip', rate='1/h', method='GET', block=True), name='get')
 class EngMainView(TemplateView):
     template_name = "Eng_list.html"
@@ -159,7 +161,7 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
 
         # not obj.input_sentence, use cleaned_data
         input_str = form.cleaned_data['input_sentence']
-        data = ResultProcessor.get_result(input_str)
+        data = ResultProcessor.process_data(input_str)
 
         obj.fixed_sentence = data['fixed_sentence']
         obj.fixed_result_JSON = data['fixed_result_JSON']
@@ -216,6 +218,7 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
         user = request.user
         logging.warning(f'User request: {user}')
 
+        # save profile
         profile = None
         if isinstance(user, User):  # else AnonymousUser
             profile, created = UserProfile.objects.get_or_create(user=user)

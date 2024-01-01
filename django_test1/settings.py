@@ -73,7 +73,7 @@ INSTALLED_APPS = [
     'photo_service',
     'eng_service',
     'stripe_payments',
-    'BOOKS',
+    'BOOKS_drf',
 ]
 
 MIDDLEWARE = [

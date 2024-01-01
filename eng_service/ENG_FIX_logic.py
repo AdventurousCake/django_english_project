@@ -7,11 +7,69 @@ import requests
 from pprint import pprint
 
 
-class HttpEngService():
-    def get_request(self):
-        pass
+class HttpService:
+    # todo download_fixed_data TO general dwnld class
+    @staticmethod
+    def get_request_POST(url, headers, params=None, data=None):
+        try:
+            response = requests.post(url, headers=headers, data=data, timeout=5)
+            logging.info(f'Request status code: {response.status_code}')
+
+            if response.status_code == 200:
+                result_json = response.json()
+                if not result_json:
+                    raise Exception('No data from resource')
+                return result_json
+            else:
+                logging.error(f'Request failed with status code: {response.status_code}')
+                return
+
+        except Exception as e:
+            logging.error(str(e))
+            return
 
 
+class EngDownloader(HttpService):
+    def get_data(self, input_str=None):
+        headers = {
+            'authority': 'orthographe.reverso.net',
+            'accept': 'text/json',
+            'accept-language': 'en',
+            'content-type': 'application/*+json',
+            'origin': 'https://www.reverso.net',
+            'referer': 'https://www.reverso.net/',
+            'sec-ch-ua': '"Chromium";v="106", "Google Chrome";v="106", "Not;A=Brand";v="99"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+            'sec-fetch-dest': 'empty',
+            'sec-fetch-mode': 'cors',
+            'sec-fetch-site': 'same-site',
+            'sec-gpc': '1',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36',
+        }
+
+        # todo input escaping \'
+        # data = {"englishDialect": "indifferent", "autoReplace": True, "getCorrectionDetails": True,
+        #         "interfaceLanguage": "en", "locale": "", "language": "eng", "text": f"{input_str}",
+        #         "originalText": "",
+        #         "spellingFeedbackOptions": {"insertFeedback": True, "userLoggedOn": False}, "origin": "interactive",
+        #         "isHtml": False}
+        #
+        # x = json.dumps(data)
+        # data = "'" + x + "'"
+
+        # todo INPUT
+        # input_str = input_str
+
+        # "interfaceLanguage":"ru" OR en
+        data = '{"englishDialect":"indifferent","autoReplace":true,"getCorrectionDetails":true,"interfaceLanguage":"ru",' \
+               '"locale":"","language":"eng","text":"MY_INPUT","originalText":"","spellingFeedbackOptions":{' \
+               '"insertFeedback":true,"userLoggedOn":false},"origin":"interactive","isHtml":false} ' \
+            .replace('MY_INPUT', input_str)
+        return self.get_request_POST(url='https://orthographe.reverso.net/api/v1/Spelling/', headers=headers, params=None, data=data)
+
+
+# todo like EngFixParser
 class EngRephr:  # inherits HttpEngService?
     def __init__(self, input_str=None):
         self.input_str = input_str
@@ -19,6 +77,7 @@ class EngRephr:  # inherits HttpEngService?
     def parse_data(self):
         pass
 
+    # todo NEW DOWNLOADER AFTER ENG D
     @staticmethod
     def get_data(input_str=None):
         headers = {
@@ -109,7 +168,7 @@ def get_mistakes_data_LANGtool(input_str):
     pprint(response.json())
     return response.json()
 
-
+# todo outd
 def download_fixed_data(input_str, response_lang='ru'):
     headers = {
         'authority': 'orthographe.reverso.net',
@@ -168,14 +227,19 @@ def save_file_TEST(types_list_unique):
         # json.dump(types_cnt_dict, f, ensure_ascii=False, indent=4)
         f.write(',' + ','.join(types_list_unique))
 
+
 class EngFixParser:
     def __init__(self, downloader=None):
-        self.downloader = downloader
+        # self.downloader = downloader
+        if downloader is None:
+            self.downloader = EngDownloader()
 
-    @staticmethod
-    def get_parsed_data(input_str):
+    # @staticmethod
+    def get_parsed_data(self, input_str):
         """parsing from json. Example in ENG_FIX_resp.md"""
-        data = download_fixed_data(input_str)
+
+        # data = download_fixed_data(input_str)
+        data = self.downloader.get_data(input_str)
 
         text = data.get("text")
         its_correct = text == input_str
@@ -220,17 +284,21 @@ class EngFixParser:
         # print(input_str, result, sep="\n")
         return result
 
+
 def time_measure(func):
     def wrapper(*args, **kwargs):
         start = time.perf_counter()
         result = func(*args, **kwargs)
         print(time.perf_counter() - start)
         return result
+
     return wrapper
+
 
 @time_measure
 def main():
     print(EngRephr().get_rephrased_sentences(input_str='hello im fine. Are you fine?'))
+
 
 if __name__ == '__main__':
     # 900ms response

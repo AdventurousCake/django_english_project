@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from BOOKS.models import Book, Author
+from BOOKS_drf.models import Book, Author
 
 
 class AuthorSerializerSIMPLE(serializers.ModelSerializer):
