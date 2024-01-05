@@ -30,7 +30,7 @@ class ResultProcessor:
         fixed_sentence = fix.get('text')
         its_correct = fix.get('its_correct')
 
-        # TODO 03 error_types
+        # TODO TMP error_types
         error_types = fix.get('error_types')
         types_most = fix.get('types_most')
 

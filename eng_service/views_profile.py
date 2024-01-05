@@ -47,6 +47,7 @@ class EngProfileView(TemplateView, LoginRequiredMixin):
         # requests = Request.objects.filter(user_profile=profile).order_by('-created_date')
 
         count = len(requests)  # .count()
+
         last_using = \
             Request.objects.filter(user_profile=profile).values_list('created_date').order_by('-created_date').first()[0]
         # last_using = last_using.strftime('%Y-%m-%d %H:%M')
