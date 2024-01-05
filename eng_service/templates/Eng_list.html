@@ -1,61 +1,63 @@
 {% extends 'Eng_base.html' %}
 {% load static %}
-{#{% load bootstrap5 %}#}
 
 {% block content %}
-<div class="container md-5">
-    <p class="display-4">English Fixer | <a href="{% url 'eng_service:eng' %}">Fix New</a></p>
+    <div class="container md-5">
+        <p class="display-4">English Fixer | <a href="{% url 'eng_service:eng' %}">Fix New</a></p>
+        {#    CARD#}
 
+        {% if not data_list %}
+            <p>Create New</p>
+        {% endif %}
 
-    {#    {% for item in data_list %}#}
-    {#        {{ item }}#}
-    {#    {% endfor %}#}
+        {% for item in data_list %}
+            <div class="card">
+                <div class="card-header">
+                    {# btn-lg#}
+                    <a href="{{ item.get_absolute_url }}" class="btn btn-warning">Sentence #{{ item.id }}</a>
 
-    {#    CARD#}
-
-    {% if not data_list %}
-        <p>Create New</p>
-    {% endif %}
-
-    {% for item in data_list %}
-        <div class="card">
-            <div class="card-header">
-                <a href="{{ item.get_absolute_url }}" class="btn btn-warning">Sentence #{{ item.id }}</a>
+                    <button onclick="write_clipboard(`{{ item.fixed_sentence }}`);" class="btn btn-primary"><i
+                            class="fa-solid fa-copy"></i>
+                        Copy result
+                    </button>
+                    <button onclick="write_clipboard(window.location.origin+`{{ item.get_absolute_url }}`);" class="btn btn-primary"><i
+                            class="fa-solid fa-share"></i> Share (Copy link)
+                    </button>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">{{ item.input_sentence }}</li>
+                    <li class="list-group-item">{{ item.fixed_sentence }}</li>
+                </ul>
+                {#            <p>123</p>#}
             </div>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">{{ item.input_sentence }}</li>
-                <li class="list-group-item">{{ item.fixed_sentence }}</li>
-            </ul>
-{#            <p>123</p>#}
-        </div>
 
-        <p></p>
-    {% endfor %}
+            <p></p>
+        {% endfor %}
 
-    {#    TABLE#}
-    {#    <table class="table table-striped">#}
-    {#        <thead>#}
-    {#        <tr>#}
-    {#            <th scope="col">#</th>#}
-    {#            <th scope="col">input</th>#}
-    {#            <th scope="col">output</th>#}
-    {#            <th scope="col">link</th>#}
-    {#        </tr>#}
-    {#        </thead>#}
-    {#        <tbody>#}
-    {##}
-    {#        {% for item in data_list %}#}
-    {#        <tr>#}
-    {#            <th scope="row">1</th>#}
-    {#            <td>{{ item.id }}</td>#}
-    {#            <td>{{ item.input_sentence }}</td>#}
-    {#            <td>{{ item.fixed_sentence }}</td>#}
-    {#            <td><a href="{% url 'stripe_service:eng_get' item.id %}" class="btn btn-light">Link</a></td>#}
-    {#        </tr>#}
-    {#        {% endfor %}#}
-    {##}
-    {#        </tbody>#}
-    {#    </table>#}
+        {#    TABLE#}
+        {#    <table class="table table-striped">#}
+        {#        <thead>#}
+        {#        <tr>#}
+        {#            <th scope="col">#</th>#}
+        {#            <th scope="col">input</th>#}
+        {#            <th scope="col">output</th>#}
+        {#            <th scope="col">link</th>#}
+        {#        </tr>#}
+        {#        </thead>#}
+        {#        <tbody>#}
+        {##}
+        {#        {% for item in data_list %}#}
+        {#        <tr>#}
+        {#            <th scope="row">1</th>#}
+        {#            <td>{{ item.id }}</td>#}
+        {#            <td>{{ item.input_sentence }}</td>#}
+        {#            <td>{{ item.fixed_sentence }}</td>#}
+        {#            <td><a href="{% url 'stripe_service:eng_get' item.id %}" class="btn btn-light">Link</a></td>#}
+        {#        </tr>#}
+        {#        {% endfor %}#}
+        {##}
+        {#        </tbody>#}
+        {#    </table>#}
 
-</div>
+    </div>
 {% endblock %}

@@ -73,7 +73,7 @@ class EngProfileView(TemplateView, LoginRequiredMixin):
             #     m.append(tmp)
             # else:
 
-            # todo to parser; if empty fix__mistakes_most_LIST
+            # todo to parser or MODEL; if empty fix__mistakes_most_LIST
             eng_json = item.get('fix__fixed_result_JSON')
             if eng_json:
                 for sentence in eng_json:

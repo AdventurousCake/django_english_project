@@ -63,5 +63,5 @@ textarea#id_fixed_sentence {
 
 /*.shadow1 {*/
 .flex-container1 .flex-item1 {
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
 }
