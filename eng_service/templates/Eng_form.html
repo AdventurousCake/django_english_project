@@ -66,7 +66,8 @@
                 <button onclick="copy_form_result()" class="btn btn-primary btn-lg"><i class="fa-solid fa-copy"></i>
                     Copy result
                 </button>
-                <button onclick="copy_form_url()" class="btn btn-primary btn-lg"><i class="fa-solid fa-share"></i> Share (Copy link)
+                <button onclick="copy_form_url()" class="btn btn-primary btn-lg"><i class="fa-solid fa-share"></i> Share
+                    (Copy link)
                 </button>
             </section>
         {% endif %}
@@ -90,29 +91,41 @@
             {#            Translate disabled#}
         {% endif %}
 
-        {% if error_types %}
-            <br>
-            <div id="error_types">
-                <h1>Tags</h1>
-                {#                <h1><i class="fa-solid fa-hashtag"></i> Tags</h1>#}
-
-                <div id="tags" style="font-size: larger">
-                    {% for item in error_types %}
-                        <span class="badge rounded-pill bg-warning text-dark">{{ item }}</span>
-                    {% endfor %}
-                </div>
-
-                {% if types_most %}
-                    <p>Most: {{ types_most }}</p>
-                {% endif %}
-            </div>
-        {% endif %}
+        {#    TAGS BLOCK#}
+        {#        {% if error_types %}#}
+        {#            <br>#}
+        {#            <div id="error_types">#}
+        {#                <h1>Tags</h1>#}
+        {#                <h1><i class="fa-solid fa-hashtag"></i> Tags</h1>#}
+        {##}
+        {#                <div id="tags" style="font-size: larger">#}
+        {#                    {% for item in error_types %}#}
+        {#                        <span class="badge rounded-pill bg-warning text-dark">{{ item }}</span>#}
+        {#                    {% endfor %}#}
+        {#                </div>#}
+        {##}
+        {#                {% if types_most %}#}
+        {#                    <p>Most: {{ types_most }}</p>#}
+        {#                {% endif %}#}
+        {#            </div>#}
+        {#        {% endif %}#}
 
         {% if suggestions_rows %}
             <br>
             <div id="suggestions">
                 <h1>Suggestions</h1>
-                <p>Description of mistakes</p>
+                Description of mistakes
+
+                {% if error_types %}
+                    <div id="tags" style="font-size: larger">
+                        {% for item in error_types %}
+                            <span class="badge rounded-pill bg-warning text-dark">{{ item }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <br>
+
                 {#                <h1><i class="fa-solid fa-file-lines"></i> Description of mistakes (suggestions)</h1>#}
 
                 <div class="table-responsive">
@@ -129,11 +142,9 @@
                         </thead>
 
                         <tbody>
-
                         {% for item in suggestions_rows %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-
                                 <td>{{ item.0 }}</td>
                                 <td><b>{{ item.1 }}</b></td>
                                 <td>{{ item.2 }}</td>
@@ -141,14 +152,12 @@
                                 <td>{{ item.4|linebreaks|safe }}</td>
                             </tr>
                         {% endfor %}
-
                         </tbody>
                     </table>
                 </div>
             </div>
         {% endif %}
 
-        {#    # todo new styles + separte h1?#}
         {% if rephrases_list %}
             <br>
             <div id="rephrases">

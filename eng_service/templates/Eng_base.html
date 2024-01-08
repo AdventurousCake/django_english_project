@@ -19,11 +19,10 @@
 <noscript>JS is required</noscript>
 
 <body id="main-block">
-
 <div class="header container">
     <nav class="navbar navbar-expand navbar-light bg-light" aria-label="Second navbar example">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Always expand</a>
+            <a class="navbar-brand" href="#">FIXER</a>
 
             {#      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample02" aria-controls="navbarsExample02" aria-expanded="false" aria-label="Toggle navigation">#}
             {#        <span class="navbar-toggler-icon"></span>#}
@@ -51,6 +50,10 @@
             </div>
         </div>
     </nav>
+
+    <p class="display-3">English Fixer | <a href="{% url 'eng_service:eng' %}">Fix New</a></p>
+    <hr>
+
 </div>
 
 {% block content %}
