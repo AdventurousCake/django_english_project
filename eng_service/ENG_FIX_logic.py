@@ -204,8 +204,8 @@ def download_fixed_data(input_str, response_lang='ru'):
         .replace('MY_INPUT', input_str)
 
     try:
-        response = requests.post('https://orthographe.reverso.net/api/v1/Spelling/', headers=headers, data=data,
-                                 timeout=5)
+        response = requests.post('https://orthographe.reverso.net/api/v1/Spelling/',
+                                 headers=headers, data=data, timeout=5)
         logging.info(f'Fix Request status code: {response.status_code}')
 
         if response.status_code == 200:
@@ -283,6 +283,17 @@ class EngFixParser:
 
         # print(input_str, result, sep="\n")
         return result
+
+    @staticmethod
+    def parse_item_mistakes(item):
+        """parse from jsonfield"""
+        mistakes=[]
+        eng_json = item.get('fix__fixed_result_JSON')
+        if eng_json:
+            for sentence in eng_json:
+                if 'type' in sentence:
+                    mistakes.append(sentence['type'])
+        return mistakes
 
 
 def time_measure(func):

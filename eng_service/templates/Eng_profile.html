@@ -18,7 +18,7 @@
                 <br>
 
                 <div id="stats">
-{#                <i class="fa-solid fa-circle-check"></i>#}
+                    {#                <i class="fa-solid fa-circle-check"></i>#}
 
                     <div class="flex-container1" style="max-width: 800px">
                         <div class="flex-item1">
@@ -64,18 +64,18 @@
 
                     <br>
 
-{#                    moved to left#}
-{#                    <p><b>Username: </b>{{ user.username }}</p>#}
-{#                    <p><b>Email: </b>{{ user.email }}</p>#}
-{#                    <p><b>Joined: </b>{{ user.date_joined|date:"d E Y" }}</p>#}
-{##}
-{#                    <hr>#}
+                    {#                    moved to left#}
+                    {#                    <p><b>Username: </b>{{ user.username }}</p>#}
+                    {#                    <p><b>Email: </b>{{ user.email }}</p>#}
+                    {#                    <p><b>Joined: </b>{{ user.date_joined|date:"d E Y" }}</p>#}
+                    {##}
+                    {#                    <hr>#}
 
                     <h1>Fixer</h1>
                     <p><b>Requests count:</b> {{ count }} <br>
-                    <b>Last using:</b> {{ last_using }}
+                        <b>Last using:</b> {{ last_using }}
                     </p>
-{#                    <p><b>Last using:</b> {{ last_using }}</p>#}
+                    {#                    <p><b>Last using:</b> {{ last_using }}</p>#}
 
                     <br>
 
@@ -98,18 +98,29 @@
                     <br>
                     <h1>Test</h1>
 
+                    <div class="border-container">
+                    <p>Fix random sentence:</p>
+                    <p>{{ random_sentence }}</p>
+                    <p id='hidden' style="display: none">{{ random_sentence2 }}</p>
+                    <a href="{{ random_sentence_url }}" class="btn btn-sm btn-warning">Check</a>
+                    <button class="btn btn-sm btn-warning" type="button" onclick="h()">Show</button>
+                    <a href="{{ random_sentence_url }}" class="btn btn-sm btn-warning">Open</a>
+                    </div>
+                    <br>
+                    <hr>
+
                     {#    filter#}
                     <div class="col-md-3">
-                    <form action="">
-                        <select class="form-select" aria-label="Default select example" name="tag">
-                            <option selected>Grammar</option>
-                            <option value="MisusedWord">Misused Word</option>
-                            <option value="Grammar">Grammar</option>
-                            <option value="Spelling">Spelling</option>
-                            <option value="Punctuation">Punctuation</option>
-                        </select>
-                        <button type="submit" class="btn btn-sm btn-primary mt-3">Выбрать</button>
-                    </form>
+                        <form action="">
+                            <select class="form-select" aria-label="Default select example" name="tag">
+                                <option selected>Grammar</option>
+                                <option value="MisusedWord">Misused Word</option>
+                                <option value="Grammar">Grammar</option>
+                                <option value="Spelling">Spelling</option>
+                                <option value="Punctuation">Punctuation</option>
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-primary mt-3">Выбрать</button>
+                        </form>
                     </div>
 
                     <p><b>{{ testdata|linebreaksbr }}</b></p>

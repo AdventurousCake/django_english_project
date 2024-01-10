@@ -26,9 +26,8 @@ button.btn-primary-custom:hover {
 }
 
 /* div.container > div  */
-#formpage-container > div{
+#formpage-container > div, .border-container {
     padding: 1em;
-
     background-color: white;
 
     border-radius: 20px;

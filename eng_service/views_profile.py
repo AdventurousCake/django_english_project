@@ -7,6 +7,7 @@ from django.db.models import Value, CharField
 from django.db.models.functions import Concat
 from django.views.generic import TemplateView
 
+from eng_service.ENG_FIX_logic import EngFixParser
 from eng_service.models import Request, EngFixer
 from eng_service.models_core import User
 
@@ -56,33 +57,9 @@ class EngProfileView(TemplateView, LoginRequiredMixin):
                 0]
         # last_using = last_using.strftime('%Y-%mistakes-%d %H:%M')
 
-        ################### test
-        # FROM JSON
-        # tst = EngFixer.objects.values_list('fixed_result_JSON', flat=True)
-        # mistakes = []
-        # for json_item in tst:
-        #     for item in json_item:
-        #         if 'type' in item:
-        #             mistakes.append(item['type'])
-
-        #######################
-        # x= tst[0]['fixed_result_JSON'][0]['type']
-
-        # requests = [{'fix__mistakes_most_TMP': 'example', 'fix__fixed_result_JSON': [{'type': 'noun'}]}]
-
         mistakes = []
         for item in requests:
-            # tmp = item.get('fix__mistakes_most_TMP')
-            # if tmp:
-            #     mistakes.append(tmp)
-            # else:
-
-            # todo to parser or MODEL; if empty fix__mistakes_most_LIST
-            eng_json = item.get('fix__fixed_result_JSON')
-            if eng_json:
-                for sentence in eng_json:
-                    if 'type' in sentence:
-                        mistakes.append(sentence['type'])
+            mistakes.extend(EngFixParser.parse_item_mistakes(item))
 
         top3_str = ''
         top3 = None
@@ -93,7 +70,7 @@ class EngProfileView(TemplateView, LoginRequiredMixin):
 
         ##############
 
-        # select
+        # select test
         selected_tag = self.request.GET.get("tag") or 'Grammar'
         # todo in none
         print(selected_tag)
@@ -147,10 +124,10 @@ class EngProfileView(TemplateView, LoginRequiredMixin):
                 .distinct('fix__id')
                 # .order_by('-created_date')
 
-
-
         [:10])
-        res = '\n'.join([f'fix_id: {i.get("fix__id")}\n({i.get("fix__input_sentence")} -> {i.get("fix__fixed_sentence")})\n' for i in data])
+        res = '\n'.join(
+            [f'fix_id: {i.get("fix__id")}\n({i.get("fix__input_sentence")} -> {i.get("fix__fixed_sentence")})\n' for i
+             in data])
 
         # d2 = (EngFixer.objects.filter(
         #     tags__name=selected_tag)
@@ -167,6 +144,12 @@ class EngProfileView(TemplateView, LoginRequiredMixin):
         # res = '\n'.join([f'{item.fix.fixed_sentence}, ({item.fix.tags.all()})' for item in d])
 
         context['testdata'] = res  # res
+
+        # TODO RANDOM; not correct
+        r = EngFixer.objects.filter(its_correct=False).order_by('?').first()
+        context['random_sentence'] = r.input_sentence
+        context['random_sentence2'] = r.fixed_sentence
+        context['random_sentence_url'] = r.get_absolute_url()
 
         context['count'] = count
         context['last_using'] = last_using

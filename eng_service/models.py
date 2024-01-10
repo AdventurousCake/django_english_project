@@ -1,3 +1,4 @@
+import json
 import re
 
 import uuid
@@ -64,6 +65,15 @@ class EngFixer(models.Model):
     translated_input = models.CharField(null=True, max_length=256)
     translated_fixed = models.CharField(null=True, max_length=256)
     created_date = models.DateTimeField(null=False, auto_now_add=True)
+
+    # def mistakes(self):
+    #     mistakes=[]
+    #     eng_json = self.fixed_result_JSON
+    #     if eng_json:
+    #         for sentence in eng_json:
+    #             if 'type' in sentence:
+    #                 mistakes.append(sentence['type'])
+    #     return mistakes
 
     # model-level validation; validators - field level (by full_clean)
     def clean(self):
