@@ -50,17 +50,14 @@ class EngFixer(models.Model):
     # translated_RU = models.CharField(null=True, max_length=256)
     fixed_result_JSON = models.JSONField(null=True)
     fixed_sentence = models.CharField(null=False, blank=True, max_length=256)
-    rephrases_list = ArrayField(models.CharField(max_length=150, blank=True), null=True)
-    # size=8,)
-
+    rephrases_list = ArrayField(models.CharField(max_length=150, blank=True), null=True)  # size=8,)
     its_correct = models.BooleanField(null=True, default=None)
 
     mistakes_most_TMP = models.CharField(null=True, max_length=256)
     mistakes_list_TMP = ArrayField(models.CharField(max_length=150, blank=True), null=True)
 
-    # TODO m2m 23
     # using eng_service_engfixer_tags
-    tags = models.ManyToManyField(to='Tag', null=True) #on_delete=models.SET_NULL)
+    tags = models.ManyToManyField(to='Tag', null=True) #related_name='fix', on_delete=models.SET_NULL)
 
     translated_input = models.CharField(null=True, max_length=256)
     translated_fixed = models.CharField(null=True, max_length=256)
