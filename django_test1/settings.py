@@ -70,10 +70,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap5',
 
-    'photo_service',
     'eng_service',
     'stripe_payments',
-    'BOOKS_drf',
 ]
 
 MIDDLEWARE = [

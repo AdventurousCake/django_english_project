@@ -22,15 +22,11 @@ from eng_service.core.views import core_auth
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('photo_service.urls'), name='photo_service'),
-
     path('stripe_payments/', include('stripe_payments.urls'), name='stripe_payments'),
     path('eng/', include('eng_service.urls'), name='eng_service'),
 
     path('auth_github/', include('social_django.urls', namespace='social')),
     path('page_github/', core_auth),
-
-    path('b/', include('BOOKS_drf.urls'), name='books_service'),
 ]
 
 urlpatterns += [

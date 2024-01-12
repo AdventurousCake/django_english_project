@@ -8,7 +8,7 @@ from django.db.models.functions import Concat
 from django.views.generic import TemplateView
 
 from eng_service.ENG_FIX_logic import EngFixParser
-from eng_service.models import Request, EngFixer
+from eng_service.models import Request, EngFixer, Tag
 from eng_service.models_core import User
 
 
@@ -40,7 +40,7 @@ class EngProfileView(TemplateView, LoginRequiredMixin):
                     .values(
             'fix_id',
             'fix__fixed_result_JSON',  # todo
-            'fix__mistakes_most_TMP', 'fix__mistakes_list_TMP',
+            'fix__mistakes_most_TMP', 'fix__mistakes_list_TMP'
             # 'created_date'
         )
                     .distinct()
@@ -48,19 +48,17 @@ class EngProfileView(TemplateView, LoginRequiredMixin):
                     )
 
         # requests = Request.objects.filter(user_profile=profile).select_related('fix').order_by('-created_date')
-        # requests = Request.objects.filter(user_profile=profile).order_by('-created_date')
 
         count = len(requests)  # .count()
-
-        last_using = \
-            Request.objects.filter(user_profile=profile).values_list('created_date').order_by('-created_date').first()[
-                0]
+        count_correct = Request.objects.filter(user_profile=profile).select_related('fix').filter(
+            fix__its_correct=True).count()
+        last_using = (Request.objects.filter(user_profile=profile).values_list('created_date')
+        .order_by('-created_date').first()[0])
         # last_using = last_using.strftime('%Y-%mistakes-%d %H:%M')
 
         mistakes = []
         for item in requests:
             mistakes.extend(EngFixParser.parse_item_mistakes(item))
-
         top3_str = ''
         top3 = None
         if mistakes:
@@ -126,7 +124,7 @@ class EngProfileView(TemplateView, LoginRequiredMixin):
 
         [:10])
         res = '\n'.join(
-            [f'fix_id: {i.get("fix__id")}\n({i.get("fix__input_sentence")} -> {i.get("fix__fixed_sentence")})\n' for i
+            [f'fix_id: {i.get("fix__id")}\n({i.get("fix__input_sentence")} ->\n{i.get("fix__fixed_sentence")})\n' for i
              in data])
 
         # d2 = (EngFixer.objects.filter(
@@ -152,8 +150,9 @@ class EngProfileView(TemplateView, LoginRequiredMixin):
         context['random_sentence_url'] = r.get_absolute_url()
 
         context['count'] = count
+        context['count_correct'] = count_correct
         context['last_using'] = last_using
-        context['last_using_str'] = last_using.strftime('%Y.%m.%d')
+        context['last_using_str'] = last_using.strftime('%d %b.')  # '%Y.%m.%d'
         context['top3_str'] = top3_str
         context['top3'] = top3
         context['data_list'] = requests
