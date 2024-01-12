@@ -14,6 +14,10 @@
 
     <script src="{% static 'js/utils.js' %}"></script>
 
+    {% if IS_PROD %}
+    {% include 'ym.html' %}
+    {% endif %}
+
     <title>English Fixer</title>
 </head>
 <noscript>JS is required</noscript>
@@ -22,7 +26,8 @@
 <div class="header container">
     <nav class="navbar navbar-expand navbar-light bg-light" aria-label="Second navbar example">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">FIXER</a>
+
+            <a class="navbar-brand" href="#">English Fixer</a>
 
             {#      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample02" aria-controls="navbarsExample02" aria-expanded="false" aria-label="Toggle navigation">#}
             {#        <span class="navbar-toggler-icon"></span>#}
@@ -32,8 +37,10 @@
                 <ul class="navbar-nav me-auto">
 
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{% url 'eng_service:eng' %}">Home (New
-                            fix)</a>
+                        <a href="{% url 'eng_service:eng' %}" class="btn btn-warning">
+                        <i class="fa-solid fa-plus"></i> Fix New</a>
+{#                        <a class="nav-link active" aria-current="page" href="{% url 'eng_service:eng' %}">Home (New#}
+{#                            fix)</a>#}
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'eng_service:eng_list' %}">List</a>
@@ -51,10 +58,14 @@
         </div>
     </nav>
 
-    <p class="display-3">English Fixer | <a href="{% url 'eng_service:eng' %}">Fix New</a></p>
-    <hr>
 
+{#    <p class="display-4">English Fixer | <a href="{% url 'eng_service:eng_list' %}">List</a> |#}
+{#            <a href="{% url 'eng_service:eng' %}" class="btn btn-warning btn-lg">#}
+{#                <i class="fa-solid fa-plus"></i> Fix New</a>#}
+{#    </p>#}
+{#    <hr>#}
 </div>
+<br>
 
 {% block content %}
 {% endblock %}
