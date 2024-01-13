@@ -37,11 +37,11 @@
             <br>
 
             <div>
-                <h1>Input: {{ fixed|linebreaks }}</h1>
+                <h1>Input: {{ input|linebreaks }}</h1>
                 {#            <h1><i class="fa-solid fa-circle-xmark"></i> Input: {{ fixed|linebreaks }}</h1>#}
 
                 {% if not its_correct %}
-                    <h1><i class="fa-solid fa-circle-check"></i> Fixed: {{ input|linebreaks }}</h1>
+                    <h1><i class="fa-solid fa-circle-check"></i> Fixed: {{ fixed|linebreaks }}</h1>
                 {% endif %}
             </div>
             <br>

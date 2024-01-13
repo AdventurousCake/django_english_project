@@ -23,7 +23,8 @@ from eng_service.core.views import core_auth
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('stripe_payments/', include('stripe_payments.urls'), name='stripe_payments'),
-    path('eng/', include('eng_service.urls'), name='eng_service'),
+
+    path('', include('eng_service.urls'), name='eng_service'),
 
     path('auth_github/', include('social_django.urls', namespace='social')),
     path('page_github/', core_auth),
