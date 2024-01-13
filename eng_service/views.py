@@ -7,6 +7,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
+from django.views import View
 
 from django.views.generic import TemplateView, CreateView, UpdateView
 from django_ratelimit.decorators import ratelimit
@@ -100,6 +101,14 @@ class Parser:
 
                 suggestions_rows.append((input_text, fixed_text, long_description, short_description, sugg_string))
         return suggestions_rows
+
+class GetRandomView(View):
+    """random fixed"""
+    def get(self, request):
+        eng = EngFixer.objects.filter(its_correct=False).order_by('?').first()
+        if not eng:
+            return redirect('eng_service:eng')
+        return redirect('eng_service:eng_get', pk=eng.id)
 
 # TODO FIX RATELIMIT
 @method_decorator(ratelimit(key='user_or_ip', rate='1/h', method='GET', block=True), name='get')
