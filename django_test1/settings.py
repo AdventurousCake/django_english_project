@@ -71,7 +71,6 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
 
     'eng_service',
-    'stripe_payments',
 ]
 
 MIDDLEWARE = [

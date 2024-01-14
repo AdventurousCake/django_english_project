@@ -4,19 +4,7 @@
 
 {% block content %}
     {## md-5#}
-
-    {# TODO HEADER #}
     <div class="container" id="formpage-container">
-
-        {#    filter#}
-        {#        <form action="">#}
-        {#            <select class="form-select" aria-label="Default select example" name="tag">#}
-        {#                <option selected>Все</option>#}
-        {#                <option value="Все">Все</option>#}
-        {#                <option value="тэг1">тэг1</option>#}
-        {#            </select>#}
-        {#            <button type="submit" class="btn btn-sm btn-primary mt-3">Выбрать</button>#}
-        {#        </form>#}
 
         {#    {% if form.errors %}#}
         {#        <div class="alert alert-danger" role="alert">#}
@@ -57,11 +45,9 @@
             <br>
             <section id="btns" class="text-center">
                 <button onclick="copy_form_result()" class="btn btn-primary btn-lg"><i class="fa-solid fa-copy"></i>
-                    Copy result
-                </button>
-                <button onclick="copy_form_url()" class="btn btn-primary btn-lg"><i class="fa-solid fa-share"></i> Share
-                    (Copy link)
-                </button>
+                    Copy result</button>
+                <button onclick="copy_form_url()" class="btn btn-primary btn-lg">
+                    <i class="fa-solid fa-share"></i> Share (Copy link)</button>
             </section>
         {% endif %}
 
@@ -69,9 +55,6 @@
             <br>
             <div id="translate">
                 <h1>Translate to RU</h1>
-                {#                <h1><i class="fa-solid fa-language"></i> Translate to RU</h1>#}
-                {#                {{ translate|linebreaks }}#}
-                {#                {% for item in translate %}#}
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <span class="badge rounded-pill bg-primary">Input</span> {{ translate.0 }}</li>
@@ -155,9 +138,6 @@
             <br>
             <div id="rephrases">
                 <h1>Rephrases</h1>
-                {#                {{ rephrases_list|linebreaks }}#}
-
-                {#            v2#}
                 <ul class="list-group list-group-flush">
                     {% for item in rephrases_list %}
                         <li class="list-group-item">{{ item }}</li>
@@ -165,19 +145,6 @@
                 </ul>
             </div>
         {% endif %}
-
-
-
-        {#    <form method="post" enctype="multipart/form-data">#}
-        {#        {% csrf_token %}#}
-        {#        {{ form.as_p }}#}
-        {##}
-        {#        <div class="row justify-content-center">#}
-        {#            <button type="submit" class="btn btn-primary">#}
-        {#                FIX#}
-        {#            </button>#}
-        {#        </div>#}
-        {#    </form>#}
 
     </div>
 {% endblock %}

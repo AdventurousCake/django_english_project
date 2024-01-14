@@ -58,9 +58,6 @@ class EngDownloader(HttpService):
         # x = json.dumps(data)
         # data = "'" + x + "'"
 
-        # todo INPUT
-        # input_str = input_str
-
         # "interfaceLanguage":"ru" OR en
         data = '{"englishDialect":"indifferent","autoReplace":true,"getCorrectionDetails":true,"interfaceLanguage":"ru",' \
                '"locale":"","language":"eng","text":"MY_INPUT","originalText":"","spellingFeedbackOptions":{' \
