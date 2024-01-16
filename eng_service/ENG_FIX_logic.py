@@ -48,16 +48,6 @@ class EngDownloader(HttpService):
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36',
         }
 
-        # todo input escaping \'
-        # data = {"englishDialect": "indifferent", "autoReplace": True, "getCorrectionDetails": True,
-        #         "interfaceLanguage": "en", "locale": "", "language": "eng", "text": f"{input_str}",
-        #         "originalText": "",
-        #         "spellingFeedbackOptions": {"insertFeedback": True, "userLoggedOn": False}, "origin": "interactive",
-        #         "isHtml": False}
-        #
-        # x = json.dumps(data)
-        # data = "'" + x + "'"
-
         # "interfaceLanguage":"ru" OR en
         data = '{"englishDialect":"indifferent","autoReplace":true,"getCorrectionDetails":true,"interfaceLanguage":"ru",' \
                '"locale":"","language":"eng","text":"MY_INPUT","originalText":"","spellingFeedbackOptions":{' \
@@ -184,16 +174,6 @@ def download_fixed_data(input_str, response_lang='ru'):
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36',
     }
 
-    # todo input escaping \'
-    # data = {"englishDialect": "indifferent", "autoReplace": True, "getCorrectionDetails": True,
-    #         "interfaceLanguage": "en", "locale": "", "language": "eng", "text": f"{input_str}",
-    #         "originalText": "",
-    #         "spellingFeedbackOptions": {"insertFeedback": True, "userLoggedOn": False}, "origin": "interactive",
-    #         "isHtml": False}
-    #
-    # x = json.dumps(data)
-    # data = "'" + x + "'"
-
     # "interfaceLanguage":"ru" OR en
     data = '{"englishDialect":"indifferent","autoReplace":true,"getCorrectionDetails":true,"interfaceLanguage":"ru",' \
            '"locale":"","language":"eng","text":"MY_INPUT","originalText":"","spellingFeedbackOptions":{' \
@@ -227,11 +207,9 @@ def save_file_TEST(types_list_unique):
 
 class EngFixParser:
     def __init__(self, downloader=None):
-        # self.downloader = downloader
         if downloader is None:
             self.downloader = EngDownloader()
 
-    # @staticmethod
     def get_parsed_data(self, input_str):
         """parsing from json. Example in ENG_FIX_resp.md"""
 
@@ -262,10 +240,6 @@ class EngFixParser:
         types_list_unique = None
         if error_types:
             """error_types contains duplicates for counting"""
-            # for i in error_types:
-            #     if i in known_types:
-            #         pass
-
             types_cnt_dict = Counter(error_types)
             types_list_unique = list(types_cnt_dict.keys())
             types_most_tuple = types_cnt_dict.most_common(1)[0]
@@ -277,8 +251,6 @@ class EngFixParser:
 
         result = dict(text=text, corrections=corrections_list, error_types=types_list_unique,
                       types_most=types_most_value, its_correct=its_correct)
-
-        # print(input_str, result, sep="\n")
         return result
 
     @staticmethod

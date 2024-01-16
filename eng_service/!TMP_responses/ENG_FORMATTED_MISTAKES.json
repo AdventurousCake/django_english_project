@@ -1,0 +1,87 @@
+[
+  {
+    'mistakeText': 'i',
+    'suggestions': [
+      {
+        'text': 'I',
+        'category': 'Spelling',
+        'definition': 'refers to the speaker or writer'
+      }
+    ],
+    'longDescription': 'Слово было написано неправильно',
+    'shortDescription': 'Орфографическая ошибка'
+  },
+  {
+    'mistakeText': 'django',
+    'suggestions': [],
+    'longDescription': 'Неизвестное слово - нет доступных вариантов',
+    'shortDescription': 'Возможная орфографическая ошибка'
+  },
+  {
+    'mistakeText': 'hour',
+    'suggestions': [
+      {
+        'text': 'hours',
+        'category': 'Noun'
+      }
+    ],
+    'longDescription': 'Перепутаны формы единственного и множественного числа существительного',
+    'shortDescription': 'Грамматическая ошибка'
+  },
+  {
+    'mistakeText': 'Im feel',
+    'suggestions': [
+      {
+        'text': 'I feel',
+        'category': 'Verb'
+      },
+      {
+        'text': "I'm feel",
+        'category': 'Spelling'
+      },
+      {
+        'text': "I'm feeling",
+        'category': 'Verb'
+      },
+      {
+        'text': 'I felt',
+        'category': 'Verb'
+      }
+    ],
+    'longDescription': 'Неправильное время или форма глагола',
+    'shortDescription': 'Грамматическая ошибка'
+  },
+  {
+    'mistakeText': 'Today',
+    'suggestions': [
+      {
+        'text': "Today's",
+        'category': 'Noun'
+      }
+    ],
+    'longDescription': 'Неправильное употребление двух или более существительных подряд в притяжательном падеже или в качестве определений',
+    'shortDescription': 'Грамматическая ошибка'
+  },
+  {
+    'mistakeText': 'have',
+    'suggestions': [
+      {
+        'text': 'Have',
+        'category': 'Other'
+      }
+    ],
+    'longDescription': 'Первое слово в предложении не написано с заглавной буквы',
+    'shortDescription': 'Ошибка пунктуации'
+  },
+  {
+    'mistakeText': 'nice day',
+    'suggestions': [
+      {
+        'text': 'a nice day',
+        'category': 'Noun'
+      }
+    ],
+    'longDescription': 'Пропущен неопределенный артикль (“a” | “an”)',
+    'shortDescription': 'Грамматическая ошибка'
+  }
+]

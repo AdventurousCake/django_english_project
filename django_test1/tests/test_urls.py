@@ -75,7 +75,7 @@ class MessageTestURLS(CreateClientsTestBase,
                        ('eng_service:eng_get', 1), # EMPTY DB
                        # ('eng_service:eng_profile', 1), # EMPTY DB
                        ('eng_service:eng_list', None),
-                       # ('eng_service:eng_random', None), # 302
+                       ('eng_service:eng_random', None), # 302
                        ]
 
         for pattern in urlpatterns:
@@ -91,7 +91,8 @@ class MessageTestURLS(CreateClientsTestBase,
             response = self.authorized_client.get(url) # auth
             # response = self.client.get(url) # anon
 
-            self.assertEqual(response.status_code, 200)
+            status = response.status_code
+            self.assertIn(status, [200, 302])
 
     # def test_create_request_auth_123(self):
     #     response = self.authorized_client.get(reverse('eng_service:eng_get', kwargs={}))

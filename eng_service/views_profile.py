@@ -1,10 +1,11 @@
 from collections import Counter
+from datetime import timedelta, datetime
 from pprint import pprint
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.db.models import Value, CharField
-from django.db.models.functions import Concat
+from django.db.models.functions import Concat, Now
 from django.views.generic import TemplateView
 
 from eng_service.ENG_FIX_logic import EngFixParser
@@ -51,10 +52,16 @@ class EngProfileView(TemplateView, LoginRequiredMixin):
 
         count = len(requests)  # .count()
         count_correct = Request.objects.filter(user_profile=profile).select_related('fix').filter(
-            fix__its_correct=True).count()
+            fix__its_correct=True)#.count()
+        count_correct_c = count_correct.count()
+
         last_using = (Request.objects.filter(user_profile=profile).values_list('created_date')
         .order_by('-created_date').first()[0])
         # last_using = last_using.strftime('%Y-%mistakes-%d %H:%M')
+
+        # todo 16
+        count_lastweek = requests.filter(created_date__gte=Now() - timedelta(days=7)).count()
+        count_correct_lastweek = count_correct.filter(created_date__gte=Now() - timedelta(days=7)).count()# or 0
 
         mistakes = []
         for item in requests:
@@ -149,8 +156,12 @@ class EngProfileView(TemplateView, LoginRequiredMixin):
         context['random_sentence2'] = r.fixed_sentence
         context['random_sentence_url'] = r.get_absolute_url()
 
+        # todo 16 2
         context['count'] = count
-        context['count_correct'] = count_correct
+        context['count_correct'] = count_correct_c
+        context['count_correct_lastweek'] = count_correct_lastweek
+        context['count_lastweek'] = count_lastweek
+
         context['last_using'] = last_using
         context['last_using_str'] = last_using.strftime('%d %b.')  # '%Y.%m.%d'
         context['top3_str'] = top3_str
