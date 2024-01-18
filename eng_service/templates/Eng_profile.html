@@ -49,11 +49,11 @@
                         </div>
                         <div class="flex-item1">
                         </div>
-{#                        <div class="flex-item1">#}
-{#                            <h1>{{ count }}</h1>#}
-{#                            <hr>#}
-{#                            <h4>COUNT</h4>#}
-{#                        </div>#}
+                        {#                        <div class="flex-item1">#}
+                        {#                            <h1>{{ count }}</h1>#}
+                        {#                            <hr>#}
+                        {#                            <h4>COUNT</h4>#}
+                        {#                        </div>#}
                     </div>
                 </div>
 
@@ -80,10 +80,8 @@
                     </div>
 
                 {% endif %}
-
                 <br>
-                <h1>Test</h1>
-
+                <h1>Mini quiz</h1>
                 <div class="border-container">
                     <h3>Fix random sentence:</h3>
                     <p>{{ random_sentence }}</p>
@@ -92,27 +90,30 @@
                     <button class="btn btn-md btn-warning" type="button" onclick="h()">Show</button>
                 </div>
                 <br>
-                <hr>
 
-                {#    filter#}
-                <div class="border-container">
+{#                {% if not IS_PROD %}#}
+{#                    <h1>Test</h1>#}
+{#                    <hr>#}
+                    {#    filter#}
+{#                    <div class="border-container">#}
+{##}
+{#                        <div class="col-md-3">#}
+{#                            <form action="">#}
+{#                                <select class="form-select" aria-label="Default select example" name="tag">#}
+{#                                    <option selected>Grammar</option>#}
+{#                                    <option value="MisusedWord">Misused Word</option>#}
+{#                                    <option value="Grammar">Grammar</option>#}
+{#                                    <option value="Spelling">Spelling</option>#}
+{#                                    <option value="Punctuation">Punctuation</option>#}
+{#                                </select>#}
+{#                                <button type="submit" class="btn btn-sm btn-primary mt-3">Выбрать</button>#}
+{#                            </form>#}
+{#                        </div>#}
+{##}
+{#                        <p><b>{{ testdata|linebreaksbr }}</b></p>#}
+{#                    </div>#}
+{#                {% endif %}#}
 
-                    <div class="col-md-3">
-                        <form action="">
-                            <select class="form-select" aria-label="Default select example" name="tag">
-                                <option selected>Grammar</option>
-                                <option value="MisusedWord">Misused Word</option>
-                                <option value="Grammar">Grammar</option>
-                                <option value="Spelling">Spelling</option>
-                                <option value="Punctuation">Punctuation</option>
-                            </select>
-                            <button type="submit" class="btn btn-sm btn-primary mt-3">Выбрать</button>
-                        </form>
-                    </div>
-
-                    <p><b>{{ testdata|linebreaksbr }}</b></p>
-
-                </div>
             </div>
 
         </div>

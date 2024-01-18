@@ -6,6 +6,8 @@ from collections import Counter
 import requests
 from pprint import pprint
 
+from eng_service.parser_headers_const import headers_engd, headers_eng_rephr
+
 
 class HttpService:
     # todo download_fixed_data TO general dwnld class
@@ -14,6 +16,8 @@ class HttpService:
         try:
             response = requests.post(url, headers=headers, data=data, timeout=5)
             logging.info(f'Request status code: {response.status_code}')
+
+            # response.ok
 
             if response.status_code == 200:
                 result_json = response.json()
@@ -31,22 +35,7 @@ class HttpService:
 
 class EngDownloader(HttpService):
     def get_data(self, input_str=None):
-        headers = {
-            'authority': 'orthographe.reverso.net',
-            'accept': 'text/json',
-            'accept-language': 'en',
-            'content-type': 'application/*+json',
-            'origin': 'https://www.reverso.net',
-            'referer': 'https://www.reverso.net/',
-            'sec-ch-ua': '"Chromium";v="106", "Google Chrome";v="106", "Not;A=Brand";v="99"',
-            'sec-ch-ua-mobile': '?0',
-            'sec-ch-ua-platform': '"Windows"',
-            'sec-fetch-dest': 'empty',
-            'sec-fetch-mode': 'cors',
-            'sec-fetch-site': 'same-site',
-            'sec-gpc': '1',
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36',
-        }
+        headers = headers_engd
 
         # "interfaceLanguage":"ru" OR en
         data = '{"englishDialect":"indifferent","autoReplace":true,"getCorrectionDetails":true,"interfaceLanguage":"ru",' \
@@ -67,24 +56,7 @@ class EngRephr:  # inherits HttpEngService?
     # todo NEW DOWNLOADER AFTER ENG D
     @staticmethod
     def get_data(input_str=None):
-        headers = {
-            'authority': 'rephraser-api.reverso.net',
-            'accept': 'application/json',
-            'accept-language': 'ru,en-US;q=0.9,en;q=0.8',
-            'dnt': '1',
-            'origin': 'https://www.reverso.net',
-            'referer': 'https://www.reverso.net/',
-            'sec-ch-ua': '"Chromium";v="116", "Not)A;Brand";v="24", "Google Chrome";v="116"',
-            'sec-ch-ua-mobile': '?0',
-            'sec-ch-ua-platform': '"Windows"',
-            'sec-fetch-dest': 'empty',
-            'sec-fetch-mode': 'cors',
-            'sec-fetch-site': 'same-site',
-            'sec-gpc': '1',
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36',
-            'x-reverso-origin': 'speller.web',
-        }
-
+        headers = headers_eng_rephr
         params = {
             'language': 'en',
             'sentence': input_str,
@@ -246,8 +218,8 @@ class EngFixParser:
             types_most_value = types_most_tuple[0]
             types_most_cnt = types_most_tuple[1]
 
-            # TODO TMP file
-            save_file_TEST(types_list_unique)
+            # TMP file
+            # save_file_TEST(types_list_unique)
 
         result = dict(text=text, corrections=corrections_list, error_types=types_list_unique,
                       types_most=types_most_value, its_correct=its_correct)
@@ -284,7 +256,6 @@ if __name__ == '__main__':
     # 900ms response
 
     # get_mistakes_data_LANGtool('hello im fine')
-
     # import time
     # start = time.perf_counter()
     #

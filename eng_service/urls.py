@@ -15,11 +15,11 @@ router.register('uvset', UserViewSet)  # VSET
 
 urlpatterns = [
     path('', CheckENGView.as_view(), name='eng'),
-    path('eng_list/', EngMainView.as_view(), name='eng_list'),
-    path('eng_get/<int:pk>/', CheckENGViewUpdate.as_view(), name='eng_get'),
+    path('list/', EngMainView.as_view(), name='eng_list'),
+    path('get/<int:pk>/', CheckENGViewUpdate.as_view(), name='eng_get'),
 
-    path('eng_profile/<int:pk>/', EngProfileView.as_view(), name='eng_profile'),
-    path('eng_random/', GetRandomView.as_view(), name='eng_random'),
+    path('profile/<int:pk>/', EngProfileView.as_view(), name='eng_profile'),
+    path('random/', GetRandomView.as_view(), name='eng_random'),
 ]
 
 urlpatterns += router.urls
