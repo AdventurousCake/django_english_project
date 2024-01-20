@@ -1,8 +1,9 @@
 "use strict";
 
 function copy_form_result() {
-    let copyText = document.getElementById("id_fixed_sentence");
-    navigator.clipboard.writeText(copyText.value);
+    // let copyText = document.getElementById("id_fixed_sentence"); // from form
+    let copyText = document.getElementById("results").dataset.fixed;
+    navigator.clipboard.writeText(copyText); // .value
 }
 
 function copy_form_url() {

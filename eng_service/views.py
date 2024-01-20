@@ -9,7 +9,7 @@ from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 
-from django.views.generic import TemplateView, CreateView, UpdateView
+from django.views.generic import TemplateView, CreateView, UpdateView, DetailView
 from django_ratelimit.decorators import ratelimit
 
 from eng_service.ENG_FIX_logic import EngFixParser, EngRephr
@@ -209,7 +209,7 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         # save and redirect
         return super(CheckENGView, self).form_valid(form)
 
-class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
+class CheckENGViewUpdate(DetailView): #UpdateView):  # LoginRequiredMixin
     """display data by get pk + CONTEXT FOR UPDATEVIEW"""
 
     """UPDATE VIEW FOR FORMS
@@ -217,7 +217,7 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
     """
 
     model = EngFixer
-    form_class = EngFixerForm
+    # form_class = EngFixerForm
     template_name = "Eng_form.html"
 
     # success_url = reverse_lazy('form_msg:send_msg')
@@ -278,11 +278,10 @@ class CheckENGViewUpdate(UpdateView):  # LoginRequiredMixin
             context['translate'] = self.object.translated_input, self.object.translated_fixed
         return context
 
-    def form_valid(self, form):
-        # obj = form.save(commit=False)
-        # obj.author = self.request.user
-
-        return super(CheckENGViewUpdate, self).form_valid(form)
+    # def form_valid(self, form):
+    #     # obj = form.save(commit=False)
+    #     # obj.author = self.request.user
+    #     return super(CheckENGViewUpdate, self).form_valid(form)
 
 ####################################################################################################################
 

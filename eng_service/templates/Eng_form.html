@@ -3,17 +3,7 @@
 {% load static %}
 
 {% block content %}
-    {## md-5#}
     <div class="container" id="formpage-container">
-
-        {#    {% if form.errors %}#}
-        {#        <div class="alert alert-danger" role="alert">#}
-        {#            <span style="display: flex">#}
-        {#                ❗ {{ form.errors }}#}
-        {#            </span>#}
-        {#        </div>#}
-        {#    {% endif %}#}
-
         {#        not start form page#}
         {% if disable_buttons %}
 
@@ -24,7 +14,7 @@
             {% endif %}
             <br>
 
-            <div>
+            <div id="results" data-fixed="{{ fixed }}">
                 <h1><i style="color: green" class="far fa-circle-check"></i> {{ fixed|linebreaksbr }}</h1>
                 {% if not its_correct %}
                 <hr>
@@ -45,13 +35,19 @@
         {% endif %}
 
         {% if form %}
+            <div class="container col-md-7">
+            <div class="row justify-content-center" id="form1">
+                <i>The service can fix and rephrase English sentences.</i>
+            </div>
+            </div>
+            <br>
             {% include 'Eng_form_item.html' %}
+            <br>
         {% else %}
         {% endif %}
 
 
         {% if disable_buttons %}
-            <br>
             <section id="btns" class="text-center">
                 <button onclick="copy_form_result()" class="btn btn-primary btn-lg"><i class="fa-solid fa-copy"></i>
                     Copy result
@@ -120,11 +116,11 @@
                         <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">input</th>
-                            <th scope="col">fix</th>
-                            <th scope="col">description</th>
-                            <th scope="col">error type</th>
-                            <th scope="col">suggestions</th>
+                            <th scope="col">Input</th>
+                            <th scope="col">Fix</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Error type</th>
+                            <th scope="col">Suggestions</th>
                         </tr>
                         </thead>
 
