@@ -25,13 +25,22 @@
             <br>
 
             <div>
-                <h1>Input: {{ input|linebreaks }}</h1>
-                {#            <h1><i class="fa-solid fa-circle-xmark"></i> Input: {{ fixed|linebreaks }}</h1>#}
-
+                <h1><i style="color: green" class="far fa-circle-check"></i> {{ fixed|linebreaksbr }}</h1>
                 {% if not its_correct %}
-                    <h1><i class="fa-solid fa-circle-check"></i> Fixed: {{ fixed|linebreaks }}</h1>
+                <hr>
+                <h1><i style="color: red" class="far fa-circle-xmark"></i> {{ input|linebreaksbr }}</h1>
                 {% endif %}
             </div>
+
+{#            <div>#}
+{#                <h1>Input: {{ input|linebreaks }}</h1>#}
+                {#            <h1><i class="fa-solid fa-circle-xmark"></i> Input: {{ fixed|linebreaks }}</h1>#}
+{##}
+{#                {% if not its_correct %}#}
+{#                    <hr>#}
+{#                    <h1><i class="fa-solid fa-circle-check"></i> Fixed: {{ fixed|linebreaks }}</h1>#}
+{#                {% endif %}#}
+{#            </div>#}
             <br>
         {% endif %}
 
@@ -45,9 +54,11 @@
             <br>
             <section id="btns" class="text-center">
                 <button onclick="copy_form_result()" class="btn btn-primary btn-lg"><i class="fa-solid fa-copy"></i>
-                    Copy result</button>
+                    Copy result
+                </button>
                 <button onclick="copy_form_url()" class="btn btn-primary btn-lg">
-                    <i class="fa-solid fa-share"></i> Share (Copy link)</button>
+                    <i class="fa-solid fa-share"></i> Share (Copy link)
+                </button>
             </section>
         {% endif %}
 

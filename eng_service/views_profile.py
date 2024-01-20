@@ -1,6 +1,6 @@
 from collections import Counter
 from datetime import timedelta, datetime
-from pprint import pprint
+import pprint as pp
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.postgres.aggregates import ArrayAgg
@@ -15,10 +15,7 @@ from eng_service.models_core import User
 def get_user_requests(user):
     return Request.objects.filter(user_profile=user.profile).select_related('fix')
 
-class FeatureMix:
-    # def __init__(self):
-    #     self.request = None
-
+class FeatureTestMix:
     def get_test_data(self):
         selected_tag = self.request.GET.get("tag") or 'Grammar'
         # print(selected_tag)
@@ -36,28 +33,23 @@ class FeatureMix:
                      .filter(user_profile=profile)
                      .select_related('fix', 'fix__tags')
                      # .prefetch_related('fix__tags')
-
                      # .filter(fix__tags__name=tag)
 
                      # .values('fix','fix__tags')
                      # .values_list('id','fix__id', 'fix__tags', 'fix__tags__name')
 
-                     .annotate(
-            tag_names=ArrayAgg('fix__tags__name',
-                               # distinct=True
+                     .annotate(tag_names=ArrayAgg('fix__tags__name', # distinct=True
                                ))
                      .annotate(tag_names2=Concat('fix__tags__name', Value(', '), output_field=CharField()))
 
                      # todo
                      .values('id', 'fix', 'fix__tags', 'fix__tags__name', 'tag_names', 'tag_names2')
-
                      # .values('fix__fixed_sentence', 'fix__tags', 'fix__tags__name')
 
                      # .filter(fix__tags__name='Grammar')
                      .filter(fix__tags__name=selected_tag)
                      .order_by('-created_date')
-
-        [:10]
+                    [:10]
                      )
         # pprint(str(data_tags.query))
         # res = '\n'.join([f"""{i.get('id')} - {i.get("fix__tags__name")}; {i.get('fix__tags')}; {i.get('tag_names')};
@@ -84,8 +76,10 @@ class FeatureMix:
             )
             .filter(fix__tags__name=selected_tag)
             .order_by('-created_date')
+            [:15]
         )
-        pprint(data_tags2)
+        # pp.PrettyPrinter(indent=4)
+        pp.pprint(list(data_tags2), indent=4)
 
         data = (Request.objects
                 .filter(user_profile=profile, fix__tags__name=selected_tag)
@@ -109,16 +103,13 @@ class FeatureMix:
         #
         # pprint(str(d2.query))
 
-        # todo simply
         # x = Request.objects.values('id','fix__tags__name', 'fix__tags').filter(fix__tags__name='Grammar')
 
         # res = '\n'.join([f'{item.fix.fixed_sentence}, ({[str(i) for i in item.fix.tags.all()]})' for item in d])
         # res = '\n'.join([f'{item.fix.fixed_sentence}, ({item.fix.tags.all()})' for item in d])
 
-class EngProfileView(TemplateView, LoginRequiredMixin, FeatureMix):
+class EngProfileView(TemplateView, LoginRequiredMixin, FeatureTestMix):
     template_name = "Eng_profile.html"
-
-    # only for user?
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -128,6 +119,7 @@ class EngProfileView(TemplateView, LoginRequiredMixin, FeatureMix):
         else:
             profile = None
 
+        # prod
         # profile = get_object_or_404(UserProfile, user=self.request.user)
         # profile = self.request.user.userprofile
 
@@ -161,6 +153,7 @@ class EngProfileView(TemplateView, LoginRequiredMixin, FeatureMix):
         count_lastweek = requests.filter(created_date__gte=last_week).count()
         count_correct_lastweek = count_correct.filter(created_date__gte=last_week).count()
 
+        # todo to parser?
         mistakes = []
         for item in requests:
             mistakes.extend(EngFixParser.parse_item_mistakes(item))

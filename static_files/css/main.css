@@ -1,5 +1,10 @@
 #main-block {
-    background-color: #fffcdd5e !important;
+    /*background-color: #fffcdd5e !important;*/
+    background-color: #f0f2f5 !important;
+}
+
+#nav {
+    border-radius: 0 0 10px 10px;
 }
 
 button.btn-primary-custom {
