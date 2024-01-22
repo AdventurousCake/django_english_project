@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 from django_test1 import settings
-from eng_service.core.views import core_auth
+from eng_service.core.views import core_auth, SignUp
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,6 +31,7 @@ urlpatterns = [
 urlpatterns += [
     # custom login
     path('accounts/', include('django.contrib.auth.urls')),
+    path('accounts/signup', SignUp.as_view(), name='signup'),
 ]
 
 urlpatterns += [

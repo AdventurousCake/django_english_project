@@ -12,7 +12,7 @@
         {% for item in data_list %}
             <div class="card">
                 <div class="card-header">
-                    <a href="{{ item.get_absolute_url }}" class="btn btn-secondary">Sentence #{{ item.id }}</a>
+                    <a href="{{ item.get_absolute_url }}" class="btn btn-outline-primary">Sentence #{{ item.id }}</a>
 
                     <button onclick="write_clipboard(`{{ item.fixed_sentence }}`);" class="btn btn-primary"><i
                             class="fa-solid fa-copy"></i>

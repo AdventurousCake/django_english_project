@@ -76,6 +76,7 @@ class MessageTestURLS(CreateClientsTestBase,
                        # ('eng_service:eng_profile', 1), # EMPTY DB
                        ('eng_service:eng_list', None),
                        ('eng_service:eng_random', None), # 302
+                       ('signup', None),
                        ]
 
         for pattern in urlpatterns:

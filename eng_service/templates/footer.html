@@ -2,6 +2,7 @@
     {% if user.is_authenticated %}
     User: {{ user.username }} | <a href="{% url 'logout' %}" class="href">Logout</a>
     {% else %}
+        <a href="{% url 'signup' %}" class="href">Sign Up</a> or
     <a href="{% url 'social:begin' 'github' %}" class="href">Login using GitHub</a>
     {% endif %}
     <br>
