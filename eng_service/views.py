@@ -5,11 +5,11 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import View
 
-from django.views.generic import TemplateView, CreateView, UpdateView, DetailView
+from django.views.generic import TemplateView, CreateView, UpdateView, DetailView, ListView
 from django_ratelimit.decorators import ratelimit
 
 from eng_service.ENG_FIX_logic import EngFixParser, EngRephr
@@ -112,13 +112,17 @@ class GetRandomView(View):
 
 # TODO FIX RATELIMIT
 @method_decorator(ratelimit(key='user_or_ip', rate='1/h', method='GET', block=True), name='get')
-class EngMainView(TemplateView):
+class EngMainListView(ListView):
     template_name = "Eng_list.html"
+    paginate_by = 10
+    context_object_name = "data_list"
+
+    queryset = EngFixer.objects.all().order_by('-created_date')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        LIMIT = 20
-        context['data_list'] = EngFixer.objects.all().order_by('-created_date')[:LIMIT]
+        # context['data_list'] = EngFixer.objects.all().order_by('-created_date')
+        # context['data_list'] = EngFixer.objects.all().order_by('-created_date')[:LIMIT]
         return context
 
 @method_decorator(ratelimit(key='ip', rate='1/m', method='POST', block=True), name='post')
@@ -126,11 +130,9 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
     form_class = EngFixerForm
     template_name = "Eng_form.html"
 
-    # success_url = reverse_lazy('stripe_service:eng1_get', kwargs={'pk': self.object.pk})
-
     # after fixer
     def get_success_url(self):
-        return reverse('eng_service:eng_get', args=(self.object.id,))  # todo lazy?
+        return reverse_lazy('eng_service:eng_get', args=(self.object.id,))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -243,7 +245,6 @@ class CheckENGViewUpdate(DetailView): #UpdateView):  # LoginRequiredMixin
         obj = super(CheckENGViewUpdate, self).get_object(*args, **kwargs)
         # if obj.author != self.request.user:
         #     raise PermissionDenied()  # or Http404
-
         self.save_request(self.request, obj)
 
         return obj
@@ -254,8 +255,6 @@ class CheckENGViewUpdate(DetailView): #UpdateView):  # LoginRequiredMixin
 
         # select
         tag = self.request.GET.get("tag")
-        # print(tag)
-
         # json to input_text
         # context['description'] = pprint.pformat(self.object.fixed_result_JSON, indent=4).replace('\n', '<br>')
 
