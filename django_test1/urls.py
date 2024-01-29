@@ -16,6 +16,9 @@ Including another URLconf
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import TemplateView
+from rest_framework import permissions
+from rest_framework.schemas import get_schema_view
 
 from django_test1 import settings
 from eng_service.core.views import core_auth, SignUp
@@ -35,6 +38,17 @@ urlpatterns += [
 ]
 
 urlpatterns += [
+    # swagger and schema
+    path('swagger', TemplateView.as_view(template_name='api/swagger-ui.html',
+                                         extra_context={'schema_url': 'openapi-schema'}), name='swagger-ui'),
+    path('openapi', get_schema_view(
+            title="My Project",
+            version="1.0.0",
+            permission_classes=(permissions.AllowAny,),
+            # public=True,
+        ), name='openapi-schema'),
+
+
     path('__debug__/', include('debug_toolbar.urls')),
 ]
 # only works in debug

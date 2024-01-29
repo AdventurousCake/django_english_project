@@ -57,10 +57,11 @@ class EngFixer(models.Model):
     mistakes_list_TMP = ArrayField(models.CharField(max_length=150, blank=True), null=True)
 
     # using eng_service_engfixer_tags
-    tags = models.ManyToManyField(to='Tag', null=True) #related_name='fix', on_delete=models.SET_NULL)
+    tags = models.ManyToManyField(to='Tag') #through: related_name='fix', on_delete=models.SET_NULL)
 
     translated_input = models.CharField(null=True, max_length=256)
     translated_fixed = models.CharField(null=True, max_length=256)
+
     created_date = models.DateTimeField(null=False, auto_now_add=True)
 
     # def mistakes(self):

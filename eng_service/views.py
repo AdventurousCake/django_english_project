@@ -212,17 +212,12 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         return super(CheckENGView, self).form_valid(form)
 
 class CheckENGViewUpdate(DetailView): #UpdateView):  # LoginRequiredMixin
-    """display data by get pk + CONTEXT FOR UPDATEVIEW"""
-
-    """UPDATE VIEW FOR FORMS
+    """
     eng_get/<int:pk>/
     """
 
     model = EngFixer
-    # form_class = EngFixerForm
     template_name = "Eng_form.html"
-
-    # success_url = reverse_lazy('form_msg:send_msg')
 
     @staticmethod
     def save_request(request, obj):
