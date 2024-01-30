@@ -24,7 +24,7 @@ env.read_env(path=os.path.join(BASE_DIR, '.env'))
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-rh#^1f*3i1h7p+640-n!!4l0m*ivthh+2yxkcr0%i#=ehh1!p2'
+SECRET_KEY = env.str("SECRET_KEY", None)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -34,13 +34,11 @@ IS_PROD = env.bool("IS_PROD", False)
 # ALLOWED_HOSTS = ['*'] # non gunicorn
 ENV_HOSTS = env.list("DJANGO_ALLOWED_HOSTS")
 ALLOWED_HOSTS = ['127.0.0.1', '0.0.0.0']
-# ALLOWED_HOSTS = ['0.0.0.0:8000','147.78.64.31','engproj9.servehttp.com']
 if ENV_HOSTS:
     ALLOWED_HOSTS.extend(ENV_HOSTS)
 
 # USE CORRECT NGINX PROXY proxy_set_header Host $host; ...
 # https://docs.djangoproject.com/en/4.1/ref/settings/#std:setting-CSRF_TRUSTED_ORIGINS
-# CSRF_TRUSTED_ORIGINS = ['http://engproj9.servehttp.com:9000']
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS")
 
 REST_FRAMEWORK = {
@@ -65,7 +63,6 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'social_django',
     # 'django_ratelimit',
-    # 'bootstrap5',
 
     'crispy_forms',
     'crispy_bootstrap5',
@@ -141,6 +138,13 @@ DATABASES = {
 #         "LOCATION": "redis://127.0.0.1:6379",
 #     }
 # }
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "unique-snowflake",
+    }
+}
 
 # DOCKER prod settings
 # DATABASES = {

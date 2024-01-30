@@ -8,6 +8,7 @@ from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.cache import cache_page
 
 from django.views.generic import TemplateView, CreateView, UpdateView, DetailView, ListView
 from django_ratelimit.decorators import ratelimit
@@ -111,13 +112,17 @@ class GetRandomView(View):
         return redirect('eng_service:eng_get', pk=eng.id)
 
 # TODO FIX RATELIMIT
-@method_decorator(ratelimit(key='user_or_ip', rate='1/h', method='GET', block=True), name='get')
+@method_decorator(ratelimit(key='user_or_ip', rate='1/h', method='GET', block=True), name='get') # todo correct cls method
+@method_decorator(cache_page(60 * 5), name="get") # dispatch
 class EngMainListView(ListView):
     template_name = "Eng_list.html"
     paginate_by = 10
     context_object_name = "data_list"
 
     queryset = EngFixer.objects.all().order_by('-created_date')
+
+    # def dispatch(self, request, *args, **kwargs):
+    #     pass
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

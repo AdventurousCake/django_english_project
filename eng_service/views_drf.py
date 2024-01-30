@@ -34,7 +34,6 @@ class EngSerializerCustom(serializers.ModelSerializer):
 
     tags = TagSerializer(many=True, read_only=True)
 
-    # todo
     tags2 = serializers.CharField(source='tags')
     tag_names_list = serializers.ListField()
 

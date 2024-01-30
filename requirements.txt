@@ -8,7 +8,6 @@ Pillow
 gunicorn
 
 stripe
-#django-bootstrap-v5
 beautifulsoup4
 environs
 redis

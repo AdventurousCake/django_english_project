@@ -44,7 +44,7 @@ urlpatterns += [
     path('openapi', get_schema_view(
             title="My Project",
             version="1.0.0",
-            permission_classes=(permissions.AllowAny,),
+            permission_classes=(permissions.IsAuthenticated,),  # IsAdminUser
             # public=True,
         ), name='openapi-schema'),
 
