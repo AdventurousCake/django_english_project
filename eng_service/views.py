@@ -111,9 +111,8 @@ class GetRandomView(View):
             return redirect('eng_service:eng')
         return redirect('eng_service:eng_get', pk=eng.id)
 
-# TODO FIX RATELIMIT
-@method_decorator(ratelimit(key='user_or_ip', rate='1/h', method='GET', block=True), name='get') # todo correct cls method
-@method_decorator(cache_page(60 * 5), name="get") # dispatch
+@method_decorator(cache_page(60 * 3), name="dispatch") # dispatch
+@method_decorator(ratelimit(key='user_or_ip', rate='1/h', method='GET', block=True), name='dispatch')
 class EngMainListView(ListView):
     template_name = "Eng_list.html"
     paginate_by = 10
@@ -126,8 +125,6 @@ class EngMainListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # context['data_list'] = EngFixer.objects.all().order_by('-created_date')
-        # context['data_list'] = EngFixer.objects.all().order_by('-created_date')[:LIMIT]
         return context
 
 @method_decorator(ratelimit(key='ip', rate='1/m', method='POST', block=True), name='post')
@@ -276,13 +273,3 @@ class CheckENGViewUpdate(DetailView): #UpdateView):  # LoginRequiredMixin
         if self.object.translated_input and self.object.translated_fixed:
             context['translate'] = self.object.translated_input, self.object.translated_fixed
         return context
-
-    # def form_valid(self, form):
-    #     # obj = form.save(commit=False)
-    #     # obj.author = self.request.user
-    #     return super(CheckENGViewUpdate, self).form_valid(form)
-
-####################################################################################################################
-
-# for mix detail
-# https://stackoverflow.com/questions/45659986/django-implementing-a-form-within-a-generic-detailview

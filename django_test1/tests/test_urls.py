@@ -1,3 +1,5 @@
+import re
+
 from django import forms
 from django.test import TestCase, Client, override_settings
 from django.core.cache import cache
@@ -63,24 +65,25 @@ class CreateClientsTestBase(TestCase):
 #         r = self.client.get(reverse('api:swagger-ui'))
 #         self.assertEqual(r.status_code, 200)
 
-
-class MessageTestURLS(CreateClientsTestBase,
+@override_settings(RATELIMIT_ENABLED=False)
+class EngTestURLS(CreateClientsTestBase,
                       CreateEngTestBase
                       ):
 
     def test_urls(self):
-        """ 'eng_service:eng', 'eng_service:eng_get', 'eng_service:eng_profile', 'eng_service:eng_list',
-                       """
         urlpatterns = [('eng_service:eng', None),
                        ('eng_service:eng_get', 1), # EMPTY DB
                        # ('eng_service:eng_profile', 1), # EMPTY DB
                        ('eng_service:eng_list', None),
                        ('eng_service:eng_random', None), # 302
                        ('signup', None),
+                       ('swagger-ui', None),
+                       ('openapi-schema', None),
+                       ('page_github', None)
                        ]
 
         for pattern in urlpatterns:
-            print(f'testing url: {pattern}')
+            print(f'testing url (authorized): {pattern}')
             # url = reverse(pattern.name)
             if pattern[1] is None:
                 kwargs = {}
@@ -100,13 +103,30 @@ class MessageTestURLS(CreateClientsTestBase,
     #     print(response)
     #     self.assertEqual(response.status_code, 200)
 
-    def test_create_request_auth(self):
+    def test_create_request1(self):
         response = self.authorized_client.post(reverse('eng_service:eng'), {
             'input_sentence': 123,
             # 'user': self.authorized_client
         })
-        print(response)
+        # todo check form errors data
+        # response = self.authorized_client.get(reverse('eng_service:eng_get', kwargs={'pk': 2}))
+
+        resp = str(response.content) #'utf-8')
+        print(resp)
+
+        # invalid-feedback in text
+        if re.match(r'^.*invalid-feedback.*$', resp):
+            raise AssertionError('re')
+
+        if 'invalid-feedback' in resp:
+            raise AssertionError(response)
+
         self.assertEqual(response.status_code, 200)
+
+    def test_list(self):
+        response = self.authorized_client.get(reverse('eng_service:eng_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['data_list'].count(), 1)
 
     # def test_create_msg_guest(self):
     #     """redirect to login"""

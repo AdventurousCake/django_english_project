@@ -28,7 +28,7 @@ urlpatterns = [
     path('', include('eng_service.urls'), name='eng_service'),
 
     path('auth_github/', include('social_django.urls', namespace='social')),
-    path('page_github/', core_auth),
+    path('page_github/', core_auth, name='page_github'),
 ]
 
 urlpatterns += [
