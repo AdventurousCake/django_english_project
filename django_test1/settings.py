@@ -62,7 +62,7 @@ INSTALLED_APPS = [
     'django_filters',
     'debug_toolbar',
     'social_django',
-    # 'django_ratelimit',
+    'django_ratelimit',
 
     'crispy_forms',
     'crispy_bootstrap5',
@@ -139,12 +139,23 @@ DATABASES = {
 #     }
 # }
 
+#new
 CACHES = {
     "default": {
-        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-        "LOCATION": "unique-snowflake",
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
     }
 }
+
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+#         "LOCATION": "unique-snowflake",
+#     }
+# }
 
 # DOCKER prod settings
 # DATABASES = {
@@ -232,4 +243,4 @@ AUTHENTICATION_BACKENDS = (
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
 LOGIN_REDIRECT_URL = '/'
 
-RATELIMIT_ENABLE = False
+RATELIMIT_ENABLE = True

@@ -111,8 +111,8 @@ class GetRandomView(View):
             return redirect('eng_service:eng')
         return redirect('eng_service:eng_get', pk=eng.id)
 
+@method_decorator(ratelimit(key='user_or_ip', rate='7/m', method='GET', block=True), name='dispatch')
 @method_decorator(cache_page(60 * 3), name="dispatch") # dispatch
-@method_decorator(ratelimit(key='user_or_ip', rate='1/h', method='GET', block=True), name='dispatch')
 class EngMainListView(ListView):
     template_name = "Eng_list.html"
     paginate_by = 10

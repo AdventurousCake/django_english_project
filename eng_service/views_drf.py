@@ -2,7 +2,8 @@ from django.contrib.postgres.aggregates import ArrayAgg
 from django.contrib.postgres.fields.array import ArrayContains
 from django.db.models import Q, CharField
 from django.db.models.functions import Cast
-from rest_framework import serializers, status, generics
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import serializers, status, generics, filters
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import PageNumberPagination
@@ -151,6 +152,12 @@ class EngViewSet(ModelViewSet):
     """_vset/ get by id"""
     queryset = EngFixer.objects.prefetch_related('tags').all()
     serializer_class = EngSerializerVSETsimple
+    
+    # def get_queryset(self):
+    #     return self.queryset
+
+    # filter_backends = [DjangoFilterBackend]
+    # filter_fields = ['tags', 'input_sentence']
 
     @action(methods=['get'], detail=True,
             # name="add_tag",
