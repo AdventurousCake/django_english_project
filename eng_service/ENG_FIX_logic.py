@@ -2,6 +2,7 @@ import json
 import logging
 import time
 from collections import Counter
+from typing import Dict, List, Any
 
 import requests
 from pprint import pprint
@@ -12,7 +13,7 @@ from eng_service.parser_headers_const import headers_engd, headers_eng_rephr
 class HttpService:
     # todo download_fixed_data TO general dwnld class
     @staticmethod
-    def get_request_POST(url, headers, params=None, data=None):
+    def get_request_post(url: str, headers: dict, params: dict = None, data: dict | str = None):
         try:
             response = requests.post(url, headers=headers, data=data, timeout=5)
             logging.info(f'Request status code: {response.status_code}')
@@ -34,7 +35,7 @@ class HttpService:
 
 
 class EngDownloader(HttpService):
-    def get_data(self, input_str=None):
+    def get_data(self, input_str: str = None):
         headers = headers_engd
 
         # "interfaceLanguage":"ru" OR en
@@ -42,7 +43,8 @@ class EngDownloader(HttpService):
                '"locale":"","language":"eng","text":"MY_INPUT","originalText":"","spellingFeedbackOptions":{' \
                '"insertFeedback":true,"userLoggedOn":false},"origin":"interactive","isHtml":false} ' \
             .replace('MY_INPUT', input_str)
-        return self.get_request_POST(url='https://orthographe.reverso.net/api/v1/Spelling/', headers=headers, params=None, data=data)
+        return self.get_request_post(url='https://orthographe.reverso.net/api/v1/Spelling/', headers=headers,
+                                     params=None, data=data)
 
 
 # todo like EngFixParser
@@ -67,7 +69,7 @@ class EngRephr:  # inherits HttpEngService?
         # pprint(response.json())
         return response.json()
 
-    def get_rephrased_sentences(self, input_str="Today's good weather. I feel good"):
+    def get_rephrased_sentences(self, input_str: str = "Today's good weather. I feel good") -> list | None:
         data = self.get_data(input_str)
         data = data.get('candidates')  # feature: order by diversity
 
@@ -127,6 +129,7 @@ def get_mistakes_data_LANGtool(input_str):
     pprint(response.json())
     return response.json()
 
+
 # todo outd
 def download_fixed_data(input_str, response_lang='ru'):
     headers = {
@@ -182,12 +185,11 @@ class EngFixParser:
         if downloader is None:
             self.downloader = EngDownloader()
 
-    def get_parsed_data(self, input_str):
-        """parsing from json. Example in ENG_FIX_resp.md"""
+    def get_parsed_data(self, input_str: str) -> dict:
+        """parsing from json.
+        See example in ENG_FIX_resp.md"""
 
-        # data = download_fixed_data(input_str)
         data = self.downloader.get_data(input_str)
-
         text = data.get("text")
         its_correct = text == input_str
 
@@ -197,8 +199,7 @@ class EngFixParser:
         corrections_raw = data.get('corrections')
         if corrections_raw:
             for corr in corrections_raw:
-                # get by keys from response
-                # mistakes.append({corr['shortDescription'], corr['longDescription'], corr['correctionText'], ...})
+                # get by keys from response: mistakes.append({corr['shortDescription'], ...})
                 corrections_list.append(
                     {key: corr[key] for key in
                      ['type', 'shortDescription', 'longDescription', 'mistakeText', 'suggestions']})
@@ -218,23 +219,64 @@ class EngFixParser:
             types_most_value = types_most_tuple[0]
             types_most_cnt = types_most_tuple[1]
 
-            # TMP file
             # save_file_TEST(types_list_unique)
-
         result = dict(text=text, corrections=corrections_list, error_types=types_list_unique,
                       types_most=types_most_value, its_correct=its_correct)
         return result
 
     @staticmethod
-    def parse_item_mistakes(item):
+    def parse_item_mistakes_V1(item):
         """parse from jsonfield"""
-        mistakes=[]
+        mistakes = []
         eng_json = item.get('fix__fixed_result_JSON')
         if eng_json:
             for sentence in eng_json:
                 if 'type' in sentence:
                     mistakes.append(sentence['type'])
         return mistakes
+
+    @staticmethod
+    def parse_multiple_items_top_mistakes(items, top_n):
+        mistakes_list = []
+        top_mistakes = None
+
+        for i in items:
+            parsed_mistakes = EngFixParser.parse_item_mistakes_V1(i)
+            if parsed_mistakes:
+                mistakes_list.extend(parsed_mistakes)
+
+        if mistakes_list:
+            types_cnt_dict = Counter(mistakes_list)
+            top_mistakes = types_cnt_dict.most_common(top_n)
+        return top_mistakes
+
+    @staticmethod
+    def parse_item_mistakes_to_dict(item: dict, top_n: int) -> dict[str, list[Any] | str | Counter[Any]] | dict[str, Any]:
+        """
+        parse from jsonfield
+
+        :param item: dict
+        :param top_n: int
+        :return: list of mistakes types
+        """
+
+        mistakes_list = []
+        eng_item_json = item.get('fix__fixed_result_JSON')
+        if eng_item_json:
+            for sentence in eng_item_json:
+                if 'type' in sentence:
+                    mistakes_list.append(sentence['type'])
+
+            if mistakes_list:
+                types_cnt_dict = Counter(mistakes_list)
+                top_mistakes = types_cnt_dict.most_common(top_n)
+                top_mistakes_str = '\n'.join([f'{item[0]} - {item[1]}' for item in top_mistakes])
+                return dict(mistakes_list=mistakes_list, top_mistakes=top_mistakes, top_mistakes_str=top_mistakes_str, types_cnt_dict=types_cnt_dict)
+            else:
+                return dict(mistakes_list=mistakes_list)
+        return {}
+
+
 
 
 def time_measure(func):

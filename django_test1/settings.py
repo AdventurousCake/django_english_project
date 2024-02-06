@@ -62,7 +62,7 @@ INSTALLED_APPS = [
     'django_filters',
     'debug_toolbar',
     'social_django',
-    'django_ratelimit',
+    # 'django_ratelimit',
 
     'crispy_forms',
     'crispy_bootstrap5',
@@ -131,31 +131,23 @@ DATABASES = {
             'PORT': '5432',
         }
 }
-
+#new
 # CACHES = {
 #     "default": {
-#         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-#         "LOCATION": "redis://127.0.0.1:6379",
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": "redis://127.0.0.1:6379/1",
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#         }
 #     }
 # }
 
-#new
 CACHES = {
     "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "unique-snowflake",
     }
 }
-
-# CACHES = {
-#     "default": {
-#         "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-#         "LOCATION": "unique-snowflake",
-#     }
-# }
 
 # DOCKER prod settings
 # DATABASES = {

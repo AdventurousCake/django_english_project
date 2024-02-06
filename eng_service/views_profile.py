@@ -148,21 +148,24 @@ class EngProfileView(TemplateView, LoginRequiredMixin, FeatureTestMix):
         last_using = (Request.objects.filter(user_profile=profile).values_list('created_date')
         .order_by('-created_date').first()[0])
 
-        # todo 16
         last_week = Now() - timedelta(days=7)
         count_lastweek = requests.filter(created_date__gte=last_week).count()
         count_correct_lastweek = count_correct.filter(created_date__gte=last_week).count()
 
-        # todo to parser?
-        mistakes = []
-        for item in requests:
-            mistakes.extend(EngFixParser.parse_item_mistakes(item))
-        top3_str = ''
-        top3 = None
-        if mistakes:
-            types_cnt_dict = Counter(mistakes)
-            top3 = types_cnt_dict.most_common(3)
-            top3_str = '\n'.join([f'{item[0]} - {item[1]}' for item in top3])
+        # outd
+        # mistakes = []
+        # for item in requests:
+        #     mistakes.extend(EngFixParser.parse_item_mistakes_V1(item))
+        # top3_str = ''
+        # top3 = None
+        # if mistakes:
+        #     types_cnt_dict = Counter(mistakes)
+        #     top3 = types_cnt_dict.most_common(3)
+        #     top3_str = '\n'.join([f'{item[0]} - {item[1]}' for item in top3])
+
+        ### NEW ###############################
+        top = EngFixParser.parse_multiple_items_top_mistakes(requests, top_n=3)
+        top_str = '\n'.join([f'{item[0]} - {item[1]}' for item in top])
 
 
         context['testdata'] = self.get_test_data()
@@ -179,8 +182,8 @@ class EngProfileView(TemplateView, LoginRequiredMixin, FeatureTestMix):
 
         context['last_using'] = last_using
         context['last_using_str'] = last_using.strftime('%d %b.')  # '%Y.%m.%d'
-        context['top3_str'] = top3_str
-        context['top3'] = top3
+        context['top3_str'] = top_str
+        context['top3'] = top
         context['data_list'] = requests
         return context
 

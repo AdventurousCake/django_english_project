@@ -182,6 +182,7 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         obj.translated_input = data['translated_input']
         obj.translated_fixed = data['translated_fixed']
 
+        # todo 05
         obj.mistakes_list_TMP = data['error_types']
         obj.mistakes_most_TMP = data['types_most']
 
