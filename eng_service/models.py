@@ -8,12 +8,12 @@ from django.db import models
 from django.db.models import Sum
 from django.utils.text import gettext_lazy as _
 
+from eng_service.ENG_FIX_logic import EngFixParser
 from eng_service.models_core import User
 
 
 def validate_text_string(value):
-    # todo and numbers?
-    pattern = r"""^[a-zA-Z\s\\.,\\?!’']+$"""  # ’
+    pattern = r"""^[a-zA-Z0-9\s\\.,\\?!’'"\-_]+$"""  # ’
     if not re.match(pattern, value):
         raise ValidationError("Only text are allowed")
 
@@ -64,14 +64,8 @@ class EngFixer(models.Model):
 
     created_date = models.DateTimeField(null=False, auto_now_add=True)
 
-    # def mistakes(self):
-    #     mistakes=[]
-    #     eng_json = self.fixed_result_JSON
-    #     if eng_json:
-    #         for sentence in eng_json:
-    #             if 'type' in sentence:
-    #                 mistakes.append(sentence['type'])
-    #     return mistakes
+    def get_mistakes(self):
+        return EngFixParser.parse_item_mistakes_V1(self.fixed_result_JSON)
 
     # model-level validation; validators - field level (by full_clean)
     def clean(self):
@@ -84,24 +78,16 @@ class EngFixer(models.Model):
         return reverse("eng_service:eng_get", kwargs={"pk": self.pk})
         # return reverse("eng_service:eng_get", kwargs={"pk": self.id})
 
-    # def __repr__(self):
-    #     return self.input_sentence
-
-    # form class clean
-    # def clean(self):
-    #     data = self.cleaned_data["input_sentence"]
-    #
-    #     if len(data) <= 3:
-    #         raise ValidationError('Input sentence is too short')
-    #     return data
+    def __repr__(self):
+        return f"(id:{self.id}, input:{self.input_sentence}, fixed:{self.fixed_sentence})"
 
     # def full_clean(self, exclude=None, validate_unique=True, validate_constraints=True):
     #     pass
 
-    # class Meta:
-    #     constraints = [
-    #         models.UniqueConstraint(fields=['id', 'input_sentence'], name='unique_id_input_sentence'),
-    #     ]
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['id', 'input_sentence'], name='unique_id_input_sentence'),
+        ]
 
 
 # profile = UserProfile.objects.select_related('user').get(id=user_profile_id)

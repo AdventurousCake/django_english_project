@@ -117,8 +117,7 @@ WSGI_APPLICATION = 'django_test1.wsgi.application'
 #     }
 # }
 
-# TODO OVERRIDES IN PROD SETTINGS
-STRIPE_KEY = ''
+# OVERRIDES IN PROD SETTINGS
 DATABASES = {
     'default':
         {
@@ -236,3 +235,5 @@ AUTHENTICATION_BACKENDS = (
 LOGIN_REDIRECT_URL = '/'
 
 RATELIMIT_ENABLE = True
+
+STRIPE_KEY = ''

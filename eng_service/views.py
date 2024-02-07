@@ -111,7 +111,7 @@ class GetRandomView(View):
             return redirect('eng_service:eng')
         return redirect('eng_service:eng_get', pk=eng.id)
 
-@method_decorator(ratelimit(key='user_or_ip', rate='7/m', method='GET', block=True), name='dispatch')
+# @method_decorator(ratelimit(key='user_or_ip', rate='7/m', method='GET', block=True), name='dispatch')
 @method_decorator(cache_page(60 * 3), name="dispatch") # dispatch
 class EngMainListView(ListView):
     template_name = "Eng_list.html"
@@ -127,7 +127,7 @@ class EngMainListView(ListView):
         context = super().get_context_data(**kwargs)
         return context
 
-@method_decorator(ratelimit(key='ip', rate='1/m', method='POST', block=True), name='post')
+@method_decorator(ratelimit(key='ip', rate='7/m', method='POST', block=True), name='post')
 class CheckENGView(CreateView):  # LoginRequiredMixin
     form_class = EngFixerForm
     template_name = "Eng_form.html"
@@ -165,10 +165,6 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
 
         return super(CheckENGView, self).form_invalid(form)
 
-    # processing form data
-    # from django.utils.decorators import method_decorator
-    # from django_ratelimit.decorators import ratelimit
-    # @method_decorator(ratelimit(key='ip', rate='10/m'))
     def form_valid(self, form) -> HttpResponseRedirect:
         obj: EngFixer = form.save(commit=False)
 
@@ -191,15 +187,6 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         # save obj
         form.save()
 
-        # for db m2m
-        # db_list = []
-        # for item in types_list_unique:
-        #     if item in known_types:
-        #         db_list.append(item)
-        #     else:
-        #         # create new tag?
-        #         db_list.append('unknown')
-
         # get or create tags
         tags = []
         if data['error_types']:
@@ -214,6 +201,7 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         # save and redirect
         return super(CheckENGView, self).form_valid(form)
 
+@method_decorator(cache_page(60 * 3), name="dispatch")
 class CheckENGViewUpdate(DetailView): #UpdateView):  # LoginRequiredMixin
     """
     eng_get/<int:pk>/

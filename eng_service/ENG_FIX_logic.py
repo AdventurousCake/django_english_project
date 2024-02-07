@@ -130,7 +130,7 @@ def get_mistakes_data_LANGtool(input_str):
     return response.json()
 
 
-# todo outd
+# outd
 def download_fixed_data(input_str, response_lang='ru'):
     headers = {
         'authority': 'orthographe.reverso.net',
@@ -225,18 +225,21 @@ class EngFixParser:
         return result
 
     @staticmethod
-    def parse_item_mistakes_V1(item):
+    def parse_item_mistakes_V1(item) -> list:
         """parse from jsonfield"""
         mistakes = []
-        eng_json = item.get('fix__fixed_result_JSON')
+        eng_json = []
+        if not isinstance(item, list):
+            eng_json = item.get('fix__fixed_result_JSON')
         if eng_json:
+            # list of dictionary
             for sentence in eng_json:
                 if 'type' in sentence:
                     mistakes.append(sentence['type'])
         return mistakes
 
     @staticmethod
-    def parse_multiple_items_top_mistakes(items, top_n):
+    def parse_multiple_items_top_mistakes(items, top_n: int) -> list[tuple]:
         mistakes_list = []
         top_mistakes = None
 
@@ -251,7 +254,8 @@ class EngFixParser:
         return top_mistakes
 
     @staticmethod
-    def parse_item_mistakes_to_dict(item: dict, top_n: int) -> dict[str, list[Any] | str | Counter[Any]] | dict[str, Any]:
+    def parse_item_mistakes_to_dict(item: dict, top_n: int) -> dict[str, list[Any] | str | Counter[Any]] | dict[
+        str, Any]:
         """
         parse from jsonfield
 
@@ -271,12 +275,11 @@ class EngFixParser:
                 types_cnt_dict = Counter(mistakes_list)
                 top_mistakes = types_cnt_dict.most_common(top_n)
                 top_mistakes_str = '\n'.join([f'{item[0]} - {item[1]}' for item in top_mistakes])
-                return dict(mistakes_list=mistakes_list, top_mistakes=top_mistakes, top_mistakes_str=top_mistakes_str, types_cnt_dict=types_cnt_dict)
+                return dict(mistakes_list=mistakes_list, top_mistakes=top_mistakes, top_mistakes_str=top_mistakes_str,
+                            types_cnt_dict=types_cnt_dict)
             else:
                 return dict(mistakes_list=mistakes_list)
         return {}
-
-
 
 
 def time_measure(func):

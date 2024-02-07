@@ -108,7 +108,6 @@ class EngTestURLS(CreateClientsTestBase,
             'input_sentence': 123,
             # 'user': self.authorized_client
         })
-        # todo check form errors data
         # response = self.authorized_client.get(reverse('eng_service:eng_get', kwargs={'pk': 2}))
 
         resp = str(response.content) #'utf-8')
