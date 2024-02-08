@@ -2,7 +2,7 @@ from django.conf.urls.static import static
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from eng_service.views import CheckENGView, CheckENGViewUpdate, EngMainListView, GetRandomView
+from eng_service.views import CheckENGView, CheckENGViewUpdate, EngMainListView, GetRandomView, DeleteFixView
 from eng_service.views_profile import EngProfileView
 from eng_service.views_drf import EngViewSet, UserViewSet, SearchFix, SearchStrFix, SearchList, TagViewSet
 
@@ -20,6 +20,7 @@ urlpatterns = [
     path('', CheckENGView.as_view(), name='eng'),
     path('list/', EngMainListView.as_view(), name='eng_list'),
     path('get/<int:pk>/', CheckENGViewUpdate.as_view(), name='eng_get'),
+    path('delete/<int:pk>/', DeleteFixView.as_view(), name='eng_delete_fix'),
 
     path('profile/<int:pk>/', EngProfileView.as_view(), name='eng_profile'),
     path('random/', GetRandomView.as_view(), name='eng_random'),

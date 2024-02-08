@@ -1,17 +1,12 @@
-from collections import Counter
-from datetime import timedelta, datetime
-import pprint as pp
+from datetime import timedelta
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.postgres.aggregates import ArrayAgg
-from django.db.models import Value, CharField, Prefetch
-from django.db.models.functions import Concat, Now
+from django.db.models.functions import Now
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
 
 from eng_service.ENG_FIX_logic import EngFixParser
-from eng_service.models import Request, EngFixer, Tag
-from eng_service.models_core import User
+from eng_service.models import Request, EngFixer
 
 
 def get_user_requests(user):

@@ -21,6 +21,9 @@
                     <button onclick="write_clipboard(window.location.origin+`{{ item.get_absolute_url }}`);" class="btn btn-primary"><i
                             class="fa-solid fa-share"></i> Share (Copy link)
                     </button>
+                    {% if user.is_superuser %}
+                        <a href="{% url 'eng_service:eng_delete_fix' item.id %}" class="btn btn-outline-danger">Delete</a>
+                    {% endif %}
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">{{ item.input_sentence }}</li>

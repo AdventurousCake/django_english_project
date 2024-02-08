@@ -1,11 +1,11 @@
-import json
+import logging
 import logging
 import time
 from collections import Counter
-from typing import Dict, List, Any
+from pprint import pprint
+from typing import Any
 
 import requests
-from pprint import pprint
 
 from eng_service.parser_headers_const import headers_engd, headers_eng_rephr
 

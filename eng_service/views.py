@@ -2,7 +2,8 @@ import logging
 import time
 
 from django import forms
-from django.core.exceptions import ValidationError
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import ValidationError, PermissionDenied
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
@@ -10,7 +11,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.cache import cache_page
 
-from django.views.generic import TemplateView, CreateView, UpdateView, DetailView, ListView
+from django.views.generic import TemplateView, CreateView, UpdateView, DetailView, ListView, DeleteView
 from django_ratelimit.decorators import ratelimit
 
 from eng_service.ENG_FIX_logic import EngFixParser, EngRephr
@@ -112,7 +113,7 @@ class GetRandomView(View):
         return redirect('eng_service:eng_get', pk=eng.id)
 
 # @method_decorator(ratelimit(key='user_or_ip', rate='7/m', method='GET', block=True), name='dispatch')
-@method_decorator(cache_page(60 * 3), name="dispatch") # dispatch
+# @method_decorator(cache_page(60 * 3), name="dispatch") # dispatch
 class EngMainListView(ListView):
     template_name = "Eng_list.html"
     paginate_by = 10
@@ -262,3 +263,18 @@ class CheckENGViewUpdate(DetailView): #UpdateView):  # LoginRequiredMixin
         if self.object.translated_input and self.object.translated_fixed:
             context['translate'] = self.object.translated_input, self.object.translated_fixed
         return context
+
+
+class DeleteFixView(LoginRequiredMixin, DeleteView):
+    model = EngFixer
+    success_url = reverse_lazy('eng_service:eng_list')
+
+    # ignore confirm template
+    def get(self, request, *args, **kwargs):
+        return self.delete(request, *args, **kwargs)
+
+    def get_object(self, *args, **kwargs):
+        obj = super(DeleteFixView, self).get_object(*args, **kwargs)
+        if not self.request.user.is_superuser:
+            raise PermissionDenied()  # or Http404
+        return obj
