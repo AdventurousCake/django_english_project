@@ -37,6 +37,8 @@ ALLOWED_HOSTS = ['127.0.0.1', '0.0.0.0']
 if ENV_HOSTS:
     ALLOWED_HOSTS.extend(ENV_HOSTS)
 
+DJANGO_SETTINGS_MODULE = env.str("DJANGO_SETTINGS_MODULE")
+
 # USE CORRECT NGINX PROXY proxy_set_header Host $host; ...
 # https://docs.djangoproject.com/en/4.1/ref/settings/#std:setting-CSRF_TRUSTED_ORIGINS
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS")
