@@ -43,8 +43,12 @@ DJANGO_SETTINGS_MODULE = env.str("DJANGO_SETTINGS_MODULE")
 # https://docs.djangoproject.com/en/4.1/ref/settings/#std:setting-CSRF_TRUSTED_ORIGINS
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS")
 
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-SECURE_SSL_REDIRECT = True
+# SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+# SECURE_SSL_REDIRECT = True
+
+# fix http github redirect
+if IS_PROD:
+    SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
 
 REST_FRAMEWORK = {
     # 'DEFAULT_RENDERER_CLASSES': [
@@ -142,16 +146,12 @@ DATABASES = {
 #         "LOCATION": "redis://127.0.0.1:6379/1",
 #         "OPTIONS": {
 #             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-#         }
-#     }
-# }
+#         }}}
 
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-        "LOCATION": "unique-snowflake",
-    }
-}
+        "LOCATION": "unique-snowflake",}}
 
 # DOCKER prod settings
 # DATABASES = {

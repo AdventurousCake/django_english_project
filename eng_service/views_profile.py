@@ -61,7 +61,10 @@ class EngProfileView(TemplateView, LoginRequiredMixin):  # FeatureTestMix
         count_correct_lastweek = count_correct.filter(created_date__gte=last_week).count()
 
         top = EngFixParser.parse_multiple_items_top_mistakes(requests, top_n=3)
-        top_str = '\n'.join([f'{item[0]} - {item[1]}' for item in top])
+        if top:
+            top_str = '\n'.join([f'{item[0]} - {item[1]}' for item in top])
+        else:
+            top_str = ''
 
         context['testdata'] = None
         r = EngFixer.objects.filter(its_correct=False).order_by('?').first()
