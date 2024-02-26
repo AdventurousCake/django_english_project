@@ -8,7 +8,7 @@ from django.db import models
 from django.db.models import Sum
 from django.utils.text import gettext_lazy as _
 
-from eng_service.ENG_FIX_logic import EngFixParser
+from eng_service.service_eng import EngFixParser
 from eng_service.models_core import User
 
 

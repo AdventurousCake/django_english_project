@@ -1,6 +1,6 @@
 import time
 
-from eng_service.ENG_FIX_logic import EngFixParser, EngRephr
+from eng_service.service_eng import EngFixParser, EngRephr
 from eng_service.local_lib.google_translate import Translate
 
 

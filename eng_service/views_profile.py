@@ -5,7 +5,7 @@ from django.db.models.functions import Now
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
 
-from eng_service.ENG_FIX_logic import EngFixParser
+from eng_service.service_eng import EngFixParser
 from eng_service.models import Request, EngFixer, UserProfile
 
 

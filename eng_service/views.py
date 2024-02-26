@@ -17,7 +17,7 @@ from eng_service.forms import EngFixerForm
 from eng_service.models import EngFixer, Request, UserProfile, Tag
 
 from eng_service.models_core import User
-from eng_service.service import ResultProcessor, Parser
+from eng_service.utils_ import ResultProcessor, Parser
 
 
 class GetRandomView(View):
