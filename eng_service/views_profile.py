@@ -6,7 +6,7 @@ from django.shortcuts import redirect
 from django.views.generic import TemplateView
 
 from eng_service.ENG_FIX_logic import EngFixParser
-from eng_service.models import Request, EngFixer
+from eng_service.models import Request, EngFixer, UserProfile
 
 
 def get_user_requests(user):
@@ -24,16 +24,13 @@ class EngProfileView(TemplateView, LoginRequiredMixin):  # FeatureTestMix
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
         if self.request.user.is_authenticated:
-            profile = self.request.user.userprofile
+            # profile = self.request.user.userprofile
+            profile, created = UserProfile.objects.get_or_create(user=self.request.user)
         else:
+            # anon filter in get
             profile = None
-
-        # prod
-        # profile = get_object_or_404(UserProfile, user=self.request.user)
-        # profile = self.request.user.userprofile
-
-        # profile = User.objects.get(id=1).userprofile
 
         requests = (Request.objects.filter(user_profile=profile)
                     .select_related('fix')
@@ -47,39 +44,51 @@ class EngProfileView(TemplateView, LoginRequiredMixin):  # FeatureTestMix
                     .distinct()
                     )
 
-        count = len(requests)
-        # count_correct_c = len([r for r in requests if r['fix__its_correct']]) # v1
-        count_correct = Request.objects.filter(user_profile=profile).select_related('fix').filter(
-            fix__its_correct=True)
-        count_correct_c = count_correct.count()
+        if not requests:
+            context.update({'count': 0,
+                            'count_correct': 0,
+                            'count_correct_lastweek': 0,
+                            'count_lastweek': 0,
+                            'top3': None,
+                            'last_using_str': None
+                            })
+        elif requests:
+            count = len(requests)
+            # count_correct_c = len([r for r in requests if r['fix__its_correct']]) # v1
+            count_correct = Request.objects.filter(user_profile=profile).select_related('fix').filter(
+                fix__its_correct=True)
+            count_correct_c = count_correct.count()
 
-        last_using = (Request.objects.filter(user_profile=profile).values_list('created_date')
-        .order_by('-created_date').first()[0])
+            last_using = (Request.objects.filter(user_profile=profile).values_list('created_date')
+            .order_by('-created_date').first()[0])
 
-        last_week = Now() - timedelta(days=7)
-        count_lastweek = requests.filter(created_date__gte=last_week).count()
-        count_correct_lastweek = count_correct.filter(created_date__gte=last_week).count()
+            last_week = Now() - timedelta(days=7)
+            count_lastweek = requests.filter(created_date__gte=last_week).count()
+            count_correct_lastweek = count_correct.filter(created_date__gte=last_week).count()
 
-        top = EngFixParser.parse_multiple_items_top_mistakes(requests, top_n=3)
-        if top:
-            top_str = '\n'.join([f'{item[0]} - {item[1]}' for item in top])
-        else:
-            top_str = ''
+            top = EngFixParser.parse_multiple_items_top_mistakes(requests, top_n=3)
+            if top:
+                top_str = '\n'.join([f'{item[0]} - {item[1]}' for item in top])
+            else:
+                top_str = ''
+
+            context['count'] = count
+            context['count_correct'] = count_correct_c
+            context['count_correct_lastweek'] = count_correct_lastweek
+            context['count_lastweek'] = count_lastweek
+
+            # context['last_using'] = last_using
+            context['last_using_str'] = last_using.strftime('%d %b.')  # '%Y.%m.%d'
+            context['top3_str'] = top_str
+            context['top3'] = top
+
 
         context['testdata'] = None
-        r = EngFixer.objects.filter(its_correct=False).order_by('?').first()
-        context['random_sentence'] = r.input_sentence
-        context['random_sentence2'] = r.fixed_sentence
-        context['random_sentence_url'] = r.get_absolute_url()
-
-        context['count'] = count
-        context['count_correct'] = count_correct_c
-        context['count_correct_lastweek'] = count_correct_lastweek
-        context['count_lastweek'] = count_lastweek
-
-        context['last_using'] = last_using
-        context['last_using_str'] = last_using.strftime('%d %b.')  # '%Y.%m.%d'
-        context['top3_str'] = top_str
-        context['top3'] = top
         context['data_list'] = requests
+        r = EngFixer.objects.filter(its_correct=False).order_by('?').first()
+        if r:
+            context['quiz'] = True
+            context['random_sentence'] = r.input_sentence
+            context['random_sentence2'] = r.fixed_sentence
+            context['random_sentence_url'] = r.get_absolute_url()
         return context

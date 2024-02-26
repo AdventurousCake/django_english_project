@@ -49,26 +49,13 @@
                         </div>
                         <div class="flex-item1">
                         </div>
-                        {#                        <div class="flex-item1">#}
-                        {#                            <h1>{{ count }}</h1>#}
-                        {#                            <hr>#}
-                        {#                            <h4>COUNT</h4>#}
-                        {#                        </div>#}
                     </div>
                 </div>
 
                 <br>
 
-                {#                    <h1>Fixer</h1>#}
-                {#                    <p><b>Requests count:</b> {{ count }} <br>#}
-                {#                        <b>Last using:</b> {{ last_using }}#}
-                {#                    </p>#}
-                {#                    <p><b>Last using:</b> {{ last_using }}</p>#}
-                {#                    <br>#}
-
                 {% if top3 %}
                     <h1>Top mistakes</h1>
-                    {#            <p><b>{{ top3_str|linebreaksbr }}</b></p>#}
                     <div class="flex-container1 border-container" style="max-width: 800px">
                         {% for item in top3 %}
                             <div class="flex-item1">
@@ -80,15 +67,19 @@
                     </div>
 
                 {% endif %}
+
+                {% if quiz %}
                 <br>
                 <h1>Mini quiz</h1>
                 <div class="border-container">
                     <h3>Fix random sentence:</h3>
-                    <p>{{ random_sentence }}</p>
+                    <p><i>{{ random_sentence }}</i></p>
                     <p id='hidden' style="display: none">{{ random_sentence2 }}</p>
                     <a href="{{ random_sentence_url }}" class="btn btn-md btn-warning">Open fix</a>
                     <button class="btn btn-md btn-warning" type="button" onclick="h()">Show</button>
                 </div>
+                {% endif %}
+
                 <br>
 
 {#                {% if not IS_PROD %}#}

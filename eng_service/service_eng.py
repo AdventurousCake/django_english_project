@@ -48,7 +48,7 @@ class EngDownloader(HttpService):
 
 
 # todo like EngFixParser
-class EngRephr:  # inherits HttpEngService?
+class EngRephr:  # inherits HttpEngService
     def __init__(self, input_str=None):
         self.input_str = input_str
 

@@ -42,8 +42,6 @@ class EngSerializerCustom(serializers.ModelSerializer):
     #     source='tags',
     #     many=True, read_only=True)
 
-
-# TODO =========================
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User

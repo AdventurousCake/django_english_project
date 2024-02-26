@@ -22,7 +22,8 @@ urlpatterns = [
     path('get/<int:pk>/', CheckENGViewUpdate.as_view(), name='eng_get'),
     path('delete/<int:pk>/', DeleteFixView.as_view(), name='eng_delete_fix'),
 
-    path('profile/<int:pk>/', EngProfileView.as_view(), name='eng_profile'),
+    # path('profile/<int:pk>/', EngProfileView.as_view(), name='eng_profile'),
+    path('profile/', EngProfileView.as_view(), name='eng_profile'),
     path('random/', GetRandomView.as_view(), name='eng_random'),
 
     path('search/', SearchFix.as_view(), name='api_search'),
