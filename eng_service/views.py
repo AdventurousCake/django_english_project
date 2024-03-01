@@ -9,15 +9,13 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.cache import cache_page
-
 from django.views.generic import CreateView, DetailView, ListView, DeleteView
 from django_ratelimit.decorators import ratelimit
 
 from eng_service.forms import EngFixerForm
 from eng_service.models import EngFixer, Request, UserProfile, Tag
-
 from eng_service.models_core import User
-from eng_service.utils_ import ResultProcessor, Parser
+from eng_service.utils_ import ResultProcessor, SuggestionsParser
 
 
 class GetRandomView(View):
@@ -164,7 +162,7 @@ class CheckENGViewUpdate(DetailView): #UpdateView):  # LoginRequiredMixin
         context['fixed'] = self.object.fixed_sentence
         context['input'] = self.object.input_sentence
 
-        context['suggestions_rows'] = Parser.parse_json(self.object.fixed_result_JSON)
+        context['suggestions_rows'] = SuggestionsParser.parse_json(self.object.fixed_result_JSON)
         context['rephrases_list'] = self.object.rephrases_list if self.object.rephrases_list else None
 
         # TODO TAGS

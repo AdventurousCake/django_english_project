@@ -1,15 +1,11 @@
-import json
 import re
 
-import uuid
 from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Sum
-from django.utils.text import gettext_lazy as _
 
-from eng_service.service_eng import EngFixParser
 from eng_service.models_core import User
+from eng_service.service_eng import EngFixParser
 
 
 def validate_text_string(value):
@@ -65,7 +61,7 @@ class EngFixer(models.Model):
     created_date = models.DateTimeField(null=False, auto_now_add=True)
 
     def get_mistakes(self):
-        return EngFixParser.parse_item_mistakes_V1(self.fixed_result_JSON)
+        return EngFixParser.parse_item_mistakes_V1(item=self.fixed_result_JSON)
 
     # model-level validation; validators - field level (by full_clean)
     def clean(self):

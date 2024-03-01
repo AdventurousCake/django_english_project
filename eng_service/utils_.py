@@ -1,12 +1,13 @@
 import time
 
-from eng_service.service_eng import EngFixParser, EngRephr
 from eng_service.local_lib.google_translate import Translate
 
 
 class ResultProcessor:
     @staticmethod
     def process_data(input_str):
+        from eng_service.service_eng import EngFixParser, EngRephraseParser
+
         start = time.perf_counter()
 
         # fix = EngFixParser.get_parsed_data(input_str)
@@ -21,7 +22,7 @@ class ResultProcessor:
 
         # rephraser
         rephrases_list = None
-        rephrases = EngRephr().get_rephrased_sentences(input_str=input_str)
+        rephrases = EngRephraseParser().get_parsed_data(input_str=input_str)
         if rephrases:
             rephrases_list = rephrases
 
@@ -40,7 +41,8 @@ class ResultProcessor:
                     types_most=types_most, error_types=error_types, its_correct=its_correct)
 
 
-class Parser:
+class SuggestionsParser:
+    """parse suggestions from json"""
     @staticmethod
     def parse_json(json_data: list[dict]):
         """'fixed_result_JSON': [{'longDescription': 'Слово было написано неправильно',
@@ -85,3 +87,18 @@ class Parser:
 
                 suggestions_rows.append((input_text, fixed_text, long_description, short_description, sugg_string))
         return suggestions_rows
+
+
+def save_file_TEST(types_list_unique):
+    with open('!ENG_TYPES.txt', 'a', encoding='utf-8') as f:
+        # json.dump(types_cnt_dict, f, ensure_ascii=False, indent=4)
+        f.write(',' + ','.join(types_list_unique))
+
+
+def time_measure(func):
+    def wrapper(*args, **kwargs):
+        start = time.perf_counter()
+        result = func(*args, **kwargs)
+        print(time.perf_counter() - start)
+        return result
+    return wrapper

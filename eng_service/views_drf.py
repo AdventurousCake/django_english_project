@@ -1,9 +1,5 @@
 from django.contrib.postgres.aggregates import ArrayAgg
-from django.contrib.postgres.fields.array import ArrayContains
-from django.db.models import Q, CharField
-from django.db.models.functions import Cast
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import serializers, status, generics, filters
+from rest_framework import serializers, status, generics
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import PageNumberPagination
@@ -184,6 +180,13 @@ class TagViewSet(ModelViewSet):
     # @action(methods=['get'], detail=True)
     # def add_fix(self, request, pk):
     #     eng = EngFixer.objects.get()
+
+###
+class CreateFile(APIView):
+    # def post(self, request, *args, **kwargs):
+    def post(self, request, format=None):
+        return Response()
+
 
 
 if __name__ == '__main__':

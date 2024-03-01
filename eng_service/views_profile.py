@@ -5,8 +5,8 @@ from django.db.models.functions import Now
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
 
-from eng_service.service_eng import EngFixParser
 from eng_service.models import Request, EngFixer, UserProfile
+from eng_service.service_eng import EngFixParser
 
 
 def get_user_requests(user):
@@ -66,7 +66,7 @@ class EngProfileView(TemplateView, LoginRequiredMixin):  # FeatureTestMix
             count_lastweek = requests.filter(created_date__gte=last_week).count()
             count_correct_lastweek = count_correct.filter(created_date__gte=last_week).count()
 
-            top = EngFixParser.parse_multiple_items_top_mistakes(requests, top_n=3)
+            top = EngFixParser.parse_multiple_items_top_mistakes(items=requests, top_n=3)
             if top:
                 top_str = '\n'.join([f'{item[0]} - {item[1]}' for item in top])
             else:
