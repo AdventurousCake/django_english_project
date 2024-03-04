@@ -31,7 +31,6 @@ class Request(models.Model):
     id = models.BigAutoField(primary_key=True, auto_created=True, null=False)  # db_index=True
 
     user_profile = models.ForeignKey(to='UserProfile', on_delete=models.CASCADE, null=True)  # or anonymous user
-
     fix = models.ForeignKey(to='EngFixer', on_delete=models.CASCADE, null=False)
     created_date = models.DateTimeField(null=False, auto_now_add=True)
 
@@ -61,7 +60,7 @@ class EngFixer(models.Model):
     created_date = models.DateTimeField(null=False, auto_now_add=True)
 
     def get_mistakes(self):
-        return EngFixParser.parse_item_mistakes_V1(item=self.fixed_result_JSON)
+        return EngFixParser().parse_item_mistakes_V1(item=self.fixed_result_JSON)
 
     # model-level validation; validators - field level (by full_clean)
     def clean(self):
@@ -84,9 +83,10 @@ class EngFixer(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['id', 'input_sentence'], name='unique_id_input_sentence'),
         ]
+        indexes = [
+            models.Index(fields=['its_correct'], name='its_correct_idx'), ]
 
 
-# profile = UserProfile.objects.select_related('user').get(id=user_profile_id)
 class UserProfile(models.Model):
     """
     A OneToOneField is essentially the same as a ForeignKey, with the exception
