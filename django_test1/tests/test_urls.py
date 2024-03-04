@@ -1,10 +1,7 @@
-import re
 from pprint import pprint
 
-from django import forms
-from django.template.response import SimpleTemplateResponse, TemplateResponse
-from django.test import TestCase, Client, override_settings
 from django.core.cache import cache
+from django.test import TestCase, Client, override_settings
 from django.urls import reverse
 
 from eng_service.models import EngFixer, UserProfile
@@ -28,8 +25,6 @@ class CreateEngTestBase(TestCase):
 
         # cls.profile1 = UserProfile.objects.create(user=User.objects.get(username='user1'))
         cls.profile3 = UserProfile.objects.create(user=user3)
-
-        # cls.profile2 = UserProfile.objects.create(user=User.objects.get(username='user1'))
 
 # BASE CLASS
 class CreateClientsTestBase(TestCase):
@@ -134,7 +129,6 @@ class EngTestURLS(CreateClientsTestBase, CreateEngTestBase):
         obj = EngFixer.objects.get(pk=2)
         self.assertEqual(obj.its_correct, False)
         self.assertEqual(obj.fixed_sentence, 'Hello how are you')
-
         # pprint(EngFixer.objects.get(pk=2).__dict__)
 
 
@@ -143,13 +137,6 @@ class EngTestURLS(CreateClientsTestBase, CreateEngTestBase):
         response = self.authorized_client.get(reverse('eng_service:eng_list'))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['data_list'].count(), 1)
-
-
-    # def test_profile_page(self):
-    #     self.assertTrue(self.user1.profile is not None)
-    #
-    #     response = self.authorized_client.get(reverse('eng_service:eng_profile', kwargs={'pk': 1}))
-    #     self.assertEqual(response.status_code, 200)
 
     # def test_create_msg_guest(self):
     #     """redirect to login"""

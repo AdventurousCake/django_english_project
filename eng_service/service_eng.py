@@ -191,7 +191,6 @@ class EngFixParser:
                     mistakes.append(sentence['type'])
         return mistakes
 
-    @staticmethod
     def parse_multiple_items_top_mistakes(self, items, top_n: int) -> list[tuple]:
         mistakes_list = []
         top_mistakes = None

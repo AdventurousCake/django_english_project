@@ -35,8 +35,7 @@ class EngMainListView(ListView):
 
     queryset = EngFixer.objects.all().order_by('-created_date')
 
-    # def dispatch(self, request, *args, **kwargs):
-    #     pass
+    # def dispatch(self, request, *args, **kwargs): pass
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -93,7 +92,7 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         obj.translated_input = data['translated_input']
         obj.translated_fixed = data['translated_fixed']
 
-        # todo 05
+        # TMP
         obj.mistakes_list_TMP = data['error_types']
         obj.mistakes_most_TMP = data['types_most']
 
@@ -165,7 +164,6 @@ class CheckENGViewUpdate(DetailView): #UpdateView):  # LoginRequiredMixin
         context['suggestions_rows'] = SuggestionsParser.parse_json(self.object.fixed_result_JSON)
         context['rephrases_list'] = self.object.rephrases_list if self.object.rephrases_list else None
 
-        # TODO TAGS
         tags = self.object.tags.values_list('name', flat=True)
         context['error_types'] = tags
         context['its_correct'] = self.object.its_correct
