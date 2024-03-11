@@ -35,7 +35,7 @@ class Request(models.Model):
     created_date = models.DateTimeField(null=False, auto_now_add=True)
 
 
-# INDEX INPUT UNIQUE
+
 class EngFixer(models.Model):
     # uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     id = models.BigAutoField(primary_key=True, auto_created=True, null=False)
@@ -80,6 +80,7 @@ class EngFixer(models.Model):
     #     pass
 
     class Meta:
+        # INDEX INPUT UNIQUE
         constraints = [
             models.UniqueConstraint(fields=['id', 'input_sentence'], name='unique_id_input_sentence'),
         ]

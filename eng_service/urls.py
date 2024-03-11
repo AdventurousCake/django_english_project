@@ -2,7 +2,7 @@ from django.urls import path
 from rest_framework.routers import DefaultRouter
 
 from eng_service.views import CheckENGView, CheckENGViewUpdate, EngMainListView, GetRandomView, DeleteFixView
-from eng_service.views_drf import EngViewSet, UserViewSet, SearchFix, SearchStrFix, SearchList, TagViewSet
+from eng_service.views_drf import EngViewSet, UserViewSet, SearchFix, SearchStrFix, SearchList, TagViewSet, EngFixAPI
 from eng_service.views_profile import EngProfileView
 
 app_name = 'eng_service'
@@ -27,6 +27,8 @@ urlpatterns = [
     path('search/', SearchFix.as_view(), name='api_search'),
     path('searchstr/', SearchStrFix.as_view(), name='api_search2'),
     path('searchlist/', SearchList.as_view(), name='api_search_list'),
+
+    path('api1/', EngFixAPI.as_view(), name='api1'),
 ]
 
 urlpatterns += router.urls
