@@ -1,6 +1,6 @@
 # Project English Fixer
 
->Открыть проект>>> https://engproj9.servehttp.com/
+>⭐ Открыть проект >>> https://engproj9.servehttp.com/
 
 [//]: # (### Открыть проект: link)
 

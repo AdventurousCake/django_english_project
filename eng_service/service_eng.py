@@ -73,13 +73,13 @@ class EngRephraseParser:
     def get_parsed_data(self, input_str: str = "Today's good weather. I feel good") -> list | None:
         """get_rephrased_sentences"""
         data = self.downloader.get_rephrase_data(input_str=input_str)
-        data = data.get('candidates')  # feature: order by diversity
 
         if not data:
             logging.warning('No data: rephraser')
             raise ValueError('No data: rephraser')
             # return None
 
+        data = data.get('candidates')  # feature: order by diversity
         sentences = [item['candidate'] for item in data]
         return sentences
 
