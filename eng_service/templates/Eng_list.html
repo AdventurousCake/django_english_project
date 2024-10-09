@@ -2,32 +2,38 @@
 {% load static %}
 
 {% block content %}
-    <div class="container md-5">
+    <div class="container col-md-8">
         {#    CARD#}
 
         {% if not data_list %}
             <p>Create New</p>
         {% endif %}
 
+        <h3>Sentences:</h3>
+
         {% for item in data_list %}
             <div class="card">
-                <div class="card-header">
-                    <a href="{{ item.get_absolute_url }}" class="btn btn-outline-primary">Sentence #{{ item.id }}</a>
+                <div class="card-header d-flex justify-content-between">
+                    <a href="{{ item.get_absolute_url }}" class="btn btn-sm btn-outline-primary">#{{ item.id }}</a>
 
-                    <button onclick="write_clipboard(`{{ item.fixed_sentence }}`);" class="btn btn-primary"><i
-                            class="fa-solid fa-copy"></i>
-                        Copy result
-                    </button>
-                    <button onclick="write_clipboard(window.location.origin+`{{ item.get_absolute_url }}`);" class="btn btn-primary"><i
-                            class="fa-solid fa-share"></i> Share (Copy link)
-                    </button>
-                    {% if user.is_superuser %}
-                        <a href="{% url 'eng_service:eng_delete_fix' item.id %}" class="btn btn-outline-danger">Delete</a>
-                    {% endif %}
+                    <div id="actions">
+                        <button onclick="write_clipboard(`{{ item.fixed_sentence }}`);" class="btn btn-sm btn-primary">
+                            <i
+                                    class="fa-solid fa-copy"></i>
+                            Copy result
+                        </button>
+                        <button onclick="write_clipboard(window.location.origin+`{{ item.get_absolute_url }}`);"
+                                class="btn btn-sm btn-primary"><i
+                                class="fa-solid fa-share"></i> Share (Copy link)
+                        </button>
+                        {% if user.is_superuser %}
+                            <a href="{% url 'eng_service:eng_delete_fix' item.id %}" class="btn btn-outline-danger">Delete</a>
+                        {% endif %}
+                    </div>
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">{{ item.input_sentence }}</li>
-                    <li class="list-group-item">{{ item.fixed_sentence }}</li>
+                    <li class="list-group-item" style="color: rgba(0,128,0,0.74)">{{ item.fixed_sentence }}</li>
                 </ul>
                 {#            <p>123</p>#}
             </div>
