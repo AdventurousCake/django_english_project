@@ -37,10 +37,11 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test
-      env: 
+      env:
         DEBUG: 0
         SECRET_KEY: testkey
         DJANGO_ALLOWED_HOSTS: 'web localhost 127.0.0.1 [::1] 0.0.0.0:8000 0.0.0.0'
+        CSRF_TRUSTED_ORIGINS: 'http://127.0.0.1 http://0.0.0.0'
 
       run: |
         python manage.py test
