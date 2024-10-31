@@ -18,13 +18,11 @@
 
                     <div id="actions">
                         <button onclick="write_clipboard(`{{ item.fixed_sentence }}`);" class="btn btn-sm btn-primary">
-                            <i
-                                    class="fa-solid fa-copy"></i>
+                            <i class="fa-solid fa-copy"></i>
                             Copy result
                         </button>
                         <button onclick="write_clipboard(window.location.origin+`{{ item.get_absolute_url }}`);"
-                                class="btn btn-sm btn-primary"><i
-                                class="fa-solid fa-share"></i> Share (Copy link)
+                                class="btn btn-sm btn-primary"><i class="fa-solid fa-share"></i> Share (Copy link)
                         </button>
                         {% if user.is_superuser %}
                             <a href="{% url 'eng_service:eng_delete_fix' item.id %}" class="btn btn-outline-danger">Delete</a>

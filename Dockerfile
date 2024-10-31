@@ -1,15 +1,13 @@
-# pull official base image
 FROM python:3.11-alpine
 
-# create the app user
 RUN addgroup -S app_user && adduser -S app_user -G app_user
 #RUN adduser -D app_user
 
 # set work directory
 ENV APP_HOME=/usr/src/app
-RUN mkdir $APP_HOME
-RUN mkdir $APP_HOME/static
-RUN mkdir $APP_HOME/media
+RUN mkdir $APP_HOME && \
+    mkdir $APP_HOME/static && \
+    mkdir $APP_HOME/media
 
 WORKDIR $APP_HOME
 
@@ -21,9 +19,8 @@ ENV PYTHONUNBUFFERED 1
 #RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev
 
 # install dependencies
-RUN pip install --upgrade pip
 COPY ./requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip install --upgrade pip && pip install -r requirements.txt
 
 # copy project
 COPY . .

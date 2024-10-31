@@ -1,5 +1,8 @@
 # Project English Fixer
 
+![Static Badge](https://img.shields.io/badge/python-3.10+-black?logo=python&logoColor=edb641&labelColor=202235&color=edb641)
+![Python](https://github.com/AdventurousCake/django_english_project/actions/workflows/python-app.yml/badge.svg?branch=master)
+
 >⭐ Открыть проект >>> https://engproj9.servehttp.com/
 
 [//]: # (### Открыть проект: link)
