@@ -39,12 +39,12 @@ urlpatterns += [
 
 urlpatterns += [
     # swagger and schema
-    path('swagger', TemplateView.as_view(template_name='api/swagger-ui.html',
+    path('docs', TemplateView.as_view(template_name='api/swagger-ui.html',
                                          extra_context={'schema_url': 'openapi-schema'}), name='swagger-ui'),
     path('openapi', get_schema_view(
             title="My Project",
             version="1.0.0",
-            permission_classes=(permissions.IsAuthenticated,),  # IsAdminUser
+            permission_classes=(permissions.AllowAny,),  # IsAdminUser, IsAuthenticated
             # public=True,
         ), name='openapi-schema'),
 

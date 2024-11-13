@@ -15,7 +15,7 @@ from django_ratelimit.decorators import ratelimit
 from eng_service.forms import EngFixerForm
 from eng_service.models import EngFixer, Request, UserProfile, Tag
 from eng_service.models_core import User
-from eng_service.utils_ import ResultProcessor, SuggestionsParser
+from eng_service.utils_ import FixerResultProcessor, SuggestionsParser
 
 
 class GetRandomView(View):
@@ -84,7 +84,7 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
 
         # not obj.input_sentence, use cleaned_data
         input_str = form.cleaned_data['input_sentence']
-        data = ResultProcessor.process_data(input_str)
+        data = FixerResultProcessor.process_data(input_str)
 
         obj.fixed_sentence = data['fixed_sentence']
         obj.fixed_result_JSON = data['fixed_result_JSON']

@@ -3,7 +3,7 @@ import time
 from eng_service.local_lib.google_translate import Translate
 
 
-class ResultProcessor:
+class FixerResultProcessor:
     @staticmethod
     def process_data(input_str):
         from eng_service.service_eng import EngFixParser, EngRephraseParser
