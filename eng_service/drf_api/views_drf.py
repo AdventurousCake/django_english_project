@@ -22,7 +22,8 @@ class EngFixAPI(APIView):
         else:
             return Response(r.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class FixViewSet(viewsets.ReadOnlyModelViewSet):
+class FixViewSetRO(viewsets.ReadOnlyModelViewSet):
+    # permission_classes =  ()
     # http_method_names = ['get']
 
     queryset = EngFixer.objects.prefetch_related('tags').all()
