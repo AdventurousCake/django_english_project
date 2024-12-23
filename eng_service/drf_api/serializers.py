@@ -4,7 +4,8 @@ from eng_service.models import EngFixer, Tag
 
 
 class InputSerializer(serializers.Serializer):
-    input_sentence = serializers.RegexField(max_length=100, min_length=3, regex=r"""^[a-zA-Z0-9\s\\.,\\?!’'"\-_]+$""",
+    input_sentence = serializers.RegexField(max_length=100, min_length=3, 
+                                            regex=r"""^[a-zA-Z0-9\s\\.,\\?!’'"\-_]+$""",
                                             required=True)
 
 

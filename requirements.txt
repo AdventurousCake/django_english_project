@@ -24,4 +24,5 @@ django-redis
 # swagger
 pyyaml
 uritemplate
+drf-yasg
 

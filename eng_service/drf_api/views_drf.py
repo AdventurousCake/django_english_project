@@ -1,3 +1,4 @@
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -7,7 +8,8 @@ from eng_service.models import EngFixer
 from eng_service.utils_ import FixerResultProcessor
 
 
-class EngFixAPI(APIView):
+class EngFixApiPOST(APIView):
+    @swagger_auto_schema(request_body=InputSerializer)
     def post(self, request):
         """data passed in post data"""
         serializer = InputSerializer(data=request.data)
