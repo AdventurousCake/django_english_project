@@ -41,7 +41,6 @@ class EngFixer(models.Model):
     id = models.BigAutoField(primary_key=True, auto_created=True, null=False)
 
     input_sentence = models.CharField(null=False, max_length=256, unique=True, validators=[validate_text_string])
-    # input_sentence = models.CharField(null=False, max_length=256)
     # translated_RU = models.CharField(null=True, max_length=256)
     fixed_result_JSON = models.JSONField(null=True)
     fixed_sentence = models.CharField(null=False, blank=True, max_length=256)
@@ -66,7 +65,6 @@ class EngFixer(models.Model):
     def clean(self):
         if len(self.input_sentence) <= 3:
             raise ValidationError({"input_sentence": 'Input sentence is too short'})
-            # raise ValidationError('Input sentence is too short') # err
 
     def get_absolute_url(self):
         from django.urls import reverse

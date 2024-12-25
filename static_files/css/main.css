@@ -31,7 +31,8 @@ button.btn-primary-custom:hover {
 }
 
 /* div.container > div  */
-#formpage-container > div, .border-container {
+#formpage-container > div,
+.border-container {
     padding: 1em;
     background-color: white;
 

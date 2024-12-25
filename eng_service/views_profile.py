@@ -32,6 +32,7 @@ class EngProfileView(TemplateView, LoginRequiredMixin):  # FeatureTestMix
             # anon filter in get
             profile = None
 
+        # STATS
         requests = (Request.objects.filter(user_profile=profile)
                     .select_related('fix')
                     # .order_by('-created_date')
