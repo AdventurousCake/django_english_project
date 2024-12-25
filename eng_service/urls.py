@@ -1,5 +1,6 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from eng_service.drf_api.views_drf import EngFixApiPOST, FixViewSetRO
 from eng_service.views import CheckENGView, CheckENGViewUpdate, EngMainListView, GetRandomView, DeleteFixView
@@ -20,6 +21,8 @@ urlpatterns = [
     path('random/', GetRandomView.as_view(), name='eng_random'),
 
     path('api1/', EngFixApiPOST.as_view(), name='api1'),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
 
 urlpatterns += router.urls

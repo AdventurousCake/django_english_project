@@ -21,6 +21,8 @@ social-auth-app-django
 django-ratelimit
 django-redis
 
+djangorestframework-simplejwt[crypto]
+
 # swagger
 pyyaml
 uritemplate
