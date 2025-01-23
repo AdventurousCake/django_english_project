@@ -1,10 +1,15 @@
 # coding:utf-8
 # author LuShan https://github.com/lushan88a/google_trans_new
 # version : 1.1.9
-import json, requests, random, re
-from urllib.parse import quote
-import urllib3
+import json
 import logging
+import random
+import re
+import requests
+from urllib.parse import quote
+
+import urllib3
+
 from .constant import LANGUAGES, DEFAULT_SERVICE_URLS
 
 log = logging.getLogger(__name__)

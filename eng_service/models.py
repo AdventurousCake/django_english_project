@@ -56,6 +56,8 @@ class EngFixer(models.Model):
     translated_input = models.CharField(null=True, max_length=256)
     translated_fixed = models.CharField(null=True, max_length=256)
 
+    is_public = models.BooleanField(null=False, default=True)
+    # created_by = models.ForeignKey(to='User', on_delete=models.CASCADE, null=False)
     created_date = models.DateTimeField(null=False, auto_now_add=True)
 
     def get_mistakes(self):

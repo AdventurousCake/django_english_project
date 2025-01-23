@@ -73,7 +73,7 @@ class EngTestURLS(CreateClientsTestBase, CreateEngTestBase):
                        ('eng_service:eng_list', None),
                        ('eng_service:eng_random', None), # 302
                        ('signup', None),
-                       ('api1', None),
+                       ('eng_service:api1', None),
                        ('api_vset', None),
                        ('openapi-schema', None),
                        # ('docs', None),

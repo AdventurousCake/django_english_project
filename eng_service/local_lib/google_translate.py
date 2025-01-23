@@ -11,7 +11,7 @@
 # translator = google_translator()
 # translate_text = translator.translate('привет', lang_tgt='en')
 # print(translate_text)
-from eng_service.local_lib.main import google_translator
+from eng_service.local_lib.local_main import google_translator
 
 
 class Translate():

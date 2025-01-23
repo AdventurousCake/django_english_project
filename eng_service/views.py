@@ -33,7 +33,7 @@ class EngMainListView(ListView):
     paginate_by = 10
     context_object_name = "data_list"
 
-    queryset = EngFixer.objects.all().order_by('-created_date')
+    queryset = EngFixer.objects.all().filter(is_public=True).order_by('-created_date')
 
     # def dispatch(self, request, *args, **kwargs): pass
 
@@ -98,6 +98,10 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
 
         obj.its_correct = data['its_correct']
 
+        # is_public
+        if self.request.user.is_superuser:
+            obj.is_public = False
+
         # save obj
         form.save()
 
@@ -116,7 +120,7 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         return super(CheckENGView, self).form_valid(form)
 
 @method_decorator(cache_page(60 * 3), name="dispatch")
-class CheckENGViewUpdate(DetailView): #UpdateView):  # LoginRequiredMixin
+class CheckENGViewDetail(DetailView): #UpdateView):  # LoginRequiredMixin
     """
     eng_get/<int:pk>/
     """
@@ -142,7 +146,7 @@ class CheckENGViewUpdate(DetailView): #UpdateView):  # LoginRequiredMixin
         )
 
     def get_object(self, *args, **kwargs):
-        obj = super(CheckENGViewUpdate, self).get_object(*args, **kwargs)
+        obj = super(CheckENGViewDetail, self).get_object(*args, **kwargs)
         # if obj.author != self.request.user:
         #     raise PermissionDenied()  # or Http404
         self.save_request(self.request, obj)
