@@ -47,4 +47,4 @@ DATABASES = {
 #     }
 # }
 
-RATELIMIT_ENABLE = True
+# RATELIMIT_ENABLE = True
