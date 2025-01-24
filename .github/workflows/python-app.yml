@@ -39,10 +39,19 @@ jobs:
     - name: Test
       env:
         DEBUG: 0
-        SECRET_KEY: testkey
+        SECRET_KEY: 'testkey'
+#        IS_PROD: 1
+#        DJANGO_SETTINGS_MODULE:
         DJANGO_ALLOWED_HOSTS: 'web localhost 127.0.0.1 [::1] 0.0.0.0:8000 0.0.0.0'
         CSRF_TRUSTED_ORIGINS: 'http://127.0.0.1 http://0.0.0.0'
 
+        SOCIAL_AUTH_GITHUB_KEY: ${{ secrets.SOCIAL_AUTH_GITHUB_KEY }}
+        SOCIAL_AUTH_GITHUB_SECRET: ${{ secrets.SOCIAL_AUTH_GITHUB_SECRET }}
+
+        SOCIAL_AUTH_GITHUB_KEY_LOCAL: ${{ secrets.SOCIAL_AUTH_GITHUB_KEY_LOCAL }}
+        SOCIAL_AUTH_GITHUB_SECRET_LOCAL: ${{ secrets.SOCIAL_AUTH_GITHUB_SECRET_LOCAL }}
+
+        TEST_DB_URL: ${{secrets.TEST_DB_URL}}
 
       run: |
-        python manage.py test
+        python manage.py test --settings=test_settings
