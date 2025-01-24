@@ -117,7 +117,7 @@ class EngTestURLS(CreateClientsTestBase, CreateEngTestBase):
         # if re.match(r'^.*invalid-feedback.*$', resp):
         #     raise AssertionError('re')
 
-        self.assertFormError(response, 'form', 'input_sentence', 'Input sentence is too short')
+        self.assertFormError(response.context['form'],'input_sentence', 'Input sentence is too short')
 
     def test_create_valid_request(self):
         response = self.authorized_client.post(reverse('eng_service:eng'), {

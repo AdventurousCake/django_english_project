@@ -14,7 +14,7 @@ redis
 
 django-debug-toolbar
 
-django-crispy-forms
+django-crispy-forms>=2.3
 crispy-bootstrap5
 social-auth-app-django
 
