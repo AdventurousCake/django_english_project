@@ -8,8 +8,6 @@ from eng_service.models import EngFixer, UserProfile
 from eng_service.models_core import User
 
 
-# from FORM_MSG.tests.tests_views import MessageTestBase
-
 # db
 class CreateEngTestBase(TestCase):
     @classmethod
@@ -47,22 +45,13 @@ class CreateClientsTestBase(TestCase):
     def setUp(self):
         self.guest_client = Client()
 
-        """Создаем клиент зарегистрированного пользователя."""
+        """Создание клиента зарегистрированного пользователя."""
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user1)
 
         self.authorized_client2 = Client()
         self.authorized_client2.force_login(self.user2)
         cache.clear()
-
-
-# class SwaggerTest(TestCase):
-#     def test_get_page(self):
-#         r = self.client.get(reverse('api:openapi-schema'))
-#         self.assertEqual(r.status_code, 200)
-#
-#         r = self.client.get(reverse('api:swagger-ui'))
-#         self.assertEqual(r.status_code, 200)
 
 @override_settings(RATELIMIT_ENABLED=False)
 class EngTestURLS(CreateClientsTestBase, CreateEngTestBase):
@@ -108,15 +97,6 @@ class EngTestURLS(CreateClientsTestBase, CreateEngTestBase):
             'input_sentence': 123,
             # 'user': self.authorized_client
         })
-        # response = self.authorized_client.get(reverse('eng_service:eng_get', kwargs={'pk': 2}))
-
-        # resp = str(response.content) #'utf-8')
-        # print(resp)
-
-        # invalid-feedback in text
-        # if re.match(r'^.*invalid-feedback.*$', resp):
-        #     raise AssertionError('re')
-
         self.assertFormError(response.context['form'],'input_sentence', 'Input sentence is too short')
 
     def test_create_valid_request(self):
