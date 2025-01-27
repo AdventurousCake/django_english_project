@@ -36,7 +36,6 @@ DATABASES = {
 #         'PORT': port,
 #     }
 # }
-
 # CACHES = {
 #     "default": {
 #         "BACKEND": "django_redis.cache.RedisCache",
@@ -47,4 +46,4 @@ DATABASES = {
 #     }
 # }
 
-# RATELIMIT_ENABLE = True
+RATELIMIT_ENABLE = True

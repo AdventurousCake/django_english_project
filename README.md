@@ -1,14 +1,11 @@
-# Project English Fixer
+# English Fixer
 
 ![Static Badge](https://img.shields.io/badge/python-3.10+-black?logo=python&logoColor=edb641&labelColor=202235&color=edb641)
+![Python](https://github.com/AdventurousCake/django_english_project/actions/workflows/python-app.yml/badge.svg?branch=master)
 
-[//]: # (![Python]&#40;https://github.com/AdventurousCake/django_english_project/actions/workflows/python-app.yml/badge.svg?branch=master&#41;)
+>▶ **Открыть сайт** >>> https://engproj9.servehttp.com/
 
->⭐ Открыть проект >>> https://engproj9.servehttp.com/
-
-[//]: # (### Открыть проект: link)
-
-Проект English Fixer позволяет исправить ошибки в предложениях на английском, перефразирование предложений используя API reverso.net.
+Сервис English Fixer позволяет исправить ошибки в предложениях на английском, перефразирование предложений используя API reverso.net.
 Также предоставляет всю необходимую информацию на одной странице.
 Еще можно легко делиться ссылкой на исправленный текст.
 
@@ -35,6 +32,11 @@
 - docker-compose exec web python manage.py migrate --noinput
 - docker-compose exec web python manage.py collectstatic --no-input --clear 
 - docker-compose exec web python manage.py createsuperuser
+
+### Документация
+Документация для API после установки доступна по адресу:
+
+```http://127.0.0.1/docs/```
 
 ---
 ### Screenshots
