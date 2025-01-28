@@ -26,7 +26,7 @@ class EngFixApiPOST(APIView):
             return Response(r.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class FixViewSetRO(viewsets.ReadOnlyModelViewSet):
-    # permission_classes =  ()
+    permission_classes = ['rest_framework.permissions.IsAuthenticatedOrReadOnly']
     # http_method_names = ['get']
 
     queryset = EngFixer.objects.prefetch_related('tags').all()

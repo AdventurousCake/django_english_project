@@ -151,7 +151,7 @@ DATABASES = {
             'PORT': '5432',
         }
 }
-# new
+
 # CACHES = {
 #     "default": {
 #         "BACKEND": "django_redis.cache.RedisCache",
