@@ -1,5 +1,6 @@
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -26,8 +27,20 @@ class EngFixApiPOST(APIView):
             return Response(r.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class FixViewSetRO(viewsets.ReadOnlyModelViewSet):
-    permission_classes = ['rest_framework.permissions.IsAuthenticatedOrReadOnly']
+    permission_classes = [IsAuthenticatedOrReadOnly]
     # http_method_names = ['get']
 
     queryset = EngFixer.objects.prefetch_related('tags').all()
     serializer_class = EngSerializerVSETsimple
+
+
+class EngFixApiFILTER_test(APIView):
+    """filter http://127.0.0.1:8000/api1/test/?filter=grammar
+    """
+    def get(self, request):
+        params=request.GET.get('filter')
+        # queryset = EngFixer.objects.prefetch_related('tags').filter(mistakes_most_TMP__icontains=params).all()
+        queryset = EngFixer.objects.prefetch_related('tags').filter(tags__name__iexact=params).all()
+
+        serializer = EngSerializerVSETsimple(queryset, many=True)
+        return Response(serializer.data)

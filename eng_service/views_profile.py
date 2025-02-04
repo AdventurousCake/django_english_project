@@ -1,3 +1,4 @@
+import logging
 from datetime import timedelta
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -18,6 +19,7 @@ class EngProfileView(TemplateView, LoginRequiredMixin):  # FeatureTestMix
 
     def get(self, request, *args, **kwargs):
         if not self.request.user.is_authenticated:
+            logging.warning(f'Profile page. User not authenticated: {self.request.user}')
             return redirect('login')
         return super().get(request, *args, **kwargs)
 
@@ -86,7 +88,8 @@ class EngProfileView(TemplateView, LoginRequiredMixin):  # FeatureTestMix
 
         context['testdata'] = None
         context['data_list'] = requests
-        r = EngFixer.objects.filter(its_correct=False).order_by('?').first()
+
+        r = EngFixer.objects.filter(its_correct=False, is_public=True).order_by('?').first()
         if r:
             context['quiz'] = True
             context['random_sentence'] = r.input_sentence
