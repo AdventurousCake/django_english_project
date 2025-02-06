@@ -3,6 +3,7 @@ from collections import Counter
 from pprint import pprint
 from typing import Any
 
+import httpx
 import requests
 
 from eng_service.parser_headers_const import headers_engd, headers_eng_rephr
@@ -16,25 +17,26 @@ class HttpService:
             if method.lower() == 'post':
                 response = requests.post(url, headers=headers, data=data, timeout=3)
             elif method.lower() == 'get':
-                response = requests.get(url, headers=headers, params=params, timeout=3)
+                response = httpx.get(url, headers=headers, params=params, timeout=3)
             else:
-                raise ValueError(f'Method error: {method}')
+                raise ValueError(f'Method not supported: {method}')
 
-            logging.info(f'Response status code: {response.status_code}')
-            # response.ok
+            response.raise_for_status()
 
-            if response.status_code == 200:
-                result_json = response.json()
-                if not result_json:
-                    raise Exception('No data from resource')
-                return result_json
-            else:
-                logging.error(f'Request failed, status code: {response.status_code}')
-                return
-
-        except Exception as e:
-            logging.error(str(e))
+        except httpx.HTTPStatusError as e:
+            logging.error(f'Request failed, status code: {response.status_code}')
             return
+        except httpx.TimeoutException as e:
+            logging.error(e)
+            return
+        except Exception as e:
+            logging.error(e)
+            return
+
+        result_json = response.json()
+        if not result_json:
+            raise Exception('No data from resource')
+        return result_json
 
 
 class EngDownloader(HttpService):
