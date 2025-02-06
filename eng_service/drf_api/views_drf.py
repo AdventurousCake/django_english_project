@@ -34,7 +34,7 @@ class FixViewSetRO(viewsets.ReadOnlyModelViewSet):
     serializer_class = EngSerializerVSETsimple
 
 
-class EngFixApiFILTER_test(APIView):
+class EngFixApiFILTER(APIView):
     """filter http://127.0.0.1:8000/api1/test/?filter=grammar
     """
     def get(self, request):

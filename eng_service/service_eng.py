@@ -15,16 +15,16 @@ class HttpService:
     def request(method:str, url: str, headers: dict, params: dict = None, data: dict | str = None):
         try:
             if method.lower() == 'post':
-                response = requests.post(url, headers=headers, data=data, timeout=3)
+                response = requests.post(url, headers=headers, data=data, timeout=4)
             elif method.lower() == 'get':
-                response = httpx.get(url, headers=headers, params=params, timeout=3)
+                response = httpx.get(url, headers=headers, params=params, timeout=4)
             else:
                 raise ValueError(f'Method not supported: {method}')
 
             response.raise_for_status()
 
         except httpx.HTTPStatusError as e:
-            logging.error(f'Request failed, status code: {response.status_code}')
+            logging.error(f'Request failed, status code: {response.status_code}; error: {e}')
             return
         except httpx.TimeoutException as e:
             logging.error(e)
