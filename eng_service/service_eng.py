@@ -172,7 +172,6 @@ class EngFixParser:
             types_most_value = types_most_tuple[0]
             types_most_cnt = types_most_tuple[1]
 
-            # save_file_TEST(types_list_unique)
         result = dict(text=text, corrections=corrections_list, error_types=types_list_unique,
                       types_most=types_most_value, its_correct=its_correct)
         return result
