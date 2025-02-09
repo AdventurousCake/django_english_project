@@ -41,7 +41,7 @@ class EngProfileView(TemplateView, LoginRequiredMixin):  # FeatureTestMix
                     .values(
                     'fix_id', 'fix__its_correct',
                     'fix__fixed_result_JSON',
-                    'fix__mistakes_most_TMP', 'fix__mistakes_list_TMP'
+                    # 'fix__mistakes_most_TMP', 'fix__mistakes_list_TMP'
                     # 'created_date'
                     )
                     .distinct()
@@ -80,7 +80,6 @@ class EngProfileView(TemplateView, LoginRequiredMixin):  # FeatureTestMix
             context['count_correct_lastweek'] = count_correct_lastweek
             context['count_lastweek'] = count_lastweek
 
-            # context['last_using'] = last_using
             context['last_using_str'] = last_using.strftime('%d %b.')  # '%Y.%m.%d'
             context['top3_str'] = top_str
             context['top3'] = top

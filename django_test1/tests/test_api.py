@@ -11,7 +11,7 @@ def mock_get_data_res(*args, **kwargs):
     input_sentence = 'hello how are you123'
     fixed_sentence = 'Hello how are you123'
     fixed_result_JSON = '[]'
-    rephrases_list = ['hello', 'how', 'are', 'you']
+    rephrases_list = []
     translated_input = 'hello how are you'
     translated_fixed = 'Hello how are you'
     types_most = []
@@ -25,7 +25,6 @@ def mock_get_data_res(*args, **kwargs):
 @mock.patch("eng_service.utils_.FixerResultProcessor.process_data", mock_get_data_res)
 @override_settings(RATELIMIT_ENABLED=False)
 class EngTestAPI(CreateClientsTestBase):
-# class EngTestAPI(CreateClientsTestBase, CreateEngTestBase):
     def test_api(self):
         response = self.authorized_client.get(reverse('eng_service:api_vset-list'))
         self.assertEqual(response.status_code, 200)
