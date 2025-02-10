@@ -38,8 +38,7 @@ class EngProfileView(TemplateView, LoginRequiredMixin):  # FeatureTestMix
         requests = (Request.objects.filter(user_profile=profile)
                     .select_related('fix')
                     # .order_by('-created_date')
-                    .values(
-                    'fix_id', 'fix__its_correct',
+                    .values('fix_id', 'fix__its_correct',
                     'fix__fixed_result_JSON',
                     # 'fix__mistakes_most_TMP', 'fix__mistakes_list_TMP'
                     # 'created_date'
@@ -85,7 +84,6 @@ class EngProfileView(TemplateView, LoginRequiredMixin):  # FeatureTestMix
             context['top3'] = top
 
 
-        context['testdata'] = None
         context['data_list'] = requests
 
         r = EngFixer.objects.filter(its_correct=False, is_public=True).order_by('?').first()
