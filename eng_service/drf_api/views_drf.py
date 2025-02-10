@@ -32,3 +32,15 @@ class FixViewSetRO(viewsets.ReadOnlyModelViewSet):
 
     queryset = EngFixer.objects.prefetch_related('tags').all()
     serializer_class = EngSerializerVSETsimple
+
+
+class EngFixApiFILTER(APIView):
+    """filter http://127.0.0.1:8000/api1/test/?filter=grammar
+    """
+    def get(self, request):
+        params=request.GET.get('filter')
+        # queryset = EngFixer.objects.prefetch_related('tags').filter(mistakes_most_TMP__icontains=params).all()
+        queryset = EngFixer.objects.prefetch_related('tags').filter(tags__name__iexact=params).all()
+
+        serializer = EngSerializerVSETsimple(queryset, many=True)
+        return Response(serializer.data)

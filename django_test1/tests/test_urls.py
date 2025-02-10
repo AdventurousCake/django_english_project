@@ -24,6 +24,10 @@ class CreateEngTestBase(TestCase):
         # cls.profile1 = UserProfile.objects.create(user=User.objects.get(username='user1'))
         cls.profile3 = UserProfile.objects.create(user=user3)
 
+    # @classmethod
+    # def tearDownClass(cls):
+    #     super().tearDownClass()
+
 # BASE CLASS
 class CreateClientsTestBase(TestCase):
     @classmethod
@@ -32,14 +36,15 @@ class CreateClientsTestBase(TestCase):
 
         cls.user1 = User.objects.create_user(username='user1')
         cls.user2 = User.objects.create_user(username='user2')
-        # cls.message = Message.objects.create(author=cls.user,
-        #                                      name='Name',
-        #                                      text='123')
         cls.profile1 = UserProfile.objects.create(user=User.objects.get(username='user1'))
 
 
     @classmethod
     def tearDownClass(cls):
+        # EngFixer.objects.all().delete()
+        # UserProfile.objects.all().delete()
+        # User.objects.all().delete()
+
         super().tearDownClass()
 
     def setUp(self):
@@ -58,7 +63,7 @@ class EngTestURLS(CreateClientsTestBase, CreateEngTestBase):
     def test_urls(self):
         urlpatterns = [('eng_service:eng', None),
                        ('eng_service:eng_get', 1), # EMPTY DB
-                       # ('eng_service:eng_profile', 1), # EMPTY DB
+                       ('eng_service:eng_profile', None), # PERSONAL PROFILE
                        ('eng_service:eng_list', None),
                        ('eng_service:eng_random', None), # 302
                        ('signup', None),
@@ -84,7 +89,7 @@ class EngTestURLS(CreateClientsTestBase, CreateEngTestBase):
             # response = self.client.get(url) # anon
 
             status = response.status_code
-            self.assertIn(status, [200, 302])
+            self.assertIn(status, [200, 302], msg=f'info: pattern: {pattern} status: {status}')
 
     # def test_create_request_auth_123(self):
     #     response = self.authorized_client.get(reverse('eng_service:eng_get', kwargs={}))
@@ -95,7 +100,6 @@ class EngTestURLS(CreateClientsTestBase, CreateEngTestBase):
         """Input sentence is too short"""
         response = self.authorized_client.post(reverse('eng_service:eng'), {
             'input_sentence': 123,
-            # 'user': self.authorized_client
         })
         self.assertFormError(response.context['form'],'input_sentence', 'Input sentence is too short')
 
@@ -109,28 +113,18 @@ class EngTestURLS(CreateClientsTestBase, CreateEngTestBase):
         pprint(response.url)
         self.assertEqual(EngFixer.objects.count(), 2)
 
+        objs = EngFixer.objects.all()
+        pprint(objs)
+
         obj = EngFixer.objects.get(pk=2)
         self.assertEqual(obj.its_correct, False)
         self.assertEqual(obj.fixed_sentence, 'Hello how are you')
-        # pprint(EngFixer.objects.get(pk=2).__dict__)
-
 
 
     def test_list(self):
         response = self.authorized_client.get(reverse('eng_service:eng_list'))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['data_list'].count(), 1)
-
-    # def test_create_msg_guest(self):
-    #     """redirect to login"""
-    #     response = self.client.post(reverse('form_msg:send_msg'), {
-    #         'name': 123,
-    #         'text': 321,
-    #         'user': self.client
-    #     })
-    #     self.assertEqual(response.status_code, 302)
-    #     self.assertTrue(response.url.startswith('/accounts/login/?next=/'))
-    #     # self.assertEqual(response.url, '/accounts/login/?next=/msg1/send/')
 
     def test_get_404(self):
         response = self.authorized_client.get(reverse('eng_service:eng_get', kwargs={'pk': 9999}), {})

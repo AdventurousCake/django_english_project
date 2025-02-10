@@ -2,15 +2,13 @@ import time
 
 from eng_service.local_lib.google_translate import Translate
 
+TRANSLATE_ENABLED = False
 
 class FixerResultProcessor:
     @staticmethod
     def process_data(input_str):
         from eng_service.service_eng import EngFixParser, EngRephraseParser
 
-        start = time.perf_counter()
-
-        # fix = EngFixParser.get_parsed_data(input_str)
         fix = EngFixParser().get_parsed_data(input_str)
         fixed_result_JSON = fix.get('corrections')
         fixed_sentence = fix.get('text')
@@ -27,14 +25,11 @@ class FixerResultProcessor:
             rephrases_list = rephrases
 
         # translate
-        TRANSLATE_ENABLED = False
         if TRANSLATE_ENABLED:
             translated_input = Translate().get_ru_from_eng(text=input_str)
             translated_fixed = Translate().get_ru_from_eng(text=fixed_sentence)
         else:
             translated_input, translated_fixed = None, None
-
-        timing = time.perf_counter() - start
 
         return dict(input_str=input_str, fixed_sentence=fixed_sentence, fixed_result_JSON=fixed_result_JSON,
                     rephrases_list=rephrases_list, translated_input=translated_input, translated_fixed=translated_fixed,

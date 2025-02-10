@@ -13,18 +13,19 @@ def validate_text_string(value):
     if not re.match(pattern, value):
         raise ValidationError("Only text are allowed")
 
-#m2m; неявное созд доп таблицы
+
+# m2m; неявное созд доп таблицы
 class Tag(models.Model):
     id = models.BigAutoField(primary_key=True, auto_created=True, null=False)
     name = models.CharField(null=False, max_length=256, unique=True)
     str_name = models.CharField(null=True, max_length=256)
 
     class Meta:
-        indexes = [
-            models.Index(fields=['name'], name='tagname_idx'),]
+        indexes = [models.Index(fields=['name'], name='tagname_idx'), ]
 
     def __repr__(self):
         return self.name
+
 
 # o2m
 class Request(models.Model):
@@ -35,23 +36,16 @@ class Request(models.Model):
     created_date = models.DateTimeField(null=False, auto_now_add=True)
 
 
-
 class EngFixer(models.Model):
-    # uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     id = models.BigAutoField(primary_key=True, auto_created=True, null=False)
-
     input_sentence = models.CharField(null=False, max_length=256, unique=True, validators=[validate_text_string])
     # translated_RU = models.CharField(null=True, max_length=256)
     fixed_result_JSON = models.JSONField(null=True)
     fixed_sentence = models.CharField(null=False, blank=True, max_length=256)
     rephrases_list = ArrayField(models.CharField(max_length=150, blank=True), null=True)  # size=8,)
     its_correct = models.BooleanField(null=True, default=None)
-
-    mistakes_most_TMP = models.CharField(null=True, max_length=256)
-    mistakes_list_TMP = ArrayField(models.CharField(max_length=150, blank=True), null=True)
-
     # using eng_service_engfixer_tags
-    tags = models.ManyToManyField(to='Tag') #through: related_name='fix', on_delete=models.SET_NULL)
+    tags = models.ManyToManyField(to='Tag')  # through: related_name='fix', on_delete=models.SET_NULL)
 
     translated_input = models.CharField(null=True, max_length=256)
     translated_fixed = models.CharField(null=True, max_length=256)
@@ -81,11 +75,8 @@ class EngFixer(models.Model):
 
     class Meta:
         # INDEX INPUT UNIQUE
-        constraints = [
-            models.UniqueConstraint(fields=['id', 'input_sentence'], name='unique_id_input_sentence'),
-        ]
-        indexes = [
-            models.Index(fields=['its_correct'], name='its_correct_idx'), ]
+        constraints = [models.UniqueConstraint(fields=['id', 'input_sentence'], name='unique_id_input_sentence'), ]
+        indexes = [models.Index(fields=['its_correct'], name='its_correct_idx'), ]
 
 
 class UserProfile(models.Model):

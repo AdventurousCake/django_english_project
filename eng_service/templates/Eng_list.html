@@ -3,8 +3,6 @@
 
 {% block content %}
     <div class="container col-md-8">
-        {#    CARD#}
-
         {% if not data_list %}
             <p>Create New</p>
         {% endif %}
@@ -25,7 +23,7 @@
                                 class="btn btn-sm btn-primary"><i class="fa-solid fa-share"></i> Share (Copy link)
                         </button>
                         {% if user.is_superuser %}
-                            <a href="{% url 'eng_service:eng_delete_fix' item.id %}" class="btn btn-outline-danger">Delete</a>
+                            <a href="{% url 'eng_service:eng_delete_fix' item.id %}" class="btn btn-outline-danger">X</a>
                         {% endif %}
                     </div>
                 </div>
@@ -33,7 +31,6 @@
                     <li class="list-group-item">{{ item.input_sentence }}</li>
                     <li class="list-group-item" style="color: rgba(0,128,0,0.74)">{{ item.fixed_sentence }}</li>
                 </ul>
-                {#            <p>123</p>#}
             </div>
 
             <p></p>
