@@ -23,7 +23,7 @@
                                 class="btn btn-sm btn-primary"><i class="fa-solid fa-share"></i> Share (Copy link)
                         </button>
                         {% if user.is_superuser %}
-                            <a href="{% url 'eng_service:eng_delete_fix' item.id %}" class="btn btn-outline-danger">X</a>
+                            <a href="{% url 'eng_service:eng_delete_fix' item.id %}" class="btn btn-sm btn-outline-danger">x</a>
                         {% endif %}
                     </div>
                 </div>

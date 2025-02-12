@@ -42,9 +42,7 @@ class EngProfileView(TemplateView, LoginRequiredMixin):  # FeatureTestMix
                     'fix__fixed_result_JSON',
                     # 'fix__mistakes_most_TMP', 'fix__mistakes_list_TMP'
                     # 'created_date'
-                    )
-                    .distinct()
-                    )
+                    ).distinct())
 
         if not requests:
             context.update({'count': 0,

@@ -10,7 +10,6 @@ class InputSerializer(serializers.Serializer):
 
 
 class RespSerializer(serializers.Serializer):
-    # input_str = serializers.CharField()
     input_str = serializers.CharField(source='input_sentence')
     fixed_sentence = serializers.CharField()
     rephrases_list = serializers.ListField(child=serializers.CharField())
