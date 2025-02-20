@@ -17,7 +17,4 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 #RUN python manage.py migrate --settings=prod_settings && python manage.py collectstatic --noinput
-
 RUN python manage.py collectstatic --noinput
-
-#CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

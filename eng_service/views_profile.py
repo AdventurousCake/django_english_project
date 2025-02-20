@@ -1,9 +1,7 @@
-import logging
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.functions import Now
-from django.shortcuts import redirect
 from django.views.generic import TemplateView
 
 from eng_service.models import Request, EngFixer, UserProfile
@@ -14,15 +12,23 @@ def get_user_requests(user):
     return Request.objects.filter(user_profile=user.profile).select_related('fix')
 
 
+def add_quiz_context(context):
+    q = EngFixer.objects.filter(its_correct=False, is_public=True).order_by('?').first()
+    if q:
+        context.update(dict(quiz=True, random_sentence=q.input_sentence,
+                            random_sentence2=q.fixed_sentence, random_sentence_url=q.get_absolute_url()))
+
+
 class EngProfileView(TemplateView, LoginRequiredMixin):  # FeatureTestMix
     template_name = "Eng_profile.html"
 
     def get(self, request, *args, **kwargs):
-        if not self.request.user.is_authenticated:
-            logging.warning(f'Profile page. User not authenticated: {self.request.user}')
-            return redirect('login')
-        return super().get(request, *args, **kwargs)
+        # redirect login
+        # if not self.request.user.is_authenticated:
+        #     logging.warning(f'Profile page. User not authenticated: {self.request.user}')
+        #     return redirect('login')
 
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -33,25 +39,29 @@ class EngProfileView(TemplateView, LoginRequiredMixin):  # FeatureTestMix
         else:
             # anon filter in get
             profile = None
+            context.update(count=0,
+                           count_correct=0,
+                           count_correct_lastweek=0,
+                           count_lastweek=0,
+                           last_using_str=datetime.now().strftime('%d %b.'),
+                           # top3_str=top_str, top3=top
+                           )
 
-        # STATS
+            add_quiz_context(context)
+            return context
+
+        # STATS FOR USER
         requests = (Request.objects.filter(user_profile=profile)
                     .select_related('fix')
                     # .order_by('-created_date')
                     .values('fix_id', 'fix__its_correct',
-                    'fix__fixed_result_JSON',
-                    # 'fix__mistakes_most_TMP', 'fix__mistakes_list_TMP'
-                    # 'created_date'
-                    ).distinct())
+                            'fix__fixed_result_JSON',
+                            # 'created_date'
+                            ).distinct())
 
         if not requests:
-            context.update({'count': 0,
-                            'count_correct': 0,
-                            'count_correct_lastweek': 0,
-                            'count_lastweek': 0,
-                            'top3': None,
-                            'last_using_str': None
-                            })
+            context.update(dict(count=0, count_correct=0, count_correct_lastweek=0, count_lastweek=0, top3=None,
+                                last_using_str=None))
         elif requests:
             count = len(requests)
             # count_correct_c = len([r for r in requests if r['fix__its_correct']]) # v1
@@ -72,22 +82,14 @@ class EngProfileView(TemplateView, LoginRequiredMixin):  # FeatureTestMix
             else:
                 top_str = ''
 
-            context['count'] = count
-            context['count_correct'] = count_correct_c
-            context['count_correct_lastweek'] = count_correct_lastweek
-            context['count_lastweek'] = count_lastweek
-
-            context['last_using_str'] = last_using.strftime('%d %b.')  # '%Y.%m.%d'
-            context['top3_str'] = top_str
-            context['top3'] = top
-
+            context.update(count=count,
+                           count_correct=count_correct_c,
+                           count_correct_lastweek=count_correct_lastweek,
+                           count_lastweek=count_lastweek,
+                           last_using_str=last_using.strftime('%d %b.'),
+                           top3_str=top_str, top3=top)
 
         context['data_list'] = requests
 
-        r = EngFixer.objects.filter(its_correct=False, is_public=True).order_by('?').first()
-        if r:
-            context['quiz'] = True
-            context['random_sentence'] = r.input_sentence
-            context['random_sentence2'] = r.fixed_sentence
-            context['random_sentence_url'] = r.get_absolute_url()
+        add_quiz_context(context)
         return context

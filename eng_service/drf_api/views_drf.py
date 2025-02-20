@@ -39,7 +39,6 @@ class EngFixApiFILTER(APIView):
     """
     def get(self, request):
         params=request.GET.get('filter')
-        # queryset = EngFixer.objects.prefetch_related('tags').filter(mistakes_most_TMP__icontains=params).all()
         queryset = EngFixer.objects.prefetch_related('tags').filter(tags__name__iexact=params).all()
 
         serializer = EngSerializerVSETsimple(queryset, many=True)
