@@ -33,11 +33,11 @@ class EngProfileView(TemplateView, LoginRequiredMixin):  # FeatureTestMix
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        # using user context or empty context
         if self.request.user.is_authenticated:
             # profile = self.request.user.userprofile
             profile, created = UserProfile.objects.get_or_create(user=self.request.user)
         else:
-            # anon filter in get
             profile = None
             context.update(count=0,
                            count_correct=0,
@@ -55,8 +55,7 @@ class EngProfileView(TemplateView, LoginRequiredMixin):  # FeatureTestMix
                     .select_related('fix')
                     # .order_by('-created_date')
                     .values('fix_id', 'fix__its_correct',
-                            'fix__fixed_result_JSON',
-                            # 'created_date'
+                            'fix__fixed_result_JSON'
                             ).distinct())
 
         if not requests:
@@ -65,8 +64,8 @@ class EngProfileView(TemplateView, LoginRequiredMixin):  # FeatureTestMix
         elif requests:
             count = len(requests)
             # count_correct_c = len([r for r in requests if r['fix__its_correct']]) # v1
-            count_correct = Request.objects.filter(user_profile=profile).select_related('fix').filter(
-                fix__its_correct=True)
+            count_correct = (Request.objects.filter(user_profile=profile).select_related('fix')
+                             .filter(fix__its_correct=True))
             count_correct_c = count_correct.count()
 
             last_using = (Request.objects.filter(user_profile=profile).values_list('created_date')
