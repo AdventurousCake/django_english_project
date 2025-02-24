@@ -33,7 +33,11 @@ class EngMainListView(ListView):
     paginate_by = 10
     context_object_name = "data_list"
 
-    queryset = EngFixer.objects.all().filter(is_public=True).order_by('-created_date')
+    # queryset = EngFixer.objects.all().filter(is_public=True).order_by('-created_date')
+    def get_queryset(self):
+        params = self.request.GET.get('type')
+        return (EngFixer.objects.prefetch_related('tags')
+                .filter(is_public=True, tags__name__iexact=params).order_by('-created_date'))
 
     # def dispatch(self, request, *args, **kwargs): pass
 
@@ -72,8 +76,9 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         form_error = form.errors['input_sentence'].data[0]
         check_unique_input = isinstance(form_error, ValidationError) and form_error.code == 'unique'
 
+        # redirect if exists (ValidationError)
         if check_unique_input:
-            # redirect if exists (ValidationError)
+            logging.warning(f'search in db: {form.data["input_sentence"]}')
             obj = EngFixer.objects.values('id').get(input_sentence=form.data['input_sentence'])
             return redirect('eng_service:eng_get', obj['id'])
 
@@ -91,11 +96,6 @@ class CheckENGView(CreateView):  # LoginRequiredMixin
         obj.rephrases_list = data['rephrases_list']
         obj.translated_input = data['translated_input']
         obj.translated_fixed = data['translated_fixed']
-
-        # TMP
-        obj.mistakes_list_TMP = data['error_types']
-        obj.mistakes_most_TMP = data['types_most']
-
         obj.its_correct = data['its_correct']
 
         # is_public
@@ -171,10 +171,6 @@ class CheckENGViewDetail(DetailView): #UpdateView):  # LoginRequiredMixin
         tags = self.object.tags.values_list('name', flat=True)
         context['error_types'] = tags
         context['its_correct'] = self.object.its_correct
-
-        # if self.object.mistakes_list_TMP:
-        #     context['types_most'] = self.object.mistakes_most_TMP
-            # context['error_types'] = self.object.mistakes_list_TMP
 
         if self.object.translated_input and self.object.translated_fixed:
             context['translate'] = self.object.translated_input, self.object.translated_fixed

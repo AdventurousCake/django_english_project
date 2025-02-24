@@ -20,6 +20,7 @@ urlpatterns = [
     path('profile/', EngProfileView.as_view(), name='eng_profile'),
     path('random/', GetRandomView.as_view(), name='eng_random'),
 
+    # api
     path('api1/', EngFixApiPOST.as_view(), name='api1'),
     path('api1/test/', EngFixApiFILTER.as_view(), name='api1_test'),
 

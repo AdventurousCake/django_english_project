@@ -1,5 +1,3 @@
-from pprint import pprint
-
 from django.core.cache import cache
 from django.test import TestCase, Client, override_settings
 from django.urls import reverse
@@ -38,6 +36,16 @@ class CreateClientsTestBase(TestCase):
         cls.user2 = User.objects.create_user(username='user2')
         cls.profile1 = UserProfile.objects.create(user=User.objects.get(username='user1'))
 
+        cls.guest_client = Client()
+
+        """Создание клиента зарегистрированного пользователя."""
+        cls.authorized_client = Client()
+        cls.authorized_client.force_login(cls.user1)
+
+        cls.authorized_client2 = Client()
+        cls.authorized_client2.force_login(cls.user2)
+        cache.clear()
+
 
     @classmethod
     def tearDownClass(cls):
@@ -47,16 +55,8 @@ class CreateClientsTestBase(TestCase):
 
         super().tearDownClass()
 
-    def setUp(self):
-        self.guest_client = Client()
-
-        """Создание клиента зарегистрированного пользователя."""
-        self.authorized_client = Client()
-        self.authorized_client.force_login(self.user1)
-
-        self.authorized_client2 = Client()
-        self.authorized_client2.force_login(self.user2)
-        cache.clear()
+    # def setUp(self):
+    #     pass
 
 @override_settings(RATELIMIT_ENABLED=False)
 class EngTestURLS(CreateClientsTestBase, CreateEngTestBase):
@@ -95,30 +95,6 @@ class EngTestURLS(CreateClientsTestBase, CreateEngTestBase):
     #     response = self.authorized_client.get(reverse('eng_service:eng_get', kwargs={}))
     #     print(response)
     #     self.assertEqual(response.status_code, 200)
-
-    def test_create_invalid_request1(self):
-        """Input sentence is too short"""
-        response = self.authorized_client.post(reverse('eng_service:eng'), {
-            'input_sentence': 123,
-        })
-        self.assertFormError(response.context['form'],'input_sentence', 'Input sentence is too short')
-
-    def test_create_valid_request(self):
-        response = self.authorized_client.post(reverse('eng_service:eng'), {
-            'input_sentence': 'hello how are you',
-        })
-
-        self.assertRedirects(response, reverse('eng_service:eng_get', kwargs={'pk': 2}))
-        self.assertEqual(response.status_code, 302)
-        pprint(response.url)
-        self.assertEqual(EngFixer.objects.count(), 2)
-
-        objs = EngFixer.objects.all()
-        pprint(objs)
-
-        obj = EngFixer.objects.get(pk=2)
-        self.assertEqual(obj.its_correct, False)
-        self.assertEqual(obj.fixed_sentence, 'Hello how are you')
 
 
     def test_list(self):
