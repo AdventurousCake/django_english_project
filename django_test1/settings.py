@@ -9,6 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = Env()
 try:
+    logging.warning('Using .env.dev file')
     env.read_env(path=os.path.join(BASE_DIR, '.env.dev'))
 except Exception:
     logging.error('Not found .env.dev file')
@@ -39,8 +40,6 @@ CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS")
 
 if IS_PROD:
     SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
-# SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-# SECURE_SSL_REDIRECT = True
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [

@@ -67,10 +67,8 @@ class EngTestURLS(CreateClientsTestBase, CreateEngTestBase):
                        ('eng_service:eng_list', None),
                        ('eng_service:eng_random', None), # 302
                        ('signup', None),
-                       # ('eng_service:api1', None), # post
                        ('eng_service:api_vset-detail', 1),
                        ('eng_service:api_vset-list', None),
-                       # ('schema-json', None),
                        ('swagger-ui', None),
                        ('page_github', None)
                        ]
@@ -90,11 +88,6 @@ class EngTestURLS(CreateClientsTestBase, CreateEngTestBase):
 
             status = response.status_code
             self.assertIn(status, [200, 302], msg=f'info: pattern: {pattern} status: {status}')
-
-    # def test_create_request_auth_123(self):
-    #     response = self.authorized_client.get(reverse('eng_service:eng_get', kwargs={}))
-    #     print(response)
-    #     self.assertEqual(response.status_code, 200)
 
 
     def test_list(self):
