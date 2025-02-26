@@ -1,3 +1,5 @@
+from pprint import pprint
+
 from django.core.cache import cache
 from django.test import TestCase, Client, override_settings
 from django.urls import reverse
@@ -12,65 +14,56 @@ class CreateEngTestBase(TestCase):
     def setUpClass(cls):
         super().setUpClass()
 
-        # cls.user = User.objects.get(username='admin')
+        # Create users
+        cls.user1 = User.objects.create_user(username='user1')
+        cls.user2 = User.objects.create_user(username='user2')
+        cls.user3 = User.objects.create_user(username='user3')
+
+        # Create profiles
+        cls.profile1 = UserProfile.objects.create(user=cls.user1)
+        cls.profile3 = UserProfile.objects.create(user=cls.user3)
+
+        # Create test EngFixer object
         cls.eng1 = EngFixer.objects.create(
             input_sentence='test',
             fixed_sentence='test_fixed_TEST_CREATED',
         )
-        user3 = User.objects.create_user(username='user3')
 
-        # cls.profile1 = UserProfile.objects.create(user=User.objects.get(username='user1'))
-        cls.profile3 = UserProfile.objects.create(user=user3)
-
-    # @classmethod
-    # def tearDownClass(cls):
-    #     super().tearDownClass()
-
-# BASE CLASS
-class CreateClientsTestBase(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-
-        cls.user1 = User.objects.create_user(username='user1')
-        cls.user2 = User.objects.create_user(username='user2')
-        cls.profile1 = UserProfile.objects.create(user=User.objects.get(username='user1'))
-
+        # Create test clients
         cls.guest_client = Client()
 
-        """Создание клиента зарегистрированного пользователя."""
+        # Create authorized test clients
         cls.authorized_client = Client()
         cls.authorized_client.force_login(cls.user1)
-
         cls.authorized_client2 = Client()
         cls.authorized_client2.force_login(cls.user2)
-        cache.clear()
-
 
     @classmethod
     def tearDownClass(cls):
-        # EngFixer.objects.all().delete()
-        # UserProfile.objects.all().delete()
-        # User.objects.all().delete()
+        EngFixer.objects.all().delete()
+        UserProfile.objects.all().delete()
+        User.objects.all().delete()
 
         super().tearDownClass()
 
-    # def setUp(self):
-    #     pass
+    def setUp(self):
+        # Clear cache before each test
+        cache.clear()
+
 
 @override_settings(RATELIMIT_ENABLED=False)
-class EngTestURLS(CreateClientsTestBase, CreateEngTestBase):
+class EngTestURLS(CreateEngTestBase):
     def test_urls(self):
+        exmpl_pk = EngFixer.objects.first().pk
+
         urlpatterns = [('eng_service:eng', None),
-                       ('eng_service:eng_get', 1), # EMPTY DB
-                       ('eng_service:eng_profile', None), # PERSONAL PROFILE
+                       ('eng_service:eng_get', exmpl_pk),  # EMPTY DB
+                       ('eng_service:eng_profile', None),  # PERSONAL PROFILE
                        ('eng_service:eng_list', None),
-                       ('eng_service:eng_random', None), # 302
+                       ('eng_service:eng_random', None),  # 302
                        ('signup', None),
-                       # ('eng_service:api1', None), # post
-                       ('eng_service:api_vset-detail', 1),
+                       ('eng_service:api_vset-detail', exmpl_pk),
                        ('eng_service:api_vset-list', None),
-                       # ('schema-json', None),
                        ('swagger-ui', None),
                        ('page_github', None)
                        ]
@@ -84,25 +77,18 @@ class EngTestURLS(CreateClientsTestBase, CreateEngTestBase):
                 kwargs = {'pk': pattern[1]}
 
             url = reverse(pattern[0], kwargs=kwargs)
-
-            response = self.authorized_client.get(url) # auth
+            response = self.authorized_client.get(url)  # auth
             # response = self.client.get(url) # anon
 
             status = response.status_code
             self.assertIn(status, [200, 302], msg=f'info: pattern: {pattern} status: {status}')
 
-    # def test_create_request_auth_123(self):
-    #     response = self.authorized_client.get(reverse('eng_service:eng_get', kwargs={}))
-    #     print(response)
-    #     self.assertEqual(response.status_code, 200)
-
-
     def test_list(self):
         response = self.authorized_client.get(reverse('eng_service:eng_list'))
         self.assertEqual(response.status_code, 200)
+        pprint(response.context['data_list'])
         self.assertEqual(response.context['data_list'].count(), 1)
 
     def test_get_404(self):
         response = self.authorized_client.get(reverse('eng_service:eng_get', kwargs={'pk': 9999}), {})
         self.assertEqual(response.status_code, 404)
-
