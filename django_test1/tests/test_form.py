@@ -26,7 +26,6 @@ class EngTestForm(CreateEngTestBase):
 
         # pprint(response.url)
         self.assertEqual(EngFixer.objects.count(), 2)
-
         objs = EngFixer.objects.all()
         pprint(objs)
 

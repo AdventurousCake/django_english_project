@@ -57,7 +57,7 @@ class EngTestURLS(CreateEngTestBase):
         exmpl_pk = EngFixer.objects.first().pk
 
         urlpatterns = [('eng_service:eng', None),
-                       ('eng_service:eng_get', exmpl_pk),  # EMPTY DB
+                       ('eng_service:eng_get', exmpl_pk),
                        ('eng_service:eng_profile', None),  # PERSONAL PROFILE
                        ('eng_service:eng_list', None),
                        ('eng_service:eng_random', None),  # 302
@@ -69,6 +69,8 @@ class EngTestURLS(CreateEngTestBase):
                        ]
 
         for pattern in urlpatterns:
+            # with self.subTest(pattern=pattern, pk=pk)
+
             print(f'testing url (authorized): {pattern}')
             # url = reverse(pattern.name)
             if pattern[1] is None:
