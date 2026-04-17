@@ -26,6 +26,9 @@ class Tag(models.Model):
     def __repr__(self):
         return self.name
 
+    def __str__(self):
+        return self.name
+
 
 # o2m
 class Request(models.Model):
@@ -67,9 +70,6 @@ class EngFixer(models.Model):
         return reverse("eng_service:eng_get", kwargs={"pk": self.pk})
         # return reverse("eng_service:eng_get", kwargs={"pk": self.id})
 
-    def __repr__(self):
-        return f"(id:{self.id}, input:{self.input_sentence}, fixed:{self.fixed_sentence})"
-
     # def full_clean(self, exclude=None, validate_unique=True, validate_constraints=True):
     #     pass
 
@@ -77,6 +77,10 @@ class EngFixer(models.Model):
         # INDEX INPUT UNIQUE
         constraints = [models.UniqueConstraint(fields=['id', 'input_sentence'], name='unique_id_input_sentence'), ]
         indexes = [models.Index(fields=['its_correct'], name='its_correct_idx'), ]
+
+    def __repr__(self):
+        return f"(Fix id:{self.id}, input:{self.input_sentence}, fixed:{self.fixed_sentence})"
+
 
 
 class UserProfile(models.Model):
@@ -89,3 +93,6 @@ class UserProfile(models.Model):
 
     id = models.BigAutoField(primary_key=True, auto_created=True, null=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=False)
+
+    def __repr__(self):
+        return f"(id:{self.id}, user:{self.user})"
