@@ -3,6 +3,7 @@ from collections import Counter
 from pprint import pprint
 from typing import Any
 
+import curl_cffi
 import httpx
 import requests
 
@@ -15,7 +16,7 @@ class HttpService:
     def request(method:str, url: str, headers: dict, params: dict = None, data: dict | str = None):
         try:
             if method.lower() == 'post':
-                response = requests.post(url, headers=headers, data=data, timeout=4)
+                response = curl_cffi.post(url, headers=headers, data=data, timeout=4, impersonate="chrome124")
             elif method.lower() == 'get':
                 response = httpx.get(url, headers=headers, params=params, timeout=4)
             else:
@@ -243,13 +244,13 @@ def main():
 if __name__ == '__main__':
     # 900ms response
 
-    # get_mistakes_data_LANGtool('hello im fine')
-    # import time
-    # start = time.perf_counter()
-    #
-    # print(EngRephraseParser().get_parsed_data(input_str='hello im fine'))
-    # # fixer(input_str="hello im fine")
-    #
-    # print(time.perf_counter() - start)
+    get_mistakes_data_LANGtool('hello im fine')
+    import time
+    start = time.perf_counter()
 
-    main()
+    print(EngDownloader().get_spelling_data(input_str='hello im fine'))
+    # print(EngRephraseParser().get_parsed_data(input_str='hello im fine'))
+    # fixer(input_str="hello im fine")
+
+    print(time.perf_counter() - start)
+
