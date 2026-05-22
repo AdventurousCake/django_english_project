@@ -1,21 +1,3 @@
-# EngDownloader
-headers_engd = {
-    'authority': 'orthographe.reverso.net',
-    'accept': 'text/json',
-    'accept-language': 'en',
-    'content-type': 'application/*+json',
-    'origin': 'https://www.reverso.net',
-    'referer': 'https://www.reverso.net/',
-    'sec-ch-ua': '"Chromium";v="106", "Google Chrome";v="106", "Not;A=Brand";v="99"',
-    'sec-ch-ua-mobile': '?0',
-    'sec-ch-ua-platform': '"Windows"',
-    'sec-fetch-dest': 'empty',
-    'sec-fetch-mode': 'cors',
-    'sec-fetch-site': 'same-site',
-    'sec-gpc': '1',
-    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36',
-}
-
 # EngRephraseParser
 headers_eng_rephr = {
     'authority': 'rephraser-api.reverso.net',

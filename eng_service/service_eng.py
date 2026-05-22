@@ -7,16 +7,16 @@ import curl_cffi
 import httpx
 import requests
 
-from eng_service.parser_headers_const import headers_engd, headers_eng_rephr
+from eng_service.parser_headers_const import headers_eng_rephr
 from eng_service.utils_ import time_measure
 
 
 class HttpService:
     @staticmethod
-    def request(method:str, url: str, headers: dict, params: dict = None, data: dict | str = None):
+    def request(method:str, url: str, headers: dict = None, params: dict = None, data: dict | str = None):
         try:
             if method.lower() == 'post':
-                response = curl_cffi.post(url, headers=headers, data=data, timeout=4, impersonate="chrome124")
+                response = curl_cffi.post(url, data=data, timeout=4, impersonate="chrome124")
             elif method.lower() == 'get':
                 response = httpx.get(url, headers=headers, params=params, timeout=4)
             else:
@@ -44,7 +44,6 @@ class EngDownloader(HttpService):
     def get_spelling_data(self, input_str: str = None):
         if not input_str: raise ValueError('input_str is required')
 
-        headers = headers_engd
         url = 'https://orthographe.reverso.net/api/v1/Spelling/'
         # "interfaceLanguage":"ru" OR en
         data = '{"englishDialect":"indifferent","autoReplace":true,"getCorrectionDetails":true,"interfaceLanguage":"ru",' \
@@ -52,7 +51,7 @@ class EngDownloader(HttpService):
                '"insertFeedback":true,"userLoggedOn":false},"origin":"interactive","isHtml":false} ' \
             .replace('MY_INPUT', input_str)
 
-        return self.request(method='post',url=url, headers=headers, params=None, data=data)
+        return self.request(method='post',url=url, params=None, data=data)
 
     def get_rephrase_data(self, input_str: str=None):
         if not input_str: raise ValueError('input_str is required')
